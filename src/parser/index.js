@@ -1,6 +1,5 @@
 import { csv } from 'd3';
 import csvData from './sample proteins_2022_10_05.csv';
-// import csvData from './proteins.csv';
 
 async function getData() {
   const data = await csv(csvData);
@@ -30,13 +29,12 @@ const getProteins = async () => {
     protein.outsideDomain = domain.o
     protein.insideDomain = domain.i
 
-    
-    for(let i = 0; i < protein.outsideDomain.length; i++){
-        console.log(`outside, start_pos: ${protein.outsideDomain[i].start_pos} | end_pos: ${protein.outsideDomain[i].end_pos}`);
-    }
-    for(let i = 0; i < protein.insideDomain.length; i++){
-        console.log(`inside, start_pos: ${protein.insideDomain[i].start_pos} | end_pos: ${protein.insideDomain[i].end_pos}`);
-    }
+    // for(let i = 0; i < protein.outsideDomain.length; i++){
+    //     console.log(`outside, start_pos: ${protein.outsideDomain[i].start_pos} | end_pos: ${protein.outsideDomain[i].end_pos}`);
+    // }
+    // for(let i = 0; i < protein.insideDomain.length; i++){
+    //     console.log(`inside, start_pos: ${protein.insideDomain[i].start_pos} | end_pos: ${protein.insideDomain[i].end_pos}`);
+    // }
     
     proteinsData.push(protein);
   });
