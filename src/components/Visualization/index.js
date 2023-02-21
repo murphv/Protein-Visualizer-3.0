@@ -51,7 +51,9 @@ function Visualization(props) {
   const {
     disulfideBonds,
     glycoslation,
-    length: proteinLength
+    length: proteinLength,
+    outsideDomain,
+    insideDomain,
   } = initialOptions[currSelection];
 
   console.log('Visualization -> proteinLength', proteinLength);
@@ -63,6 +65,9 @@ function Visualization(props) {
   const [windowView, setWindowView] = useState(false);
   const [showGlyco, setShowGlyco] = useState(true);
   const [showDisulfide, setShowDisulfide] = useState(true);
+  //TODO connect with buttons
+  const [showOutsideDomain, setShowOutisde] = useState(true);
+  const [showInsideDomain, setShowInside] = useState(true);
 
   const scaleVisualization = scaleFactor !== 1;
   const scaledWidth = initialWidth * scaleFactor;
@@ -95,6 +100,12 @@ function Visualization(props) {
     });
     return bondPos;
   });
+
+  //
+  // const oDomain = initialOptions[currSelection].outsideDomain.forEach(function(outsideDomain){
+  //     const pos = [];
+
+  // });
 
   const updateWindowStart = newStart => {
     setWindowPos({ ...windowPos, start: parseInt(newStart, 10) });
@@ -163,14 +174,15 @@ function Visualization(props) {
         .attr('x2', scale(el))
         .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH)
         .style('stroke', 'black');
-
-      const mol1 = g.append('circle');
+      
+      const mol1 = g.append('rect');
       mol1
-        .attr('cx', scale(el))
-        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH)
-        .attr('r', CIRCLE_RADIUS + 3)
-        .style('stroke', 'black')
-        .style('fill', 'black');
+      .attr('width', 14)
+      .attr('height', 14)
+      .attr('x', scale(el) - 7)
+      .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH)
+      .style('fill', 'blac')
+      .style('stroke', 'black');
 
       const link = g.append('line');
       link
@@ -195,22 +207,22 @@ function Visualization(props) {
         .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 4.5)
         .style('stroke', 'black');
 
-      const mol2 = g.append('circle');
+      const mol2 = g.append('rect');
       mol2
-        .attr('cx', scale(el))
-        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 2)
-        .attr('r', CIRCLE_RADIUS + 3)
-        .style('stroke', 'black')
-        .style('fill', 'grey');
-
-      const mol3 = g.append('rect');
-      mol3
         .attr('width', 14)
         .attr('height', 14)
         .attr('x', scale(el) - 7)
-        .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5)
-        .style('fill', 'white')
+        .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 2)
+        .style('fill', 'grey')
         .style('stroke', 'black');
+    
+      const mol3 = g.append('circle');
+      mol3
+        .attr('cx', scale(el))
+        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5)
+        .attr('r', CIRCLE_RADIUS + 3)
+        .style('stroke', 'black')
+        .style('fill', 'white');
     });
   };
 
@@ -377,6 +389,56 @@ function Visualization(props) {
     });
   };
 
+  const attachOutsideDomain = (g, isWindowView) => {
+    let start_position = outsideDomain.map(obj => obj.start_pos);
+    let end_position = outsideDomain.map(obj => obj.end_pos);
+    // console.log(`start positions: ${start_position}`);
+    // console.log(`end positions: ${end_position}`);
+
+    for(let i = 0; i < start_position.length; i++){
+      const rectBase = g.append('rect');
+      console.log(`length: ${(end_position[i] - start_position[i])}`)
+      console.log(`spineWidth: ${SPINE_WIDTH}`)
+      let widthProportion = (end_position[i] - start_position[i]) / proteinLength
+      let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
+      let startProportion = start_position[i]/proteinLength
+      // const startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_START_POS)) : (SPINE_START_POS + (startProportion*SPINE_START_POS))
+      const startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
+
+      rectBase
+      .attr('width', rectWidth)
+      .attr('height', SPINE_HEIGHT)
+      .attr('x', startPos)
+      .attr('y', innerHeight / 2)
+      .style('fill', '#3f51b5')
+      // .style('stroke', 'black');
+    }
+      
+  };
+
+  const attachInsideDomain = (g, isWindowView) => {
+    let start_position = insideDomain.map(obj => obj.start_pos);
+    let end_position = insideDomain.map(obj => obj.end_pos);
+
+    for(let i = 0; i < start_position.length; i++){
+      const rectBase = g.append('rect');
+      console.log(`length: ${(end_position[i] - start_position[i])}`)
+      console.log(`spineWidth: ${SPINE_WIDTH}`)
+      let widthProportion = (end_position[i] - start_position[i]) / proteinLength
+      let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
+      let startProportion = start_position[i]/proteinLength
+      const startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
+
+      rectBase
+      .attr('width', rectWidth)
+      .attr('height', SPINE_HEIGHT)
+      .attr('x', startPos)
+      .attr('y', innerHeight / 2)
+      .style('fill', '#f50057')
+    }
+      
+  };
+
   const attachSpine = (g, isWindowView) => {
     const spineBase = g.append('rect');
     let spineWidth = fullScale ? proteinLength : SPINE_WIDTH;
@@ -392,13 +454,15 @@ function Visualization(props) {
       .attr('y', innerHeight / 2)
       .style('fill', 'white')
       .style('stroke', 'black');
+      
   };
 
   const attachNTerminus = g => {
     const NTerm = g.append('text');
     NTerm.attr('dx', SPINE_START_POS - 50)
       .attr('dy', innerHeight / 2 + 20)
-      .text(() => 'NH2--');
+      .text(() => 'NH2--')
+      .style('font-weight', 'bold');
   };
 
   const renderVisualization = (id, isWindowView) => {
@@ -411,6 +475,12 @@ function Visualization(props) {
     const g = svg.append('g');
     g.attr('transform', `translate(${translateX}, ${translateY})`);
     attachSpine(g, isWindowView);
+    if(showOutsideDomain){
+      attachOutsideDomain(g, isWindowView);
+    }
+    if(showInsideDomain){
+      attachInsideDomain(g, isWindowView);
+    }
     if (showDisulfide) {
       attachSulfides(g, isWindowView);
     }
@@ -447,6 +517,8 @@ function Visualization(props) {
     svgRef.current,
     showDisulfide,
     showGlyco,
+    showOutsideDomain,
+    showInsideDomain,
     scaleVisualization,
     scaleFactor,
     fullScale,
@@ -492,6 +564,8 @@ function Visualization(props) {
           disulfideBonds={disulfideBonds}
           toggleGlyco={setShowGlyco}
           toggleSulfide={setShowDisulfide}
+          toggleOutside={setShowOutisde}
+          toggleInside={setShowInside}
           length={proteinLength}
         />
       ) : null}

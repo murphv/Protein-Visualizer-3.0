@@ -47,7 +47,7 @@ const Dropdown = props => {
   return (
     <FormControl variant="outlined" className="drop-down">
       <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
-        Protein Name
+        Protein Name 
       </InputLabel>
       <Select
         labelId="demo-simple-select-outlined-label"
@@ -55,6 +55,7 @@ const Dropdown = props => {
         value={val}
         onChange={handleChange}
         autoWidth
+        style={{marginTop: '1rem'}}
       >
         {menuList}
       </Select>

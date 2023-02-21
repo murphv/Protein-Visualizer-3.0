@@ -4,6 +4,7 @@ import {
   CardContent,
   Typography,
   IconButton,
+  Button,
   Tooltip
 } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -39,6 +40,8 @@ const useStyles = makeStyles({
  * @property {Object} disulfideBonds object containing sulfide bond info
  * @property {func} toggleGlyco Function that toggles glyco bond visibility
  * @property {func} toggleSulfide Function that toggles sulfide bond visibility
+ * @property {func} toggleOutsideDomain Function that toggles Outside Domain visibility
+ * @property {func} toggleInsideDomain Function that toggles Inside Domain visibility
  * @property {integar} length total length of protein structure
  */
 function Legend(props) {
@@ -47,19 +50,29 @@ function Legend(props) {
     disulfideBonds,
     toggleGlyco,
     toggleSulfide,
+    toggleOutside,
+    toggleInside,
     length
   } = props;
   const [showGlyco, setShowGlyco] = useState(true);
   const [showSulfide, setShowSulfide] = useState(true);
+  const [showOutsideDomain, setShowOutside] = useState(true);
+  const [showInsideDomain, setShowInside] = useState(true);
   const classes = useStyles();
 
   const handleToggle = bond => {
     if (bond === 'sulfide') {
       toggleSulfide(!showSulfide);
       setShowSulfide(!showSulfide);
-    } else {
+    } else if(bond === 'glyco'){
       toggleGlyco(!showGlyco);
       setShowGlyco(!showGlyco);
+    }else if(bond === 'outside'){
+      toggleOutside(!showOutsideDomain);
+      setShowOutside(!showOutsideDomain);
+    }else{
+      toggleInside(!showInsideDomain);
+      setShowInside(!showInsideDomain);
     }
   };
 
@@ -121,6 +134,10 @@ function Legend(props) {
             </Typography>
           </Typography>
         </div>
+        <div className="legend--menuItem">
+          <Button variant='contained' color='primary' style={{ marginRight: '1rem', marginTop: '1rem'}} onClick= {() => handleToggle('outside')}>Outside</Button>
+          <Button variant='contained' color='secondary' style={{marginTop: '1rem'}} onClick= {() => handleToggle('inside')}>Inside</Button>
+        </div>
       </CardContent>
     </Card>
   );
@@ -131,12 +148,16 @@ Legend.propTypes = {
   disulfideBonds: PropTypes.arrayOf(PropTypes.string).isRequired,
   toggleGlyco: PropTypes.func,
   toggleSulfide: PropTypes.func,
+  toggleOutside: PropTypes.func,
+  toggleInside: PropTypes.func,
   length: PropTypes.number.isRequired
 };
 
 Legend.defaultProps = {
   toggleGlyco: () => {},
-  toggleSulfide: () => {}
+  toggleSulfide: () => {},
+  toggleOutside: () => {},
+  toggleInside: () => {}
 };
 
 export default Legend;
