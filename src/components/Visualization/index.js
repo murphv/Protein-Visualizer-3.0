@@ -100,12 +100,6 @@ function Visualization(props) {
     return bondPos;
   });
 
-  //
-  // const oDomain = initialOptions[currSelection].outsideDomain.forEach(function(outsideDomain){
-  //     const pos = [];
-
-  // });
-
   const updateWindowStart = newStart => {
     setWindowPos({ ...windowPos, start: parseInt(newStart, 10) });
   };
@@ -200,13 +194,6 @@ function Visualization(props) {
         .attr('x2', scale(el))
         .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 3.5)
         .style('stroke', 'black');
-      // const link3 = g.append('line');
-      // link3
-      //   .attr('x1', scale(el))
-      //   .attr('y1', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 3.5)
-      //   .attr('x2', scale(el))
-      //   .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 4.5)
-      //   .style('stroke', 'black');
 
       const mol2 = g.append('rect');
       mol2
@@ -375,7 +362,6 @@ function Visualization(props) {
           .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET)
           .text(() => 'S')
           .attr('class', 'sulfide-labels');
-          // .style('font-weight', 'bold');
 
         const pos = g.append('text');
         pos
@@ -398,14 +384,14 @@ function Visualization(props) {
     let start_position = outsideDomain.map(obj => obj.start_pos);
     let end_position = outsideDomain.map(obj => obj.end_pos);
 
+    console.log("Visualization -> attach Outside Domain")
+
     for(let i = 0; i < start_position.length; i++){
       const rectBase = g.append('rect');
-      console.log(`length: ${(end_position[i] - start_position[i])}`)
-      console.log(`spineWidth: ${SPINE_WIDTH}`)
+      
       let widthProportion = (end_position[i] - start_position[i]) / proteinLength
       let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
       let startProportion = start_position[i]/proteinLength
-      // const startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_START_POS)) : (SPINE_START_POS + (startProportion*SPINE_START_POS))
       let startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
 
       if(!isWindowView){
@@ -415,7 +401,7 @@ function Visualization(props) {
         .attr('x', startPos)
         .attr('y', innerHeight / 2)
         .style('fill', '#3f51b5')
-        // .style('stroke', 'black');
+        
       }else{
         if(startPos >= windowStart || startPos <= windowEnd){
           let newLength = windowEnd - windowStart
@@ -452,10 +438,11 @@ function Visualization(props) {
     let start_position = insideDomain.map(obj => obj.start_pos);
     let end_position = insideDomain.map(obj => obj.end_pos);
 
+    console.log("Visualization -> attach Inside Domain")
+
     for(let i = 0; i < start_position.length; i++){
       const rectBase = g.append('rect');
-      console.log(`length: ${(end_position[i] - start_position[i])}`)
-      console.log(`spineWidth: ${SPINE_WIDTH}`)
+      
       let widthProportion = (end_position[i] - start_position[i]) / proteinLength
       let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
       let startProportion = start_position[i]/proteinLength
@@ -471,6 +458,8 @@ function Visualization(props) {
       }else{//windowView with adjustments based on protein position
         if(startPos >= windowStart || startPos <= windowEnd){
           let newLength = windowEnd - windowStart
+
+          startProportion = ((start_position[i]-windowStart)/newLength)
           
           //scaling calculations to adjust coloring outside the spine
           if(end_position[i] > windowEnd){
@@ -478,9 +467,12 @@ function Visualization(props) {
           }else{
             widthProportion = (end_position[i] - start_position[i]) / newLength
           }
+          if(startProportion < 0){
+            startProportion = 0;
+            widthProportion = (end_position[i] - windowStart) / newLength
+          }
 
           rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
-          startProportion = ((start_position[i] - windowStart)/newLength)
           startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
 
           rectBase
