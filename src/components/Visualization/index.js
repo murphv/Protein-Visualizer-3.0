@@ -21,7 +21,7 @@ const calculateBondRanking = array => {
       if (idx !== i) {
         const [currLow, currHigh] = array[i];
         if (low < currLow && high > currHigh) {
-          total += 1;
+            total += 1;
         }
         if (low < currLow && high > currLow && high < currHigh) {
           total += 0.55;
@@ -65,7 +65,6 @@ function Visualization(props) {
   const [windowView, setWindowView] = useState(false);
   const [showGlyco, setShowGlyco] = useState(true);
   const [showDisulfide, setShowDisulfide] = useState(true);
-  //TODO connect with buttons
   const [showOutsideDomain, setShowOutisde] = useState(true);
   const [showInsideDomain, setShowInside] = useState(true);
 
@@ -76,7 +75,7 @@ function Visualization(props) {
     top: height / 15,
     right: initialWidth / 15,
     bottom: height / 15,
-    left: initialWidth / 15
+    left: initialWidth / 10
   };
   const innerHeight = height - margin.top - margin.bottom;
   const SULFIDE_POS = innerHeight / 2 + SPINE_HEIGHT / 2;
@@ -159,6 +158,7 @@ function Visualization(props) {
         .attr('dy', SULFIDE_POS + 5)
         .text(() => `N`)
         .attr('class', 'glyco-labels');
+        
 
       const pos = g.append('text');
       pos
@@ -166,6 +166,7 @@ function Visualization(props) {
         .attr('dy', SULFIDE_POS + 7)
         .text(() => `${el}`)
         .attr('class', 'glyco-labels--pos');
+        
 
       const stem = g.append('line');
       stem
@@ -181,7 +182,7 @@ function Visualization(props) {
       .attr('height', 14)
       .attr('x', scale(el) - 7)
       .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH)
-      .style('fill', 'blac')
+      .style('fill', 'black')
       .style('stroke', 'black');
 
       const link = g.append('line');
@@ -199,13 +200,13 @@ function Visualization(props) {
         .attr('x2', scale(el))
         .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 3.5)
         .style('stroke', 'black');
-      const link3 = g.append('line');
-      link3
-        .attr('x1', scale(el))
-        .attr('y1', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 3.5)
-        .attr('x2', scale(el))
-        .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 4.5)
-        .style('stroke', 'black');
+      // const link3 = g.append('line');
+      // link3
+      //   .attr('x1', scale(el))
+      //   .attr('y1', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 3.5)
+      //   .attr('x2', scale(el))
+      //   .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 4.5)
+      //   .style('stroke', 'black');
 
       const mol2 = g.append('rect');
       mol2
@@ -219,7 +220,7 @@ function Visualization(props) {
       const mol3 = g.append('circle');
       mol3
         .attr('cx', scale(el))
-        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5)
+        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 3.5)
         .attr('r', CIRCLE_RADIUS + 3)
         .style('stroke', 'black')
         .style('fill', 'white');
@@ -264,7 +265,7 @@ function Visualization(props) {
           .attr('cx', scale(y))
           .attr('cy', SULFIDE_POS)
           .attr('r', CIRCLE_RADIUS)
-          .style('stroke', 'black')
+          .style('stroke', 'white')
           .style('fill', COLOR_PALLETE[idx % COLOR_PALLETE.length]);
 
         // attach stem
@@ -280,7 +281,8 @@ function Visualization(props) {
         sulfide
           .attr('dx', scale(y) - 5)
           .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET)
-          .text(() => 'S');
+          .text(() => 'S')
+          .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
         pos
@@ -313,7 +315,7 @@ function Visualization(props) {
           .attr('cx', scale(x))
           .attr('cy', SULFIDE_POS)
           .attr('r', CIRCLE_RADIUS)
-          .style('stroke', 'black')
+          .style('stroke', 'white')
           .style('fill', COLOR_PALLETE[idx % COLOR_PALLETE.length]);
 
         // attach stem
@@ -329,7 +331,8 @@ function Visualization(props) {
         sulfide
           .attr('dx', scale(x) - 5)
           .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET)
-          .text(() => 'S');
+          .text(() => 'S')
+          .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
         pos
@@ -356,7 +359,7 @@ function Visualization(props) {
           .attr('cx', scale(el))
           .attr('cy', SULFIDE_POS)
           .attr('r', CIRCLE_RADIUS)
-          .style('stroke', 'black')
+          .style('stroke', 'white')
           .style('fill', COLOR_PALLETE[idx % COLOR_PALLETE.length]);
 
         const bond = g.append('line');
@@ -370,7 +373,9 @@ function Visualization(props) {
         sulfide
           .attr('dx', scale(el) - 5)
           .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET)
-          .text(() => 'S');
+          .text(() => 'S')
+          .attr('class', 'sulfide-labels');
+          // .style('font-weight', 'bold');
 
         const pos = g.append('text');
         pos
@@ -392,8 +397,6 @@ function Visualization(props) {
   const attachOutsideDomain = (g, isWindowView) => {
     let start_position = outsideDomain.map(obj => obj.start_pos);
     let end_position = outsideDomain.map(obj => obj.end_pos);
-    // console.log(`start positions: ${start_position}`);
-    // console.log(`end positions: ${end_position}`);
 
     for(let i = 0; i < start_position.length; i++){
       const rectBase = g.append('rect');
@@ -403,15 +406,44 @@ function Visualization(props) {
       let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
       let startProportion = start_position[i]/proteinLength
       // const startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_START_POS)) : (SPINE_START_POS + (startProportion*SPINE_START_POS))
-      const startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
+      let startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
 
-      rectBase
-      .attr('width', rectWidth)
-      .attr('height', SPINE_HEIGHT)
-      .attr('x', startPos)
-      .attr('y', innerHeight / 2)
-      .style('fill', '#3f51b5')
-      // .style('stroke', 'black');
+      if(!isWindowView){
+        rectBase
+        .attr('width', rectWidth)
+        .attr('height', SPINE_HEIGHT)
+        .attr('x', startPos)
+        .attr('y', innerHeight / 2)
+        .style('fill', '#3f51b5')
+        // .style('stroke', 'black');
+      }else{
+        if(startPos >= windowStart || startPos <= windowEnd){
+          let newLength = windowEnd - windowStart
+
+          startProportion = ((start_position[i]-windowStart)/newLength)
+          
+          //scaling calculations to adjust coloring outside the spine
+          if(end_position[i] > windowEnd){
+            widthProportion = (windowEnd - start_position[i]) / newLength
+          }else{
+            widthProportion = (end_position[i] - start_position[i]) / newLength
+          }
+          if(startProportion < 0){
+            startProportion = 0;
+            widthProportion = (end_position[i] - windowStart) / newLength
+          }
+
+          rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
+          startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
+
+          rectBase
+          .attr('width', rectWidth)
+          .attr('height', SPINE_HEIGHT)
+          .attr('x', startPos)
+          .attr('y', innerHeight / 2)
+          .style('fill', '#3f51b5');
+        }
+      }
     }
       
   };
@@ -427,14 +459,38 @@ function Visualization(props) {
       let widthProportion = (end_position[i] - start_position[i]) / proteinLength
       let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
       let startProportion = start_position[i]/proteinLength
-      const startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
+      let startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
 
-      rectBase
-      .attr('width', rectWidth)
-      .attr('height', SPINE_HEIGHT)
-      .attr('x', startPos)
-      .attr('y', innerHeight / 2)
-      .style('fill', '#f50057')
+      if(!isWindowView){//regular view with adjustments for the scaling factor
+        rectBase
+        .attr('width', rectWidth)
+        .attr('height', SPINE_HEIGHT)
+        .attr('x', startPos)
+        .attr('y', innerHeight / 2)
+        .style('fill', '#f50057')    
+      }else{//windowView with adjustments based on protein position
+        if(startPos >= windowStart || startPos <= windowEnd){
+          let newLength = windowEnd - windowStart
+          
+          //scaling calculations to adjust coloring outside the spine
+          if(end_position[i] > windowEnd){
+            widthProportion = (windowEnd - start_position[i]) / newLength
+          }else{
+            widthProportion = (end_position[i] - start_position[i]) / newLength
+          }
+
+          rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
+          startProportion = ((start_position[i] - windowStart)/newLength)
+          startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
+
+          rectBase
+          .attr('width', rectWidth)
+          .attr('height', SPINE_HEIGHT)
+          .attr('x', startPos)
+          .attr('y', innerHeight / 2)
+          .style('fill', '#f50057');
+        }
+      }
     }
       
   };
@@ -465,6 +521,14 @@ function Visualization(props) {
       .style('font-weight', 'bold');
   };
 
+  const attachCTerminus = g => {
+    const CTerm = g.append('text');
+    CTerm.attr('dx', SPINE_START_POS + SPINE_WIDTH + 1)
+      .attr('dy', innerHeight / 2 + 20)
+      .text(() => '--COOH')
+      .style('font-weight', 'bold');
+  };
+
   const renderVisualization = (id, isWindowView) => {
     const svg = select(id);
     svg.style('background-color', 'white');
@@ -489,6 +553,7 @@ function Visualization(props) {
     }
     if (!isWindowView) {
       attachNTerminus(g);
+      attachCTerminus(g);
     }
   };
 
