@@ -148,16 +148,16 @@ function Visualization(props) {
       const atom = g.append('text');
 
       atom
-        .attr('dx', scale(el) - 5)
-        .attr('dy', SULFIDE_POS + 5)
+        .attr('dx', scale(el) - 8)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5.5)
         .text(() => `N`)
         .attr('class', 'glyco-labels');
         
 
       const pos = g.append('text');
       pos
-        .attr('dx', scale(el) + 3)
-        .attr('dy', SULFIDE_POS + 7)
+        .attr('dx', scale(el) + 2)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5.0)
         .text(() => `${el}`)
         .attr('class', 'glyco-labels--pos');
         
@@ -509,7 +509,7 @@ function Visualization(props) {
     const NTerm = g.append('text');
     NTerm.attr('dx', SPINE_START_POS - 55)
       .attr('dy', innerHeight / 2 + 20)
-      .text(() => 'NH2--')
+      .text(() => 'NH2 --')
       .style('font-weight', 'bold');
   };
 
@@ -517,7 +517,7 @@ function Visualization(props) {
     const CTerm = g.append('text');
     CTerm.attr('dx', SPINE_START_POS + SPINE_WIDTH + 5)
       .attr('dy', innerHeight / 2 + 20)
-      .text(() => '--COOH')
+      .text(() => '-- COOH')
       .style('font-weight', 'bold');
   };
 
