@@ -400,7 +400,7 @@ function Visualization(props) {
         .attr('height', SPINE_HEIGHT)
         .attr('x', startPos)
         .attr('y', innerHeight / 2)
-        .style('fill', '#3f51b5')
+        .style('fill', '#7B82EE')
         
       }else{
         if(startPos >= windowStart || startPos <= windowEnd){
@@ -427,7 +427,7 @@ function Visualization(props) {
           .attr('height', SPINE_HEIGHT)
           .attr('x', startPos)
           .attr('y', innerHeight / 2)
-          .style('fill', '#3f51b5');
+          .style('fill', '#7B82EE');//#3f51b5
         }
       }
     }
@@ -454,7 +454,7 @@ function Visualization(props) {
         .attr('height', SPINE_HEIGHT)
         .attr('x', startPos)
         .attr('y', innerHeight / 2)
-        .style('fill', '#f50057')    
+        .style('fill', '#FF6088')    
       }else{//windowView with adjustments based on protein position
         if(startPos >= windowStart || startPos <= windowEnd){
           let newLength = windowEnd - windowStart
@@ -480,7 +480,7 @@ function Visualization(props) {
           .attr('height', SPINE_HEIGHT)
           .attr('x', startPos)
           .attr('y', innerHeight / 2)
-          .style('fill', '#f50057');
+          .style('fill', '#FF6088'); //#f50057
         }
       }
     }
@@ -507,7 +507,7 @@ function Visualization(props) {
 
   const attachNTerminus = g => {
     const NTerm = g.append('text');
-    NTerm.attr('dx', SPINE_START_POS - 50)
+    NTerm.attr('dx', SPINE_START_POS - 55)
       .attr('dy', innerHeight / 2 + 20)
       .text(() => 'NH2--')
       .style('font-weight', 'bold');
@@ -515,7 +515,7 @@ function Visualization(props) {
 
   const attachCTerminus = g => {
     const CTerm = g.append('text');
-    CTerm.attr('dx', SPINE_START_POS + SPINE_WIDTH + 1)
+    CTerm.attr('dx', SPINE_START_POS + SPINE_WIDTH + 5)
       .attr('dy', innerHeight / 2 + 20)
       .text(() => '--COOH')
       .style('font-weight', 'bold');

@@ -9,9 +9,20 @@ import {
 } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import PropTypes from 'prop-types';
+// import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 import { makeStyles } from '@material-ui/core/styles';
 import './index.scss';
+
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: '#FF6088',
+//     secondary: '#7B82EE',
+//   },
+// });
+
+// apple: createColor('#FF6088'),
+//     skyBlue: createColor('#7B82EE'),
 
 const useStyles = makeStyles({
   root: {
@@ -135,8 +146,9 @@ function Legend(props) {
           </Typography>
         </div>
         <div className="legend--menuItem">
-          <Button variant='contained' color='primary' style={{ marginRight: '1rem', marginTop: '1rem'}} onClick= {() => handleToggle('outside')}>Outside</Button>
-          <Button variant='contained' color='secondary' style={{marginTop: '1rem'}} onClick= {() => handleToggle('inside')}>Inside</Button>
+
+          <Button variant='outlined' color='primary' style={{ marginRight: '1rem', marginTop: '1rem'}} onClick= {() => handleToggle('outside')}>Outside</Button>
+          <Button variant='outlined' color='secondary' style={{marginTop: '1rem'}} onClick= {() => handleToggle('inside')}>Inside</Button>
         </div>
       </CardContent>
     </Card>
