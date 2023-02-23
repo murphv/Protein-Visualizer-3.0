@@ -1,8 +1,12 @@
 # Read Me
 
+Protein Visualizer 1.0:
 URL : https://ddkpham.github.io/protein-visualizer/
 
-This web application was built to visualize protein glycoslyation sites and sulfide bonds to illustrate patterns in their arrangement.
+Protein Visualizer 2.0:
+URL: https://mdesai31.github.io/Protein-Visualizer-2.0/
+
+This web application was built to visualize protein inside and outside domains (Version 2.0), glycoslyation sites and sulfide bonds (Version 1.0+) to illustrate patterns in their arrangement.
 
 - Select a protein to visualize from the drop down menu located above this card. There are several example proteins for selection.
 
