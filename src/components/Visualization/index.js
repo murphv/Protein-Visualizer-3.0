@@ -54,6 +54,8 @@ function Visualization(props) {
     length: proteinLength,
     outsideDomain,
     insideDomain,
+    sequons,
+    cysteines,
   } = initialOptions[currSelection];
 
   console.log('Visualization -> proteinLength', proteinLength);
@@ -67,6 +69,8 @@ function Visualization(props) {
   const [showDisulfide, setShowDisulfide] = useState(true);
   const [showOutsideDomain, setShowOutisde] = useState(true);
   const [showInsideDomain, setShowInside] = useState(true);
+  const [showSequons, setShowSequons] = useState(true);
+  const [showCysteines, setShowCysteines] = useState(true);
 
   const scaleVisualization = scaleFactor !== 1;
   const scaledWidth = initialWidth * scaleFactor;
@@ -487,6 +491,88 @@ function Visualization(props) {
       
   };
 
+  const attachSequons = (g, isWindowView) => {
+    console.log("Visualization -> attach Free Sequons")
+    let seq = sequons.map(el => parseInt(el, 10));
+    if (isWindowView) {
+      seq = seq.filter(pos => pos >= windowStart && pos <= windowEnd);
+    }
+    const scale = isWindowView ? windowScale : xScale;
+    seq.forEach(el => {
+      const bond = g.append('line');
+        bond
+          .attr('x1', scale(el))
+          .attr('y1', SULFIDE_POS - 20)
+          .attr('x2', scale(el))
+          .attr('y2', SULFIDE_POS - 50)
+          .style('stroke', 'black');
+
+      const label = g.append('text');
+        label
+          .attr('dx', scale(el) - 4)
+          .attr('dy', SULFIDE_POS - 60)
+          .text(() => 'N')
+          .attr('class', 'sulfide-labels');
+
+      const pos = g.append('text');
+      pos
+        .attr('dx', scale(el) + 6)
+        .attr('dy', SULFIDE_POS - 55)
+        .text(() => `${el}`)
+        .attr('class', 'sulfide-labels--pos');
+        
+      const atom = g.append('circle');
+      atom
+        .attr('cx', scale(el))
+        .attr('cy', SULFIDE_POS)
+        .attr('r', CIRCLE_RADIUS - 2)
+        .style('stroke', 'white')
+        .style('fill', 'black');
+        //COLOR_PALLETE[idx % COLOR_PALLETE.length]
+    });
+  }
+
+  const attachCysteines = (g, isWindowView) => {
+    console.log("Visualization -> attach Free Sequons")
+    let cys = cysteines.map(el => parseInt(el, 10));
+    if (isWindowView) {
+      cys = cys.filter(pos => pos >= windowStart && pos <= windowEnd);
+    }
+    const scale = isWindowView ? windowScale : xScale;
+    cys.forEach(el => {
+      const bond = g.append('line');
+        bond
+          .attr('x1', scale(el))
+          .attr('y1', SULFIDE_POS + 20)
+          .attr('x2', scale(el))
+          .attr('y2', SULFIDE_POS + 50)
+          .style('stroke', 'black');
+
+      const label = g.append('text');
+        label
+          .attr('dx', scale(el) - 4)
+          .attr('dy', SULFIDE_POS + 60)
+          .text(() => 'C')
+          .attr('class', 'sulfide-labels');
+
+      const pos = g.append('text');
+      pos
+        .attr('dx', scale(el) + 6)
+        .attr('dy', SULFIDE_POS + 65)
+        .text(() => `${el}`)
+        .attr('class', 'sulfide-labels--pos');
+        
+      const atom = g.append('circle');
+      atom
+        .attr('cx', scale(el))
+        .attr('cy', SULFIDE_POS)
+        .attr('r', CIRCLE_RADIUS - 2)
+        .style('stroke', 'black')
+        .style('fill', 'white');
+        //COLOR_PALLETE[idx % COLOR_PALLETE.length]
+    });
+  }
+
   const attachSpine = (g, isWindowView) => {
     const spineBase = g.append('rect');
     let spineWidth = fullScale ? proteinLength : SPINE_WIDTH;
@@ -537,12 +623,19 @@ function Visualization(props) {
     if(showInsideDomain){
       attachInsideDomain(g, isWindowView);
     }
+    if (showSequons){
+      attachSequons(g, isWindowView);
+    }
+    if (showCysteines){
+      attachCysteines(g, isWindowView);
+    }
     if (showDisulfide) {
       attachSulfides(g, isWindowView);
     }
     if (showGlyco) {
       attachGlycoBonds(g, isWindowView);
     }
+    
     if (!isWindowView) {
       attachNTerminus(g);
       attachCTerminus(g);
@@ -574,6 +667,8 @@ function Visualization(props) {
     svgRef.current,
     showDisulfide,
     showGlyco,
+    showSequons,
+    showCysteines,
     showOutsideDomain,
     showInsideDomain,
     scaleVisualization,
@@ -619,10 +714,14 @@ function Visualization(props) {
         <Legend
           glycoslation={glycoslation}
           disulfideBonds={disulfideBonds}
+          sequons={sequons}
+          cysteines={cysteines}
           toggleGlyco={setShowGlyco}
           toggleSulfide={setShowDisulfide}
           toggleOutside={setShowOutisde}
           toggleInside={setShowInside}
+          toggleSequons={setShowSequons}
+          toggleCysteines={setShowCysteines}
           length={proteinLength}
         />
       ) : null}
