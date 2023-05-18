@@ -147,12 +147,17 @@ function Visualization(props) {
     if (isWindowView) {
       gBonds = gBonds.filter(bond => bond >= windowStart && bond <= windowEnd);
     }
-    const scale = isWindowView ? windowScale : xScale;
+
+    // const scale = isWindowView ? windowScale : xScale;
     gBonds.forEach(el => {
+      let bondProportion = el/proteinLength
+      let windowProportion = (el - windowPos.start)/(windowPos.end - windowPos.start)
+      let bondPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (bondProportion*SPINE_WIDTH))
+
       const atom = g.append('text');
 
       atom
-        .attr('dx', scale(el) - 8)
+        .attr('dx', bondPos - 8)
         .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5.5)
         .text(() => `N`)
         .attr('class', 'glyco-labels');
@@ -160,7 +165,7 @@ function Visualization(props) {
 
       const pos = g.append('text');
       pos
-        .attr('dx', scale(el) + 2)
+        .attr('dx', bondPos + 2)
         .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5.0)
         .text(() => `${el}`)
         .attr('class', 'glyco-labels--pos');
@@ -168,9 +173,9 @@ function Visualization(props) {
 
       const stem = g.append('line');
       stem
-        .attr('x1', scale(el))
+        .attr('x1', bondPos)
         .attr('y1', SULFIDE_POS - 10)
-        .attr('x2', scale(el))
+        .attr('x2', bondPos)
         .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH)
         .style('stroke', 'black');
       
@@ -178,24 +183,24 @@ function Visualization(props) {
       mol1
       .attr('width', 14)
       .attr('height', 14)
-      .attr('x', scale(el) - 7)
+      .attr('x', bondPos - 7)
       .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH)
       .style('fill', 'black')
       .style('stroke', 'black');
 
       const link = g.append('line');
       link
-        .attr('x1', scale(el))
+        .attr('x1', bondPos)
         .attr('y1', SULFIDE_POS - GLYCO_STEM_LENGTH)
-        .attr('x2', scale(el))
+        .attr('x2', bondPos)
         .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 2)
         .style('stroke', 'black');
 
       const link2 = g.append('line');
       link2
-        .attr('x1', scale(el))
+        .attr('x1', bondPos)
         .attr('y1', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 2)
-        .attr('x2', scale(el))
+        .attr('x2', bondPos)
         .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 3.5)
         .style('stroke', 'black');
 
@@ -203,14 +208,14 @@ function Visualization(props) {
       mol2
         .attr('width', 14)
         .attr('height', 14)
-        .attr('x', scale(el) - 7)
+        .attr('x', bondPos - 7)
         .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 2)
         .style('fill', 'grey')
         .style('stroke', 'black');
     
       const mol3 = g.append('circle');
       mol3
-        .attr('cx', scale(el))
+        .attr('cx', bondPos)
         .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 3.5)
         .attr('r', CIRCLE_RADIUS + 3)
         .style('stroke', 'black')
@@ -251,9 +256,13 @@ function Visualization(props) {
       leftBonds.forEach((pair, idx) => {
         const [x, y] = pair.split(' ');
         // attach sulfide
+        let bondProportion = y/proteinLength
+        let windowProportion = (y - windowPos.start)/(windowPos.end - windowPos.start)
+        let bondPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (bondProportion*SPINE_WIDTH))
+        
         const atom = g.append('circle');
         atom
-          .attr('cx', scale(y))
+          .attr('cx', bondPos)
           .attr('cy', SULFIDE_POS)
           .attr('r', CIRCLE_RADIUS)
           .style('stroke', 'white')
@@ -262,22 +271,22 @@ function Visualization(props) {
         // attach stem
         const bond = g.append('line');
         bond
-          .attr('x1', scale(y))
+          .attr('x1', bondPos)
           .attr('y1', SULFIDE_POS + 20)
-          .attr('x2', scale(y))
+          .attr('x2', bondPos)
           .attr('y2', bondHeight(idx))
           .style('stroke', 'black');
 
         const sulfide = g.append('text');
         sulfide
-          .attr('dx', scale(y) - 5)
+          .attr('dx', bondPos - 5)
           .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET)
           .text(() => 'S')
           .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
         pos
-          .attr('dx', scale(y) + 4)
+          .attr('dx', bondPos + 4)
           .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET + 5)
           .text(() => `${y}`)
           .attr('class', 'sulfide-labels--pos');
@@ -286,7 +295,7 @@ function Visualization(props) {
         link
           .attr('x1', WINDOW_SPINE_START_POS)
           .attr('y1', bondHeight(idx))
-          .attr('x2', scale(y))
+          .attr('x2', bondPos)
           .attr('y2', bondHeight(idx))
           .style('stroke', 'black');
       });
@@ -301,9 +310,13 @@ function Visualization(props) {
       rightBonds.forEach((pair, idx) => {
         const [x, y] = pair.split(' ');
         // attach sulfide
+        let bondProportion = x/proteinLength
+        let windowProportion = (x - windowPos.start)/(windowPos.end - windowPos.start)
+        let bondPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (bondProportion*SPINE_WIDTH))
+        
         const atom = g.append('circle');
         atom
-          .attr('cx', scale(x))
+          .attr('cx', bondPos)
           .attr('cy', SULFIDE_POS)
           .attr('r', CIRCLE_RADIUS)
           .style('stroke', 'white')
@@ -312,29 +325,29 @@ function Visualization(props) {
         // attach stem
         const bond = g.append('line');
         bond
-          .attr('x1', scale(x))
+          .attr('x1', bondPos)
           .attr('y1', SULFIDE_POS + 20)
-          .attr('x2', scale(x))
+          .attr('x2', bondPos)
           .attr('y2', bondHeight(idx))
           .style('stroke', 'black');
 
         const sulfide = g.append('text');
         sulfide
-          .attr('dx', scale(x) - 5)
+          .attr('dx', bondPos - 5)
           .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET)
           .text(() => 'S')
           .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
         pos
-          .attr('dx', scale(x) + 4)
+          .attr('dx', bondPos + 4)
           .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET + 5)
           .text(() => `${x}`)
           .attr('class', 'sulfide-labels--pos');
 
         const link = g.append('line');
         link
-          .attr('x1', scale(x))
+          .attr('x1', bondPos)
           .attr('y1', bondHeight(idx))
           .attr('x2', scale(windowEnd))
           .attr('y2', bondHeight(idx))
@@ -497,33 +510,37 @@ function Visualization(props) {
     if (isWindowView) {
       seq = seq.filter(pos => pos >= windowStart && pos <= windowEnd);
     }
-    const scale = isWindowView ? windowScale : xScale;
+    // const scale = isWindowView ? windowScale : xScale;
     seq.forEach(el => {
+      let seqProportion = el/proteinLength
+      let windowProportion = (el - windowPos.start)/(windowPos.end - windowPos.start)
+      let seqPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (seqProportion*SPINE_WIDTH))
+
       const bond = g.append('line');
         bond
-          .attr('x1', scale(el))
+          .attr('x1', seqPos)
           .attr('y1', SULFIDE_POS - 20)
-          .attr('x2', scale(el))
+          .attr('x2', seqPos)
           .attr('y2', SULFIDE_POS - 50)
           .style('stroke', 'black');
 
       const label = g.append('text');
         label
-          .attr('dx', scale(el) - 4)
+          .attr('dx', seqPos - 4)
           .attr('dy', SULFIDE_POS - 60)
           .text(() => 'N')
           .attr('class', 'sulfide-labels');
 
       const pos = g.append('text');
       pos
-        .attr('dx', scale(el) + 6)
+        .attr('dx', seqPos + 6)
         .attr('dy', SULFIDE_POS - 55)
         .text(() => `${el}`)
         .attr('class', 'sulfide-labels--pos');
         
       const atom = g.append('circle');
       atom
-        .attr('cx', scale(el))
+        .attr('cx', seqPos)
         .attr('cy', SULFIDE_POS)
         .attr('r', CIRCLE_RADIUS - 2)
         .style('stroke', 'white')
@@ -538,33 +555,38 @@ function Visualization(props) {
     if (isWindowView) {
       cys = cys.filter(pos => pos >= windowStart && pos <= windowEnd);
     }
-    const scale = isWindowView ? windowScale : xScale;
+    
+    // const scale = isWindowView ? windowScale : xScale;
     cys.forEach(el => {
+      let cysProportion = el/proteinLength
+      let windowProportion = (el - windowPos.start)/(windowPos.end - windowPos.start)
+      let cysPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (cysProportion*SPINE_WIDTH))
+
       const bond = g.append('line');
         bond
-          .attr('x1', scale(el))
+          .attr('x1', cysPos)
           .attr('y1', SULFIDE_POS + 20)
-          .attr('x2', scale(el))
+          .attr('x2', cysPos)
           .attr('y2', SULFIDE_POS + 50)
           .style('stroke', 'black');
 
       const label = g.append('text');
         label
-          .attr('dx', scale(el) - 4)
+          .attr('dx', cysPos - 4)
           .attr('dy', SULFIDE_POS + 60)
           .text(() => 'C')
           .attr('class', 'sulfide-labels');
 
       const pos = g.append('text');
       pos
-        .attr('dx', scale(el) + 6)
+        .attr('dx', cysPos + 6)
         .attr('dy', SULFIDE_POS + 65)
         .text(() => `${el}`)
         .attr('class', 'sulfide-labels--pos');
         
       const atom = g.append('circle');
       atom
-        .attr('cx', scale(el))
+        .attr('cx', cysPos)
         .attr('cy', SULFIDE_POS)
         .attr('r', CIRCLE_RADIUS - 2)
         .style('stroke', 'black')

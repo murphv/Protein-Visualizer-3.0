@@ -10,7 +10,6 @@ async function getData() {
 
 const arrayStrConversion = str => {
   let newStr = str.replace(/'/g, '"');
-  // let finStr = newStr.replace('..', ' '); //remove any .. introduced in the disulfide notation
   const array = JSON.parse(newStr);
   return array;
 };
@@ -50,8 +49,9 @@ const getProteins = async () => {
   let cysConflictEntries = findCysConflictEntries(proteinsData)
   let glycoConflictEntries = findGlycoConflictEntries(proteinsData)
   let dsbConflictEntries = findDSBConflictEntries(proteinsData)
-  let finalConflictEntries = mergeConflictEntries(proteins, sequonConflictEntries, cysConflictEntries, glycoConflictEntries, dsbConflictEntries)
+  let finalConflictEntries = mergeConflictEntries(sequonConflictEntries, cysConflictEntries, glycoConflictEntries, dsbConflictEntries)
   console.log(finalConflictEntries)
+
   return proteinsData;
 };
 
@@ -59,14 +59,16 @@ const getProteins = async () => {
 function fixPosOffset(cysteines){
   let cys = []
   for(let i = 0; i < cysteines.length; i++){
-    // console.log(cysteines[i])
     let c = parseInt(cysteines[i]) + 1
     cys.push(c.toString())
-    // console.log(`cys value: ${cys[i]}`)
   }
   return cys
 }
 
+/* Find free sequons in proteins
+* Define free sequons as sequons that do not have a corresponding
+  glycosylation bond
+*/
 function findFreeSequons(sequons, glycans){
   let freeSequons = []
   for(let i = 0; i < sequons.length; i++){
@@ -83,10 +85,13 @@ function findFreeSequons(sequons, glycans){
   return freeSequons
 }
 
+/* Find free cysteines in proteins
+* Define free cysteines as cysteine positions that do not have a corresponding
+  disulfide bond
+*/
 function findFreeCys(cysteines, sulfides){
   let freeCysteines = []
   for(let i = 0; i < cysteines.length; i++){
-    // console.log(`cys value: ${cysteines[i]}`)
     let isSame = false
     for(let j = 0; j < sulfides.length; j++){
       let sulfide = sulfides[j].split(" ")  
@@ -101,7 +106,11 @@ function findFreeCys(cysteines, sulfides){
   return freeCysteines
 }
 
-function mergeConflictEntries(proteins, seqEntries, cysEntries, glycoEntries, dsbEntries){
+/* 
+Merge all conflict entries without repeats and create a valid JSON obj that 
+can be converted to CSV 
+*/
+function mergeConflictEntries(seqEntries, cysEntries, glycoEntries, dsbEntries){
   let entries = []
   seqEntries.forEach(element => {
     entries.push(element)
@@ -146,30 +155,22 @@ function mergeConflictEntries(proteins, seqEntries, cysEntries, glycoEntries, ds
     }
   })
 
-  let entriesJSON = []
   //convert entries into JSON
+  let entriesJSON = []
   entries.forEach(entry =>{
-    let prot;
-    loop: for(let i = 0; i < proteins.length; i++){
-      if(entry.value == proteins[i].value){
-        prot = proteins[i]
-        break loop
-      }
-    }
-
     let obj = {
       "Entry": entry.value,
       "Entry name": entry.label,
       "Protein names": entry.description,
-      "Disulfide bond": entry.rawDSBdata, //entry.disulfideBonds
+      "Disulfide bond": entry.rawDSBdata,
       "Disulfide bond Conflicts": entry.dsbConflictPos,
       "Glycosylation": entry.rawGLYdata,
       "Glycosylation Conflicts": entry.glycoConflictPos,
       "Length": entry.length,
       "topology": entry.topology,
-      "Cysteine positions": entry.rawCYSdata,//prot['Cysteine positions']
+      "Cysteine positions": entry.rawCYSdata,
       "Cysteine Conflicts": entry.cysConflictPos,
-      "Sequon list": entry.rawSEQdata,//prot['Sequon list']
+      "Sequon list": entry.rawSEQdata,
       "Sequon Conflicts": entry.seqConflictPos
     }
     entriesJSON.push(obj)
@@ -178,6 +179,10 @@ function mergeConflictEntries(proteins, seqEntries, cysEntries, glycoEntries, ds
   return JSON.stringify(entriesJSON)
 }
 
+/* Find conflict entries in sequons for proteins
+* Define conflict entries as sequons that do not fall under an outside domain
+  as defined through the topological sequence 
+*/
 function findSequonConflictEntries(proteins){
   let entries = []
 
@@ -209,6 +214,10 @@ function findSequonConflictEntries(proteins){
   return entries;
 }
 
+/* Find conflict entries in free cysteine residues for proteins
+* Define conflict entries as cysteines that do not fall under an outside domain
+  as defined through the topological sequence 
+*/
 function findCysConflictEntries(proteins){
   let entries = []
 
@@ -240,13 +249,17 @@ function findCysConflictEntries(proteins){
   return entries;
 }
 
+/* Find conflict entries in glycosylation bonds for proteins
+* Define conflict entries as glyco bonds that do not fall under an outside domain
+  as defined through the topological sequence 
+*/
 function findGlycoConflictEntries(proteins){
   let entries = []
 
   proteins.forEach(protein => {
     let start_position = protein.outsideDomain.map(obj => obj.start_pos)
     let end_position = protein.outsideDomain.map(obj => obj.end_pos)
-    let glyco = protein.glycoslation.map(el => parseInt(el, 10));
+    let glyco = protein.glycoslation.map(el => parseInt(el, 10))
     let inODomain = false
     let conflictPos = []
     for(let i = 0; i < glyco.length; i++){
@@ -270,6 +283,10 @@ function findGlycoConflictEntries(proteins){
   return entries;
 }
 
+/* Find conflict entries in disulfide bonds for proteins
+* Define conflict entries in DSBs to be one with either left or right positions
+  that do not fall under an outside domain as defined through the topological sequence 
+*/
 function findDSBConflictEntries(proteins){
   let entries = []
 
@@ -291,12 +308,20 @@ function findDSBConflictEntries(proteins){
     let conflictPos = []
     for(let i = 0; i < bonds.length; i++){
       inODomain = false
+      let isLeftIn = false
+      let isRightIn = false
       for(let j = 0; j < start_position.length; j++){
-        if(bonds[i][0] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb startPos
-          if(bonds[i][1] >= start_position[j] && bonds[i][1] <= end_position[j]){//dsb endPos
-            inODomain = true
-          }
+        if(bonds[i][0] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb leftPos
+          isLeftIn = true 
         }
+      }
+      for(let j = 0; j < start_position.length; j++){
+        if(bonds[i][1] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb rightPos
+          isRightIn = true 
+        }
+      }
+      if(isLeftIn && isRightIn){
+        inODomain = true
       }
       if(protein.disulfideBonds.length != 0 && inODomain == false){
         let str = `${bonds[i]}`
@@ -313,7 +338,10 @@ function findDSBConflictEntries(proteins){
   return entries;
 }
 
-function parseSequence (sequence, length){
+/* 
+Parse the topological sequence into an array thats easily accessible 
+*/
+function parseSequence(sequence, length){
   let newString = ''
   let start, end
   let outside = []
