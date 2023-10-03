@@ -116,7 +116,7 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Total Glyco Bonds:
+            N-Glycan:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {glycoslation.length}
             </Typography>
@@ -135,7 +135,7 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Total Sulfide Bonds:
+            Disulfides:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {disulfideBonds.length}
             </Typography>
@@ -153,7 +153,7 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Total Free Sequons:
+            Free Sequon:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {sequons.length}
             </Typography>
@@ -172,7 +172,7 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Total Free Cysteines:
+            Free Cysteine:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {cysteines.length}
             </Typography>
@@ -191,16 +191,18 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Total Protein Length:
+            Protein Length:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {length}
             </Typography>
           </Typography>
         </div>
-        <div className="legend--menuItem">
-
-          <Button variant='outlined' color='primary' style={{ marginRight: '1rem', marginTop: '1rem'}} onClick= {() => handleToggle('outside')}>Outside</Button>
-          <Button variant='outlined' color='secondary' style={{marginTop: '1rem'}} onClick= {() => handleToggle('inside')}>Inside</Button>
+        <div className="legend--menuItem" style={{alignItems: 'center'}}>  
+          <Typography display="inline" placement="left-end" style={{marginRight: '1rem',marginTop: '0.75rem'}}>
+            Topology:
+          </Typography>
+          <Button placement="right-end" variant='outlined' color='primary' style={{ marginRight: '1rem', marginTop: '1rem'}} onClick= {() => handleToggle('outside')}>Outside</Button>
+          <Button placement="right-end" variant='outlined' color='secondary' style={{marginTop: '1rem'}} onClick= {() => handleToggle('inside')}>Inside</Button>
         </div>
       </CardContent>
     </Card>

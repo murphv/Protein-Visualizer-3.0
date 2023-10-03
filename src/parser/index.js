@@ -1,7 +1,8 @@
 import { csv } from 'd3';
 import { bool, element } from 'prop-types';
-import csvData from './sample proteins_2023_02_26.csv';
-// import csvData from './Formatted N-Glyco_ss_human.csv';
+// import csvData from './sample proteins_2023_02_26.csv';
+// import csvData from './tmhmm_conflict_proteins_deployment_dataset.csv';
+import csvData from './deep_tmhmm_conflict_proteins_deployment_dataset.csv';
 
 async function getData() {
   const data = await csv(csvData);
@@ -23,11 +24,15 @@ const getProteins = async () => {
     protein.label = el['Entry name'];
     protein.description = el['Protein names'];
     protein.rawDSBdata = el['Disulfide bond']
-    protein.disulfideBonds = arrayStrConversion(el['Disulfide bond']);
+    protein.disulfideBonds = arrayStrConversion(el['Disulfide bond'])
     protein.rawGLYdata = el.Glycosylation
     protein.glycoslation = arrayStrConversion(el.Glycosylation);
-    protein.length = parseInt(el.Length, 10);
-    protein.topology = el['topology'];
+    // protein.length = parseInt(el['Length'], 10); // for topology
+    // protein.topology = el['topology'];
+    protein.length = parseInt(el['New_Length'], 10); // for orientation
+    protein.oldLength = parseInt(el['Length'], 10);
+    protein.topology = el['Orientation'];
+    protein.oldTopology = el['topology'];
     
     const domain = parseSequence(protein.topology, protein.length)
     protein.outsideDomain = domain.o
@@ -35,25 +40,116 @@ const getProteins = async () => {
     protein.rawSEQdata = el['Sequon list']
 
     let sequons = arrayStrConversion(el['Sequon list'])
+    protein.totalSequons = sequons
     protein.sequons = findFreeSequons(sequons, protein.glycoslation)
     protein.rawCYSdata = el['Cysteine positions']
     
     let cysteines = arrayStrConversion(el['Cysteine positions'])
+    protein.totalCysteines = cysteines
     cysteines = fixPosOffset(cysteines)
     protein.cysteines = findFreeCys(cysteines, protein.disulfideBonds)
     
     proteinsData.push(protein);
   });
   
+  findInterDSB(proteinsData)
+  findIntraDSB(proteinsData)
+
   let sequonConflictEntries = findSequonConflictEntries(proteinsData)
   let cysConflictEntries = findCysConflictEntries(proteinsData)
   let glycoConflictEntries = findGlycoConflictEntries(proteinsData)
   let dsbConflictEntries = findDSBConflictEntries(proteinsData)
-  let finalConflictEntries = mergeConflictEntries(sequonConflictEntries, cysConflictEntries, glycoConflictEntries, dsbConflictEntries)
+  let finalConflictEntries = mergeConflictEntries(proteinsData, sequonConflictEntries, cysConflictEntries, glycoConflictEntries, dsbConflictEntries)
+  console.log(proteinsData.length)
+  console.log(finalConflictEntries.length)
   console.log(finalConflictEntries)
 
   return proteinsData;
 };
+
+
+function findIntraDSB(proteins){
+  proteins.forEach(protein => {
+    let start_position = protein.outsideDomain.map(obj => obj.start_pos)
+    let end_position = protein.outsideDomain.map(obj => obj.end_pos)
+    
+    let bonds = protein.disulfideBonds.map(pair => {
+      const bondPos = [];
+      const atoms = pair.split(' ');
+      atoms.forEach(el => {
+        const atom = parseInt(el, 10);
+        bondPos.push(atom);
+      });
+      return bondPos;
+    });
+
+    let intraDSB = []
+    let inODomain = false
+    for(let i = 0; i < bonds.length; i++){
+      inODomain = false
+      for(let j = 0; j < start_position.length; j++){
+        if(bonds[i][0] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb leftPos
+          if(bonds[i][1] >= start_position[j] && bonds[i][1] <= end_position[j]){//dsb rightPos
+            inODomain = true 
+          }
+        }
+      }
+      if(inODomain){
+        let str = `${bonds[i]}`
+        intraDSB.push(str)
+      }
+    }
+
+    if(intraDSB.length != 0){
+      protein.intraDSB = JSON.stringify(intraDSB)
+      protein.intraDSBLength = intraDSB.length
+    }
+  })
+}
+
+function findInterDSB(proteins){
+  proteins.forEach(protein => {
+    let start_position = protein.outsideDomain.map(obj => obj.start_pos)
+    let end_position = protein.outsideDomain.map(obj => obj.end_pos)
+    
+    let bonds = protein.disulfideBonds.map(pair => {
+      const bondPos = [];
+      const atoms = pair.split(' ');
+      atoms.forEach(el => {
+        const atom = parseInt(el, 10);
+        bondPos.push(atom);
+      });
+      return bondPos;
+    });
+
+    let interDSB = []
+    for(let i = 0; i < bonds.length; i++){
+      let isLeftIn = false
+      let isRightIn = false
+      let leftPos = 0
+      for(let j = 0; j < start_position.length; j++){
+        if(bonds[i][0] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb leftPos
+          isLeftIn = true
+          leftPos = j 
+        }
+      }
+      for(let j = 0; j < start_position.length; j++){
+        if(j != leftPos && bonds[i][1] >= start_position[j] && bonds[i][1] <= end_position[j]){//dsb rightPos
+          isRightIn = true 
+        }
+      }
+      if(isLeftIn && isRightIn){
+        let str = `${bonds[i]}`
+        interDSB.push(str)
+      }
+    }
+
+    if(interDSB.length != 0){
+      protein.interDSB = JSON.stringify(interDSB)
+      protein.interDSBLength = interDSB.length
+    }
+  })
+}
 
 //special function for cysteines to fix the position (off by 1) issue
 function fixPosOffset(cysteines){
@@ -110,7 +206,7 @@ function findFreeCys(cysteines, sulfides){
 Merge all conflict entries without repeats and create a valid JSON obj that 
 can be converted to CSV 
 */
-function mergeConflictEntries(seqEntries, cysEntries, glycoEntries, dsbEntries){
+function mergeConflictEntries(proteins, seqEntries, cysEntries, glycoEntries, dsbEntries){
   let entries = []
   seqEntries.forEach(element => {
     entries.push(element)
@@ -155,6 +251,31 @@ function mergeConflictEntries(seqEntries, cysEntries, glycoEntries, dsbEntries){
     }
   })
 
+  //append all proteins without conflicts to the dataset
+  // let normal_entries = []
+  proteins.forEach(protein =>{
+    let inEntries = false
+    for(let i = 0; i < entries.length; i++){
+      if(protein == entries[i]){
+        inEntries = true
+      }
+    }
+
+    if(inEntries == false){
+      let prot = protein
+      prot.dsbConflictPos = []
+      prot.dsbConflictLength = 0
+      prot.glycoConflictPos = []
+      prot.glycoConflictLength = 0
+      prot.cysConflictPos = []
+      prot.cysConflictLength = 0
+      prot.seqConflictPos = []
+      prot.seqConflictLength = []
+      entries.push(prot)
+    }
+  })
+  // entries.append(normal_entries)
+
   //convert entries into JSON
   let entriesJSON = []
   entries.forEach(entry =>{
@@ -163,15 +284,33 @@ function mergeConflictEntries(seqEntries, cysEntries, glycoEntries, dsbEntries){
       "Entry name": entry.label,
       "Protein names": entry.description,
       "Disulfide bond": entry.rawDSBdata,
+      "Number of Disulfide Bonds":entry.disulfideBonds.length,
+      "Inter-Disulfide Bonds": entry.interDSB,
+      "Number of Inter-Disulfide Bonds": entry.interDSBLength,
+      "Intra-Disulfide Bonds": entry.intraDSB,
+      "Number of Intra-Disulfide Bonds": entry.intraDSBLength,
       "Disulfide bond Conflicts": entry.dsbConflictPos,
-      "Glycosylation": entry.rawGLYdata,
+      "Number of DSB Conflicts": entry.dsbConflictLength,
+      "Glycosylation Bonds": entry.rawGLYdata,
+      "Number of Glycosylation Bonds": entry.glycoslation.length,
       "Glycosylation Conflicts": entry.glycoConflictPos,
+      "Number of Glyco Conflicts": entry.glycoConflictLength,
+      // "Length": entry.length, //for topology
+      // "topology": entry.topology,
+      "Old Length": entry.oldLength, //for orientation
       "Length": entry.length,
-      "topology": entry.topology,
+      "topology": entry.oldTopology,
+      "Orientation": entry.topology,
       "Cysteine positions": entry.rawCYSdata,
+      "Total Number of Cysteines": entry.totalCysteines.length,
+      "Number of Free Cysteines": entry.cysteines.length,
       "Cysteine Conflicts": entry.cysConflictPos,
+      "Number of Cys Conflicts": entry.cysConflictLength,
       "Sequon list": entry.rawSEQdata,
-      "Sequon Conflicts": entry.seqConflictPos
+      "Total Number of Sequons": entry.totalSequons.length,
+      "Number of Free Sequons": entry.sequons.length,
+      "Sequon Conflicts": entry.seqConflictPos,
+      "Number of Sequon Conflicts": entry.seqConflictLength
     }
     entriesJSON.push(obj)
   })
@@ -192,21 +331,23 @@ function findSequonConflictEntries(proteins){
     let seq = protein.sequons.map(el => parseInt(el, 10));
     let inODomain = false
     let conflictPos = []
-    for(let i = 0; i < seq.length; i++){
-      inODomain = false;
-      for(let j = 0; j < start_position.length; j++){
-        if(seq[i] >= start_position[j] && seq[i] <= end_position[j]){
-          inODomain = true
+    if (protein.topology != 'o' || protein.topology != ' o'){  
+      for(let i = 0; i < seq.length; i++){
+        inODomain = false;
+        for(let j = 0; j < start_position.length; j++){
+          if(seq[i] >= start_position[j] && seq[i] <= end_position[j]){
+            inODomain = true
+          }
+        }
+        if(inODomain == false){
+          let str = `${seq[i]}`
+          conflictPos.push(str)
         }
       }
-      if(inODomain == false){
-        let str = `${seq[i]}`
-        conflictPos.push(str)
-      }
     }
-
     if(conflictPos.length != 0){
       protein.seqConflictPos = JSON.stringify(conflictPos)
+      protein.seqConflictLength = conflictPos.length
       entries.push(protein)
     }
   })
@@ -227,21 +368,23 @@ function findCysConflictEntries(proteins){
     let cys = protein.cysteines.map(el => parseInt(el, 10))
     let inODomain = false
     let conflictPos = []
-    for(let i = 0; i < cys.length; i++){
-      inODomain = false;
-      for(let j = 0; j < start_position.length; j++){
-        if(cys[i] >= start_position[j] && cys[i] <= end_position[j]){
-          inODomain = true
+    if (protein.topology != 'o' || protein.topology != ' o'){
+      for(let i = 0; i < cys.length; i++){
+        inODomain = false;
+        for(let j = 0; j < start_position.length; j++){
+          if(cys[i] >= start_position[j] && cys[i] <= end_position[j]){
+            inODomain = true
+          }
+        }
+        if(inODomain == false){
+          let str = `${cys[i]}`
+          conflictPos.push(str)
         }
       }
-      if(inODomain == false){
-        let str = `${cys[i]}`
-        conflictPos.push(str)
-      }
     }
-
     if(conflictPos.length != 0){
       protein.cysConflictPos = JSON.stringify(conflictPos)
+      protein.cysConflictLength = conflictPos.length
       entries.push(protein)
     }
   })
@@ -262,20 +405,23 @@ function findGlycoConflictEntries(proteins){
     let glyco = protein.glycoslation.map(el => parseInt(el, 10))
     let inODomain = false
     let conflictPos = []
-    for(let i = 0; i < glyco.length; i++){
-      inODomain = false
-      for(let j = 0; j < start_position.length; j++){
-        if(glyco[i] >= start_position[j] && glyco[i] <= end_position[j]){
-          inODomain = true
+    if (protein.topology != 'o' || protein.topology != ' o'){
+      for(let i = 0; i < glyco.length; i++){
+        inODomain = false
+        for(let j = 0; j < start_position.length; j++){
+          if(glyco[i] >= start_position[j] && glyco[i] <= end_position[j]){
+            inODomain = true
+          }
         }
-      }
-      if(inODomain == false){
-        let str = `${glyco[i]}`
-        conflictPos.push(str)
+        if(inODomain == false){
+          let str = `${glyco[i]}`
+          conflictPos.push(str)
+        }
       }
     }
     if(conflictPos.length != 0){
       protein.glycoConflictPos = JSON.stringify(conflictPos)
+      protein.glycoConflictLength = conflictPos.length
       entries.push(protein)
     }
   })
@@ -306,31 +452,35 @@ function findDSBConflictEntries(proteins){
 
     let inODomain = false
     let conflictPos = []
-    for(let i = 0; i < bonds.length; i++){
-      inODomain = false
-      let isLeftIn = false
-      let isRightIn = false
-      for(let j = 0; j < start_position.length; j++){
-        if(bonds[i][0] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb leftPos
-          isLeftIn = true 
+    
+    if (protein.topology != 'o' || protein.topology != ' o'){  
+      for(let i = 0; i < bonds.length; i++){
+        inODomain = false
+        let isLeftIn = false
+        let isRightIn = false
+        for(let j = 0; j < start_position.length; j++){
+          if(bonds[i][0] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb leftPos
+            isLeftIn = true 
+          }
         }
-      }
-      for(let j = 0; j < start_position.length; j++){
-        if(bonds[i][1] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb rightPos
-          isRightIn = true 
+        for(let j = 0; j < start_position.length; j++){
+          if(bonds[i][1] >= start_position[j] && bonds[i][0] <= end_position[j]){//dsb rightPos
+            isRightIn = true 
+          }
         }
-      }
-      if(isLeftIn && isRightIn){
-        inODomain = true
-      }
-      if(protein.disulfideBonds.length != 0 && inODomain == false){
-        let str = `${bonds[i]}`
-        conflictPos.push(str)
+        if(isLeftIn && isRightIn){
+          inODomain = true
+        }
+        if(protein.disulfideBonds.length != 0 && inODomain == false){
+          let str = `${bonds[i]}`
+          conflictPos.push(str)
+        }
       }
     }
 
     if(conflictPos.length != 0){
       protein.dsbConflictPos = JSON.stringify(conflictPos)
+      protein.dsbConflictLength = conflictPos.length
       entries.push(protein)
     }
   })

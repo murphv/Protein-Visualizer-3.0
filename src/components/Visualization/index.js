@@ -165,7 +165,7 @@ function Visualization(props) {
 
       const pos = g.append('text');
       pos
-        .attr('dx', bondPos + 2)
+        .attr('dx', bondPos + 4)
         .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5.0)
         .text(() => `${el}`)
         .attr('class', 'glyco-labels--pos');
@@ -243,7 +243,7 @@ function Visualization(props) {
 
       // attach bonds that arent fully in window
       // 1. Bonds that cut off to the left
-
+      
       const leftBonds = disulfideBonds.filter(b => {
         const [x, y] = b.split(' ');
         const b1 = parseInt(x, 10);
@@ -252,7 +252,7 @@ function Visualization(props) {
       });
 
       console.log('attachSulfides -> leftBonds', leftBonds);
-
+      console.log("Pair Ranking:", pairRanking)
       leftBonds.forEach((pair, idx) => {
         const [x, y] = pair.split(' ');
         // attach sulfide
@@ -274,29 +274,29 @@ function Visualization(props) {
           .attr('x1', bondPos)
           .attr('y1', SULFIDE_POS + 20)
           .attr('x2', bondPos)
-          .attr('y2', bondHeight(idx))
+          .attr('y2', 1.10 * bondHeight(idx))
           .style('stroke', 'black');
 
         const sulfide = g.append('text');
         sulfide
           .attr('dx', bondPos - 5)
-          .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET)
+          .attr('dy', 1.10 *bondHeight(idx) + SULFIDE_ATOM_OFFSET)
           .text(() => 'S')
           .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
         pos
-          .attr('dx', bondPos + 4)
-          .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET + 5)
+          .attr('dx', bondPos + 6)
+          .attr('dy', 1.10 *bondHeight(idx) + SULFIDE_ATOM_OFFSET + 5)
           .text(() => `${y}`)
           .attr('class', 'sulfide-labels--pos');
 
         const link = g.append('line');
         link
           .attr('x1', WINDOW_SPINE_START_POS)
-          .attr('y1', bondHeight(idx))
+          .attr('y1', 1.10 *bondHeight(idx))
           .attr('x2', bondPos)
-          .attr('y2', bondHeight(idx))
+          .attr('y2', 1.10 *bondHeight(idx))
           .style('stroke', 'black');
       });
 
@@ -328,29 +328,29 @@ function Visualization(props) {
           .attr('x1', bondPos)
           .attr('y1', SULFIDE_POS + 20)
           .attr('x2', bondPos)
-          .attr('y2', bondHeight(idx))
+          .attr('y2', 1.10*bondHeight(idx))
           .style('stroke', 'black');
 
         const sulfide = g.append('text');
         sulfide
           .attr('dx', bondPos - 5)
-          .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET)
+          .attr('dy', 1.10*bondHeight(idx) + SULFIDE_ATOM_OFFSET)
           .text(() => 'S')
           .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
         pos
-          .attr('dx', bondPos + 4)
-          .attr('dy', bondHeight(idx) + SULFIDE_ATOM_OFFSET + 5)
+          .attr('dx', bondPos + 7)
+          .attr('dy', 1.10*bondHeight(idx) + SULFIDE_ATOM_OFFSET + 5)
           .text(() => `${x}`)
           .attr('class', 'sulfide-labels--pos');
 
         const link = g.append('line');
         link
           .attr('x1', bondPos)
-          .attr('y1', bondHeight(idx))
+          .attr('y1', 1.10*bondHeight(idx))
           .attr('x2', scale(windowEnd))
-          .attr('y2', bondHeight(idx))
+          .attr('y2', 1.10*bondHeight(idx))
           .style('stroke', 'black');
       });
     }
@@ -405,13 +405,14 @@ function Visualization(props) {
 
     for(let i = 0; i < start_position.length; i++){
       const rectBase = g.append('rect');
-      
-      let widthProportion = (end_position[i] - start_position[i]) / proteinLength
-      let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
+
       let startProportion = start_position[i]/proteinLength
       let startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
-
+      
       if(!isWindowView){
+        let widthProportion = (end_position[i] - start_position[i]) / proteinLength
+        let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
+        
         rectBase
         .attr('width', rectWidth)
         .attr('height', SPINE_HEIGHT)
@@ -422,21 +423,27 @@ function Visualization(props) {
       }else{
         if(startPos >= windowStart || startPos <= windowEnd){
           let newLength = windowEnd - windowStart
+          let startProportion = ((start_position[i]-windowStart)/newLength)
+          let widthProportion = 0
 
-          startProportion = ((start_position[i]-windowStart)/newLength)
-          
           //scaling calculations to adjust coloring outside the spine
           if(end_position[i] > windowEnd){
-            widthProportion = (windowEnd - start_position[i]) / newLength
+            if(startProportion < 0){
+              startProportion = 0;
+              widthProportion = (windowEnd - windowStart) / newLength
+            }else{
+              widthProportion = (windowEnd - start_position[i]) / newLength
+            }
           }else{
-            widthProportion = (end_position[i] - start_position[i]) / newLength
+            if(startProportion < 0){
+              startProportion = 0;
+              widthProportion = (end_position[i] - windowStart) / newLength
+            }else{
+              widthProportion = (end_position[i] - start_position[i]) / newLength
+            }    
           }
-          if(startProportion < 0){
-            startProportion = 0;
-            widthProportion = (end_position[i] - windowStart) / newLength
-          }
-
-          rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
+          
+          let rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
           startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
 
           rectBase
@@ -460,12 +467,13 @@ function Visualization(props) {
     for(let i = 0; i < start_position.length; i++){
       const rectBase = g.append('rect');
       
-      let widthProportion = (end_position[i] - start_position[i]) / proteinLength
-      let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
       let startProportion = start_position[i]/proteinLength
       let startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
 
       if(!isWindowView){//regular view with adjustments for the scaling factor
+        let widthProportion = (end_position[i] - start_position[i]) / proteinLength
+        let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH; 
+         
         rectBase
         .attr('width', rectWidth)
         .attr('height', SPINE_HEIGHT)
@@ -475,21 +483,27 @@ function Visualization(props) {
       }else{//windowView with adjustments based on protein position
         if(startPos >= windowStart || startPos <= windowEnd){
           let newLength = windowEnd - windowStart
+          let startProportion = ((start_position[i]-windowStart)/newLength)
+          let widthProportion = 0
 
-          startProportion = ((start_position[i]-windowStart)/newLength)
-          
           //scaling calculations to adjust coloring outside the spine
           if(end_position[i] > windowEnd){
-            widthProportion = (windowEnd - start_position[i]) / newLength
+            if(startProportion < 0){
+              startProportion = 0;
+              widthProportion = (windowEnd - windowStart) / newLength
+            }else{
+              widthProportion = (windowEnd - start_position[i]) / newLength
+            }
           }else{
-            widthProportion = (end_position[i] - start_position[i]) / newLength
+            if(startProportion < 0){
+              startProportion = 0;
+              widthProportion = (end_position[i] - windowStart) / newLength
+            }else{
+              widthProportion = (end_position[i] - start_position[i]) / newLength
+            }    
           }
-          if(startProportion < 0){
-            startProportion = 0;
-            widthProportion = (end_position[i] - windowStart) / newLength
-          }
-
-          rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
+          
+          let rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
           startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
 
           rectBase
@@ -533,7 +547,7 @@ function Visualization(props) {
 
       const pos = g.append('text');
       pos
-        .attr('dx', seqPos + 6)
+        .attr('dx', seqPos + 8)
         .attr('dy', SULFIDE_POS - 55)
         .text(() => `${el}`)
         .attr('class', 'sulfide-labels--pos');
@@ -579,7 +593,7 @@ function Visualization(props) {
 
       const pos = g.append('text');
       pos
-        .attr('dx', cysPos + 6)
+        .attr('dx', cysPos + 8)
         .attr('dy', SULFIDE_POS + 65)
         .text(() => `${el}`)
         .attr('class', 'sulfide-labels--pos');
