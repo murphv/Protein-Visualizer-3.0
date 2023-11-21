@@ -9,11 +9,14 @@
 
   &--menuItem {
     display: flex;
+    margin-top: -23px;
+    margin-bottom: -23px;
   }
 
   &--header {
     width: max-content;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    margin-top: -15px;
   }
 }
 

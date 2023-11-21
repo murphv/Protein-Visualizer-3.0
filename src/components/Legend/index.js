@@ -197,7 +197,7 @@ function Legend(props) {
             </Typography>
           </Typography>
         </div>
-        <div className="legend--menuItem" style={{alignItems: 'center'}}>  
+        <div className="legend--menuItem" style={{alignItems: 'center', marginTop: '10px', marginBottom:'-17px'}}>  
           <Typography display="inline" placement="left-end" style={{marginRight: '1rem',marginTop: '0.75rem'}}>
             Topology:
           </Typography>

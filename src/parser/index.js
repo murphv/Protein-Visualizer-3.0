@@ -2,7 +2,8 @@ import { csv } from 'd3';
 import { bool, element } from 'prop-types';
 // import csvData from './sample proteins_2023_02_26.csv';
 // import csvData from './tmhmm_conflict_proteins_deployment_dataset.csv';
-import csvData from './deep_tmhmm_conflict_proteins_deployment_dataset.csv';
+// import csvData from './deep_tmhmm_conflict_proteins_deployment_dataset.csv';
+import csvData from './Orientationtopology_Input_dataset_Aug.csv';
 
 async function getData() {
   const data = await csv(csvData);
