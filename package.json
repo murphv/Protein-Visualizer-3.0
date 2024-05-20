@@ -54,5 +54,6 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "gh-pages": "^2.2.0",
     "prettier": "1.19.1"
-  }
+  },
+  "proxy": "http://127.0.0.1:5000"
 }

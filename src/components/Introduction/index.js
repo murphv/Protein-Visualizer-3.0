@@ -32,34 +32,29 @@ function Introduction(props) {
         </CardActionArea>
         <CardContent className="introduction--body">
           <Typography variant="h5" className="introduction--title">
-            Read Me
+            Protein Visualizer
           </Typography>
           <Typography variant="body1">
-            This web application was built to visualize protein glycoslyation
-            sites and sulfide bonds to illustrate patterns in their arrangement.
+            This web application visualizes protein glycoslyation sites, disulfide bonds, sequon sites, 
+            and cysteine sites to illustrate patterns in their arrangement in relation to the protein topology.
           </Typography>
           <ul>
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
-                Select a protein to visualize from the drop down menu located
-                above this card. There are several example proteins for
-                selection.{' '}
+                Search for a human protein to visualize from the Uniprot database or select one of several 
+                example proteins to visualize from the drop down menu located above this card.
               </Typography>
             </li>
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
-                If the current scale of the visualization is not sufficient to
-                identify patterns , on the top right of the app bar is a sliding
-                scale to horizontally expand the protein.
+              If the current scale of the visualization is not sufficient to identify patterns, a sliding scale is provided 
+              on the top right of the app bar to horizontally expand the protein.
               </Typography>
             </li>
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
-                In addition to scaling, there is also a window feature that
-                allows users to target a specific region for visualization. This
-                is particularily useful when scaling alone is not sufficient to
-                seperate patterns. The window feature is located below the
-                original visualization.
+              In addition to the sliding scale, there is a window feature for each protein that allows users to target a specific 
+              region for visualization. This feature is located below the original visualization.
               </Typography>
             </li>
           </ul>

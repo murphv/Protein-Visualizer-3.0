@@ -27,7 +27,17 @@
     background-color: white;
   }
 
+  &-searchbar {
+    margin-top: 15vh;
+    float: left;
+  }
+
   &-dropdown {
     margin-top: 15vh;
+    float: right;
+    margin-left: 5vh;
   }
+}
+#page-wrap  {
+  position: relative;
 }

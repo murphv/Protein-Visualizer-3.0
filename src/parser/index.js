@@ -1,7 +1,4 @@
 import { csv } from 'd3';
-import { bool, element } from 'prop-types';
-// import csvData from './sample proteins_2023_02_26.csv';
-// import csvData from './tmhmm_conflict_proteins_deployment_dataset.csv';
 // import csvData from './deep_tmhmm_conflict_proteins_deployment_dataset.csv';
 import csvData from './Orientationtopology_Input_dataset_Aug.csv';
 
@@ -56,19 +53,20 @@ const getProteins = async () => {
   findInterDSB(proteinsData)
   findIntraDSB(proteinsData)
 
-  let sequonConflictEntries = findSequonConflictEntries(proteinsData)
-  let cysConflictEntries = findCysConflictEntries(proteinsData)
-  let glycoConflictEntries = findGlycoConflictEntries(proteinsData)
-  let dsbConflictEntries = findDSBConflictEntries(proteinsData)
-  let finalConflictEntries = mergeConflictEntries(proteinsData, sequonConflictEntries, cysConflictEntries, glycoConflictEntries, dsbConflictEntries)
-  console.log(proteinsData.length)
-  console.log(finalConflictEntries.length)
-  console.log(finalConflictEntries)
+  // let sequonConflictEntries = findSequonConflictEntries(proteinsData)
+  // let cysConflictEntries = findCysConflictEntries(proteinsData)
+  // let glycoConflictEntries = findGlycoConflictEntries(proteinsData)
+  // let dsbConflictEntries = findDSBConflictEntries(proteinsData)
+  // let finalConflictEntries = mergeConflictEntries(proteinsData, sequonConflictEntries, cysConflictEntries, glycoConflictEntries, dsbConflictEntries)
 
+  console.log(proteinsData[0])
   return proteinsData;
 };
 
-
+/*
+Most of the following functions are related to conflict generation and not essential
+to visualization (except parseSequence)
+*/
 function findIntraDSB(proteins){
   proteins.forEach(protein => {
     let start_position = protein.outsideDomain.map(obj => obj.start_pos)

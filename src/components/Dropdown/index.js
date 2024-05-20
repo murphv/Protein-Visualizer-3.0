@@ -34,7 +34,7 @@ const Dropdown = props => {
       const { value, label } = opt;
       const mItem = (
         <MenuItem value={idx} key={`key${value}`}>
-          {label}
+          {value}
         </MenuItem>
       );
       menuItems.push(mItem);
@@ -47,7 +47,7 @@ const Dropdown = props => {
   return (
     <FormControl variant="outlined" className="drop-down">
       <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
-        Protein Name 
+        Protein Accession Number 
       </InputLabel>
       <Select
         labelId="demo-simple-select-outlined-label"
