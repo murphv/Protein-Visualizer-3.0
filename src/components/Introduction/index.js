@@ -36,14 +36,14 @@ function Introduction(props) {
             Protein Visualizer 2.0
           </Typography>
           <Typography variant="body1">
-            This web application visualizes protein glycoslyation sites, disulfide bonds, sequon sites, 
+            This web application visualizes protein glycosylation sites, disulfide bonds, sequon sites, 
             and cysteine sites to illustrate patterns in their arrangement in relation to the protein topology.
           </Typography>
           <ul className="introduction--ul">
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
                 Search for a human protein to visualize from the Uniprot database or select one of several 
-                example proteins to visualize from the drop down menu located above this card.
+                example proteins with conflicts to visualize from the drop down menu located above this card.
               </Typography>
             </li>
             <li className="introduction--bullet">
@@ -56,6 +56,17 @@ function Introduction(props) {
               <Typography variant="body2" display="inline">
               In addition to the sliding scale, there is a window feature for each protein that allows users to target a specific 
               region for visualization. This feature is located below the original visualization.
+              </Typography>
+            </li>
+            <li className="introduction--bullet">
+              <Typography variant="body2" display="inline">
+              The legend moves with the page as the user scrolls, keeping the information always within reach. Additionally, the 
+              legend and each protein feature can be toggled to enhance viewability. 
+              </Typography>
+            </li>
+            <li className="introduction--bullet">
+              <Typography variant="body2" display="inline">
+              An export image feature is provided, allowing users to capture publication-quality snapshots of the protein and the window. 
               </Typography>
             </li>
           </ul>
