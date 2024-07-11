@@ -14,6 +14,10 @@ This web application visualizes protein glycosylation sites, disulfide bonds, se
 
 - In addition to the sliding scale, there is a window feature for each protein that allows users to target a specific region for visualization. This feature is located below the original visualization.
 
+- The legend moves with the page as the user scrolls, keeping the information always within reach. Additionally, the legend and each protein feature can be toggled to enhance viewability.
+
+- An export image feature is provided, allowing users to capture publication-quality snapshots of the protein and the window.
+
 Please cite the following publication(s) when using the visualizer:
 
 -  Discovery and Visualization of the Hidden Relationships among N-Glycosylation, Disulfide Bonds, and Membrane Topology. International Journal of Molecular Sciences. 2023; 24(22):16182.
