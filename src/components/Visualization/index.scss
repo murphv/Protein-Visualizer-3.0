@@ -20,6 +20,13 @@
 
 .windowSvg--wrapper {
   position: relative;
-  top: -200px;
+  top: -100px;
   z-index: -1000;
+  // display: inl;
+}
+
+.svg-wrapper{
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
 }

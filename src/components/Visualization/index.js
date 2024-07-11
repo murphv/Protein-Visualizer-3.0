@@ -47,7 +47,7 @@ function Visualization(props) {
     fullScale,
     setFullScaleDisabled
   } = props;
-
+ 
   const {
     disulfideBonds,
     glycoslation,
@@ -477,7 +477,8 @@ function Visualization(props) {
       if(!isWindowView){
         let widthProportion = (end_position[i] - start_position[i]) / proteinLength
         let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
-        
+        // console.log("non-window outside domain rect:", rectWidth)
+        // console.log('non window widthProportion:', widthProportion)
         rectBase
         .attr('width', rectWidth)
         .attr('height', SPINE_HEIGHT)
@@ -492,12 +493,13 @@ function Visualization(props) {
           let widthProportion = 0
 
           //scaling calculations to adjust coloring outside the spine
-          if(end_position[i] > windowEnd){
+          if(parseInt(end_position[i]) > parseInt(windowEnd)){
             if(startProportion < 0){
               startProportion = 0;
               widthProportion = (windowEnd - windowStart) / newLength
             }else{
               widthProportion = (windowEnd - start_position[i]) / newLength
+              // console.log(startProportion, end_position[i], windowEnd)
             }
           }else{
             if(startProportion < 0){
@@ -510,7 +512,8 @@ function Visualization(props) {
           
           let rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
           startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
-
+          // console.log("protein window outside domain rect:", rectWidth)
+          // console.log('protein window widthProportion:', widthProportion)
           rectBase
           .attr('width', rectWidth)
           .attr('height', SPINE_HEIGHT)
@@ -552,7 +555,7 @@ function Visualization(props) {
           let widthProportion = 0
 
           //scaling calculations to adjust coloring outside the spine
-          if(end_position[i] > windowEnd){
+          if(parseInt(end_position[i]) > parseInt(windowEnd)){
             if(startProportion < 0){
               startProportion = 0;
               widthProportion = (windowEnd - windowStart) / newLength
@@ -570,7 +573,7 @@ function Visualization(props) {
           
           let rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
           startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
-
+          // console.log("inside domain rect:", rectWidth)
           rectBase
           .attr('width', rectWidth)
           .attr('height', SPINE_HEIGHT)
@@ -758,6 +761,7 @@ function Visualization(props) {
     if (scaleFactor !== 1) {
       document.getElementById('svg').style.marginLeft =
         (scaleFactor - 1) * window.innerWidth;
+      // document.getElementById('svg').scrollIntoView({behavior: "auto", inline: "center"});
     } else if (fullScale) {
       document.getElementById('svg').style.marginLeft = 0;
       // 0.95 * proteinLength + 2 * margin.left;
@@ -780,19 +784,21 @@ function Visualization(props) {
   ]);
 
   const svg = Number.isInteger(currSelection) ? (
-    <svg
-      height={`${height}`}
-      width={`${
-        fullScale
-          ? proteinLength + margin.left * 2
-          : window.innerWidth * scaleFactor
-      }`}
-      ref={svgRef}
-      id="svg"
-      overflow="visible"
-    >
-      <rect />
-    </svg>
+    <div className='svg-wrapper'>
+      <svg
+        height={`${height}`}
+        width={`${
+          fullScale
+            ? proteinLength + margin.left * 2
+            : window.innerWidth * scaleFactor
+        }`}
+        ref={svgRef}
+        id="svg"
+        overflow="visible"
+      >
+        <rect />
+      </svg>
+    </div>
   ) : null;
 
   const windowSvg = Number.isInteger(currSelection) ? (
@@ -810,7 +816,7 @@ function Visualization(props) {
   ) : null;
 
   return (
-    <div className="svg-wrapper">
+    <div>
       {isLegendOpen ? (
         <Legend
           glycoslation={glycoslation}

@@ -13,6 +13,7 @@ import LinearScaleIcon from '@material-ui/icons/LinearScale';
 import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import HomeIcon from '@material-ui/icons/Home';
+import ImageIcon from '@material-ui/icons/Image';
 import Slider from '@material-ui/core/Slider';
 import './index.scss';
 import PropTypes from 'prop-types';
@@ -34,6 +35,7 @@ function CustomAppBar(props) {
     toggleLegend,
     scaleVisualization,
     showHome,
+    captureScreenshot,
     setScaleFactor,
     toggleFullScale,
     disableFullScale,
@@ -95,6 +97,17 @@ function CustomAppBar(props) {
             onClick={showHome}
           >
             <HomeIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Export Image">
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="export"
+            onClick={captureScreenshot}
+          >
+            <ImageIcon />
           </IconButton>
         </Tooltip>
         <Typography variant="h6" className={classes.title}>

@@ -1,6 +1,6 @@
 import { csv } from 'd3';
-// import csvData from './deep_tmhmm_conflict_proteins_deployment_dataset.csv';
-import csvData from './Orientationtopology_Input_dataset_Aug.csv';
+import csvData from './deep_tmhmm_conflict_proteins_deployment_dataset.csv';
+// import csvData from './Orientationtopology_Input_dataset_Aug.csv';
 
 async function getData() {
   const data = await csv(csvData);

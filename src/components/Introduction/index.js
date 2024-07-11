@@ -5,7 +5,8 @@ import {
   CardMedia,
   CardContent,
   CardActionArea,
-  Typography
+  Typography,
+  Link
 } from '@material-ui/core';
 import Logo from '../../static/sunlab.png';
 import './index.scss';
@@ -24,7 +25,7 @@ function Introduction(props) {
           <CardMedia
             component="img"
             alt="lab logo"
-            height="140"
+            // height="120"
             image={Logo}
             className="introduction--logo"
             onClick={redirect}
@@ -32,13 +33,13 @@ function Introduction(props) {
         </CardActionArea>
         <CardContent className="introduction--body">
           <Typography variant="h5" className="introduction--title">
-            Protein Visualizer
+            Protein Visualizer 2.0
           </Typography>
           <Typography variant="body1">
             This web application visualizes protein glycoslyation sites, disulfide bonds, sequon sites, 
             and cysteine sites to illustrate patterns in their arrangement in relation to the protein topology.
           </Typography>
-          <ul>
+          <ul className="introduction--ul">
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
                 Search for a human protein to visualize from the Uniprot database or select one of several 
@@ -58,6 +59,31 @@ function Introduction(props) {
               </Typography>
             </li>
           </ul>
+          <Typography variant="body1">
+            Previous Versions: 
+            <br/>
+              <Link href='https://sfu-sun-lab.github.io/protein-visualizer/'>
+                Protein Visualizer 1.0
+              </Link>
+          </Typography>
+          <br/>
+          <Typography variant="body1">
+          Please cite following publication(s) when using the visualizer:
+          </Typography>
+          <ul className="introduction--ul">
+            <li className="introduction--bullet">
+              <Typography variant="body2" display="inline">
+                <Link href='https://doi.org/10.3390/ijms242216182'>
+                Discovery and Visualization of the Hidden Relationships among N-Glycosylation, Disulfide Bonds, and Membrane Topology.
+                </Link>
+                <br/>
+                International Journal of Molecular Sciences. 2023; 24(22):16182.
+              </Typography>
+            </li>
+          </ul>
+          <Typography variant="body1">
+          For further information, contact Dr. Bingyun Sun: bingyun_sun@sfu.ca
+          </Typography>
         </CardContent>
       </Card>
     </div>
