@@ -26,6 +26,7 @@ function SearchBar(props) {
     props.onSubmit(accessionNum);
   };
 
+  //this function triggers when hit enter on the input bar
   const handleKeyUp = (event) => {
     if (event.key === 'Enter') {
       handleSubmit(event);
