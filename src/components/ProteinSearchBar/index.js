@@ -14,7 +14,7 @@ function SearchBar(props) {
   const handleChange = (event) => {
     event.preventDefault();
 
-    const { name, value } = event.target;
+    const value = event.target.value.toUpperCase();
     setAccessionNum({
       ...accessionNum,
       value
