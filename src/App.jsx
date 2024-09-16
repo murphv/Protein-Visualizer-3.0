@@ -311,7 +311,28 @@ function App() {
 
   const captureFullImage = async () => {
     const htmlStr = document.getElementById("svg").outerHTML;
-    console.log(htmlStr);
+    const svg = document.getElementById("svg");
+    const bbox = svg.getBBox();
+
+    const canvas = document.createElement('canvas');
+    canvas.width = bbox.width;
+    canvas.height = bbox.height;
+
+    const ctx = canvas.getContext('2d');
+    const v = await Canvg.fromString(ctx, htmlStr);
+    await v.render();
+    const base64 = canvas.toDataURL("image/png");
+
+    const a = document.createElement('a');
+    a.setAttribute('download', 'output.png');
+    a.setAttribute('href', base64);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const captureWindowsImage = async () => {
+    const htmlStr = document.getElementById("windowSvg").outerHTML;
     const svg = document.getElementById("svg");
     const bbox = svg.getBBox();
 
@@ -345,6 +366,7 @@ function App() {
           captureFullSVG={captureFullSVG}
           captureWindowSVG={captureWindowSVG}
           captureFullImage={captureFullImage}
+          captureWindowsImage={captureWindowsImage}
           setScaleFactor={updateScaleFactor}
           toggleFullScale={toggleFullScale}
           disableFullScale={fullScaleDisabled}

@@ -39,6 +39,7 @@ function CustomAppBar(props) {
     captureFullSVG,
     captureWindowSVG,
     captureFullImage,
+    captureWindowsImage,
     setScaleFactor,
     toggleFullScale,
     disableFullScale,
@@ -79,6 +80,10 @@ function CustomAppBar(props) {
     handleExportClose();
     captureFullImage();
   };
+  const handleExportWindowImage = (event) => {
+    handleExportClose();
+    captureWindowsImage();
+  }
 
   const valueText = (val) => {
     setScaleFactor(val);
@@ -151,7 +156,7 @@ function CustomAppBar(props) {
             <MenuItem onClick={handleExportFullImage}>
               Export Full Protein as Image
             </MenuItem>
-            <MenuItem onClick={handleExportClose}>
+            <MenuItem onClick={handleExportWindowImage}>
               Export Window Protein as Image
             </MenuItem>
             <MenuItem onClick={handleExportFullSVG}>
