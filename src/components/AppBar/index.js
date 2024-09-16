@@ -18,7 +18,7 @@ import Slider from '@material-ui/core/Slider';
 import './index.scss';
 import PropTypes from 'prop-types';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1
   },
@@ -36,6 +36,9 @@ function CustomAppBar(props) {
     scaleVisualization,
     showHome,
     captureScreenshot,
+    captureFullSVG,
+    captureWindowSVG,
+    captureFullImage,
     setScaleFactor,
     toggleFullScale,
     disableFullScale,
@@ -43,17 +46,41 @@ function CustomAppBar(props) {
   } = props;
   const classes = useStyles();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorSliderEl, setAnchorSliderEl] = useState(null);
+  const [anchorExportEl, setAnchorExportEl] = useState(null);
+  const sliderOpen = Boolean(anchorSliderEl);
+  const exportOpen = Boolean(anchorExportEl);
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleSliderClose = () => {
+    setAnchorSliderEl(null);
   };
-  const handleMenu = event => {
-    setAnchorEl(event.currentTarget);
+  const handleExportClose = () => {
+    setAnchorExportEl(null);
+  };
+  const handleSliderMenu = (event) => {
+    setAnchorSliderEl(event.currentTarget);
+  };
+  const handleExportMenu = (event) => {
+    setAnchorExportEl(event.currentTarget);
+  };
+  const handleExportPDF = (event) => {
+    handleExportClose();
+    captureScreenshot();
+  };
+  const handleExportFullSVG = (event) => {
+    handleExportClose();
+    captureFullSVG();
+  };
+  const handleExportWindowSVG = (event) => {
+    handleExportClose();
+    captureWindowSVG();
+  };
+  const handleExportFullImage = (event) => {
+    handleExportClose();
+    captureFullImage();
   };
 
-  const valueText = val => {
+  const valueText = (val) => {
     setScaleFactor(val);
     return `${val}x`;
   };
@@ -86,7 +113,7 @@ function CustomAppBar(props) {
             disabled={disableFullScale}
           >
             <AspectRatioIcon />
-          </IconButton> 
+          </IconButton>
         </Tooltip>
         <Tooltip title="Home">
           <IconButton
@@ -99,17 +126,42 @@ function CustomAppBar(props) {
             <HomeIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Export Image">
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="export"
-            onClick={captureScreenshot}
+        <div>
+          <Tooltip title="Export Image">
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="export"
+              onClick={handleExportMenu}
+            >
+              <ImageIcon />
+            </IconButton>
+          </Tooltip>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorExportEl}
+            open={exportOpen}
+            onClose={handleExportClose}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button'
+            }}
           >
-            <ImageIcon />
-          </IconButton>
-        </Tooltip>
+            <MenuItem onClick={handleExportPDF}>Export as PDF</MenuItem>
+            <MenuItem onClick={handleExportFullImage}>
+              Export Full Protein as Image
+            </MenuItem>
+            <MenuItem onClick={handleExportClose}>
+              Export Window Protein as Image
+            </MenuItem>
+            <MenuItem onClick={handleExportFullSVG}>
+              Export Full Protein as SVG
+            </MenuItem>
+            <MenuItem onClick={handleExportWindowSVG}>
+              Export Window Protein as SVG
+            </MenuItem>
+          </Menu>
+        </div>
         <Typography variant="h6" className={classes.title}>
           Sun Lab
         </Typography>
@@ -120,8 +172,8 @@ function CustomAppBar(props) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               disabled={fullScale}
-              onClick={evt => {
-                handleMenu(evt);
+              onClick={(evt) => {
+                handleSliderMenu(evt);
                 scaleVisualization();
               }}
               color="inherit"
@@ -131,7 +183,7 @@ function CustomAppBar(props) {
           </Tooltip>
           <Menu
             id="menu-appbar"
-            anchorEl={anchorEl}
+            anchorEl={anchorSliderEl}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'right'
@@ -141,19 +193,19 @@ function CustomAppBar(props) {
               vertical: 'top',
               horizontal: 'right'
             }}
-            open={open}
-            onClose={handleClose}
+            open={sliderOpen}
+            onClose={handleSliderClose}
             classes={{
               paper: 'wide-menu'
             }}
           >
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={handleSliderClose}>
               <Typography id="discrete-slider" gutterBottom>
                 Protein Scaling Factor
               </Typography>
             </MenuItem>
             <MenuItem
-              onClick={handleClose}
+              onClick={handleSliderClose}
               classes={{ root: 'menuItem--large' }}
             >
               <Slider
