@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StylesProvider } from '@material-ui/core';
 import html2canvas from 'html2canvas';
+import {Canvg} from "canvg";
 import { csv } from 'd3';
 import { jsPDF } from 'jspdf';
 import Dropdown from './components/Dropdown';
@@ -278,6 +279,59 @@ function App() {
     });
   };
 
+  const captureFullSVG = () => {
+    const htmlStr = document.getElementById('svg').outerHTML;
+    const blob = new Blob([htmlStr], { type: 'image/svg+xml' });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('download', 'output.svg');
+    a.setAttribute('href', url);
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const captureWindowSVG = () => {
+    const htmlStr = document.getElementById('windowSvg').outerHTML;
+    const blob = new Blob([htmlStr], { type: 'image/svg+xml' });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('download', 'output.svg');
+    a.setAttribute('href', url);
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const captureFullImage = async () => {
+    const htmlStr = document.getElementById("svg").outerHTML;
+    console.log(htmlStr);
+    const svg = document.getElementById("svg");
+    const bbox = svg.getBBox();
+
+    const canvas = document.createElement('canvas');
+    canvas.width = bbox.width;
+    canvas.height = bbox.height;
+
+    const ctx = canvas.getContext('2d');
+    const v = await Canvg.fromString(ctx, htmlStr);
+    await v.render();
+    const base64 = canvas.toDataURL("image/png");
+
+    const a = document.createElement('a');
+    a.setAttribute('download', 'output.png');
+    a.setAttribute('href', base64);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
   const intro = showIntro ? <Introduction /> : null;
 
   return (
@@ -288,6 +342,9 @@ function App() {
           scaleVisualization={toggleScaling}
           showHome={showHome}
           captureScreenshot={captureScreenshot}
+          captureFullSVG={captureFullSVG}
+          captureWindowSVG={captureWindowSVG}
+          captureFullImage={captureFullImage}
           setScaleFactor={updateScaleFactor}
           toggleFullScale={toggleFullScale}
           disableFullScale={fullScaleDisabled}
