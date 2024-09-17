@@ -11,7 +11,7 @@ import Introduction from './components/Introduction';
 import './App.scss';
 import SearchBar from './components/ProteinSearchBar';
 import parser from './parser';
-import csvData from './parser/human_protein_full_list.csv';
+import csvData from './parser/Total_combined_wHuman_results.csv';
 
 const { getProteins } = parser;
 // one-time command to setup and activate the virtual environemnt script: ./venv/Scripts/activate
@@ -194,7 +194,8 @@ function App() {
       const cysteines = extractCysteines(extractDsBonds());
       return {
         value: entry['Name'],
-        description: entry['Protein name'],
+        description: '',
+        species: entry['Species'],
         topology: entry['Orientation'],
         length: entry['Length'],
         outsideDomain: domain[0],
@@ -224,6 +225,7 @@ function App() {
     const data = await response.json();
 
     try {
+      console.log(data);
       const protein = processAPIData(data, topDf, accessionNum);
 
       //check if protein is already in the list
@@ -239,6 +241,7 @@ function App() {
         }
       }
     } catch (error) {
+      console.log(error)
       //catches internal servor errors (most likely from invalid input or if the excel file doesnt contain the number)
       setErrorMessage('Please enter a valid protein accession number');
       updateSel(-1);

@@ -33,7 +33,7 @@ function Introduction(props) {
         </CardActionArea>
         <CardContent className="introduction--body">
           <Typography variant="h5" className="introduction--title">
-            Protein Visualizer 2.0
+            Protein Visualizer 3.0
           </Typography>
           <Typography variant="body1">
             This web application visualizes protein glycosylation sites, disulfide bonds, sequon sites, 
@@ -42,42 +42,52 @@ function Introduction(props) {
           <ul className="introduction--ul">
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
-                Search for a human protein to visualize from the Uniprot database or select one of several 
-                example proteins with conflicts to visualize from the drop down menu located above this card.
+                Search for a protein from ten different species (Human, mouse, yeast, worm, rat, Pyrobaculum, plant,
+                fly, fish and Aeropyrum) to visualize from the Uniprot database or select one of several example
+                proteins with conflicts to visualize from the drop down menu located above this card.
+                Search feature is case-insensitive.
               </Typography>
             </li>
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
-              If the current scale of the visualization is not sufficient to identify patterns, a sliding scale is provided 
-              on the top right of the app bar to horizontally expand the protein.
+                If the current scale of the visualization is not sufficient to identify patterns, a sliding scale is
+                provided
+                on the top right of the app bar to horizontally expand the protein.
               </Typography>
             </li>
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
-              In addition to the sliding scale, there is a window feature for each protein that allows users to target a specific 
-              region for visualization. This feature is located below the original visualization.
+                In addition to the sliding scale, there is a window feature for each protein that allows users to target
+                a specific
+                region for visualization. This feature is located below the original visualization.
               </Typography>
             </li>
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
-              The legend moves with the page as the user scrolls, keeping the information always within reach. Additionally, the 
-              legend and each protein feature can be toggled to enhance viewability. 
+                The legend moves with the page as the user scrolls, keeping the information always within reach.
+                Additionally, the
+                legend and each protein feature can be toggled to enhance viewability.
               </Typography>
             </li>
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
-              An export image feature is provided, allowing users to capture publication-quality snapshots of the protein and the window. 
+                An export image feature is provided, allowing users to capture publication-quality snapshots of the
+                protein and the window. User can choose between export PDF, PNG or SVG
               </Typography>
             </li>
           </ul>
           <Typography variant="body1">
-            Previous Versions: 
-            <br/>
-              <Link href='https://sfu-sun-lab.github.io/protein-visualizer/'>
-                Protein Visualizer 1.0
-              </Link>
+            Previous Versions:
+            <br />
+            <Link href="https://sfu-sun-lab.github.io/protein-visualizer/">
+              Protein Visualizer 1.0
+            </Link>
+            <br />
+            <Link href="https://mdesai31.github.io/Protein-Visualizer-2.0/">
+              Protein Visualizer 2.0
+            </Link>
           </Typography>
-          <br/>
+          <br />
           <Typography variant="body1">
           Please cite following publication(s) when using the visualizer:
           </Typography>
