@@ -12,7 +12,7 @@ const SPINE_HEIGHT = 30;
 
 const { COLOR_PALLETE } = constants;
 
-const calculateBondRanking = array => {
+const calculateBondRanking = (array) => {
   const pairRanking = [];
   array.forEach((pair, idx) => {
     let total = 1;
@@ -21,7 +21,7 @@ const calculateBondRanking = array => {
       if (idx !== i) {
         const [arrLow, arrHigh] = array[i];
         if (currLow < arrLow && currHigh > arrHigh) {
-            total += 1;
+          total += 1;
         }
         if (currLow < arrLow && currHigh > arrLow && currHigh < arrHigh) {
           total += 0.55;
@@ -47,7 +47,7 @@ function Visualization(props) {
     fullScale,
     setFullScaleDisabled
   } = props;
- 
+
   const {
     disulfideBonds,
     glycoslation,
@@ -56,6 +56,7 @@ function Visualization(props) {
     insideDomain,
     sequons,
     cysteines,
+    species
   } = initialOptions[currSelection];
 
   console.log('Visualization -> proteinLength', proteinLength);
@@ -94,21 +95,23 @@ function Visualization(props) {
 
   const WINDOW_SPINE_WIDTH = initialWidth - 2 * margin.left;
 
-  const glycoBonds = initialOptions[currSelection].disulfideBonds.map(pair => {
-    const bondPos = [];
-    const atoms = pair.split(' ');
-    atoms.forEach(el => {
-      const atom = parseInt(el, 10);
-      bondPos.push(atom);
-    });
-    return bondPos;
-  });
+  const glycoBonds = initialOptions[currSelection].disulfideBonds.map(
+    (pair) => {
+      const bondPos = [];
+      const atoms = pair.split(' ');
+      atoms.forEach((el) => {
+        const atom = parseInt(el, 10);
+        bondPos.push(atom);
+      });
+      return bondPos;
+    }
+  );
 
-  const updateWindowStart = newStart => {
+  const updateWindowStart = (newStart) => {
     setWindowPos({ ...windowPos, start: parseInt(newStart, 10) });
   };
 
-  const updateWindowEnd = newEnd => {
+  const updateWindowEnd = (newEnd) => {
     setWindowPos({ ...windowPos, end: parseInt(newEnd, 10) });
   };
 
@@ -118,18 +121,18 @@ function Visualization(props) {
     setFullScaleDisabled(false);
   }
   const pairRanking = calculateBondRanking(glycoBonds);
-  const makePairRankArray = array =>{
-    let arr = []
+  const makePairRankArray = (array) => {
+    let arr = [];
     array.forEach((pair, idx) => {
       let entry = {
         bond: pair,
         index: idx,
         rank: pairRanking[idx]
-      }
-      arr.push(entry)
-    })
+      };
+      arr.push(entry);
+    });
     return arr;
-  }
+  };
   const pairRankArray = makePairRankArray(glycoBonds);
 
   const xScale = scaleLinear()
@@ -150,13 +153,13 @@ function Visualization(props) {
     setWindowView(!windowView);
   };
 
-  const bondHeight = (bond) => {    
-    const [x,y] = bond
-    let rightIdx = 0
+  const bondHeight = (bond) => {
+    const [x, y] = bond;
+    let rightIdx = 0;
     for (let i = 0; i < pairRankArray.length; i += 1) {
-      const [arrX,arrY] = pairRankArray[i].bond
-      if(x==arrX && y==arrY){
-        rightIdx = i
+      const [arrX, arrY] = pairRankArray[i].bond;
+      if (x == arrX && y == arrY) {
+        rightIdx = i;
         break;
       }
     }
@@ -165,16 +168,21 @@ function Visualization(props) {
   };
 
   const attachGlycoBonds = (g, isWindowView) => {
-    let gBonds = glycoslation.map(el => parseInt(el, 10));
+    let gBonds = glycoslation.map((el) => parseInt(el, 10));
     if (isWindowView) {
-      gBonds = gBonds.filter(bond => bond >= windowStart && bond <= windowEnd);
+      gBonds = gBonds.filter(
+        (bond) => bond >= windowStart && bond <= windowEnd
+      );
     }
 
     // const scale = isWindowView ? windowScale : xScale;
-    gBonds.forEach(el => {
-      let bondProportion = el/proteinLength
-      let windowProportion = (el - windowPos.start)/(windowPos.end - windowPos.start)
-      let bondPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (bondProportion*SPINE_WIDTH))
+    gBonds.forEach((el) => {
+      let bondProportion = el / proteinLength;
+      let windowProportion =
+        (el - windowPos.start) / (windowPos.end - windowPos.start);
+      let bondPos = isWindowView
+        ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + bondProportion * SPINE_WIDTH;
 
       const atom = g.append('text');
 
@@ -183,7 +191,6 @@ function Visualization(props) {
         .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5.5)
         .text(() => `N`)
         .attr('class', 'glyco-labels');
-        
 
       const pos = g.append('text');
       pos
@@ -191,7 +198,6 @@ function Visualization(props) {
         .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 5.0)
         .text(() => `${el}`)
         .attr('class', 'glyco-labels--pos');
-        
 
       const stem = g.append('line');
       stem
@@ -200,15 +206,15 @@ function Visualization(props) {
         .attr('x2', bondPos)
         .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH)
         .style('stroke', 'black');
-      
+
       const mol1 = g.append('rect');
       mol1
-      .attr('width', 14)
-      .attr('height', 14)
-      .attr('x', bondPos - 7)
-      .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH)
-      .style('fill', 'black')
-      .style('stroke', 'black');
+        .attr('width', 14)
+        .attr('height', 14)
+        .attr('x', bondPos - 7)
+        .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH)
+        .style('fill', 'black')
+        .style('stroke', 'black');
 
       const link = g.append('line');
       link
@@ -234,7 +240,7 @@ function Visualization(props) {
         .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 2)
         .style('fill', 'grey')
         .style('stroke', 'black');
-    
+
       const mol3 = g.append('circle');
       mol3
         .attr('cx', bondPos)
@@ -246,10 +252,10 @@ function Visualization(props) {
   };
 
   const attachSulfides = (g, isWindowView) => {
-    let bonds = disulfideBonds.map(pair => {
+    let bonds = disulfideBonds.map((pair) => {
       const bondPos = [];
       const atoms = pair.split(' ');
-      atoms.forEach(el => {
+      atoms.forEach((el) => {
         const atom = parseInt(el, 10);
         bondPos.push(atom);
       });
@@ -258,15 +264,15 @@ function Visualization(props) {
 
     const scale = isWindowView ? windowScale : xScale;
     if (isWindowView) {
-      bonds = bonds.filter(bond => {
+      bonds = bonds.filter((bond) => {
         const [x, y] = bond;
         return x >= windowStart && y <= windowEnd;
       });
 
       // attach bonds that arent fully in window
       // 1. Bonds that cut off to the left
-      
-      const leftBonds = disulfideBonds.filter(b => {
+
+      const leftBonds = disulfideBonds.filter((b) => {
         const [x, y] = b.split(' ');
         const b1 = parseInt(x, 10);
         const b2 = parseInt(y, 10);
@@ -274,14 +280,17 @@ function Visualization(props) {
       });
 
       console.log('attachSulfides -> leftBonds', leftBonds);
-     
+
       leftBonds.forEach((pair, idx) => {
         const [x, y] = pair.split(' ');
         // attach sulfide
-        let bondProportion = y/proteinLength
-        let windowProportion = (y - windowPos.start)/(windowPos.end - windowPos.start)
-        let bondPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (bondProportion*SPINE_WIDTH))
-        
+        let bondProportion = y / proteinLength;
+        let windowProportion =
+          (y - windowPos.start) / (windowPos.end - windowPos.start);
+        let bondPos = isWindowView
+          ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+          : SPINE_START_POS + bondProportion * SPINE_WIDTH;
+
         const atom = g.append('circle');
         atom
           .attr('cx', bondPos)
@@ -296,34 +305,33 @@ function Visualization(props) {
           .attr('x1', bondPos)
           .attr('y1', SULFIDE_POS + 20)
           .attr('x2', bondPos)
-          .attr('y2', bondHeight([x,y]))
+          .attr('y2', bondHeight([x, y]))
           .style('stroke', 'black');
 
         const sulfide = g.append('text');
         sulfide
           .attr('dx', bondPos - 5)
-          .attr('dy', bondHeight([x,y]) + SULFIDE_ATOM_OFFSET)
+          .attr('dy', bondHeight([x, y]) + SULFIDE_ATOM_OFFSET)
           .text(() => 'S')
           .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
         pos
           .attr('dx', bondPos + 6)
-          .attr('dy', bondHeight([x,y]) + SULFIDE_ATOM_OFFSET + 5)
+          .attr('dy', bondHeight([x, y]) + SULFIDE_ATOM_OFFSET + 5)
           .text(() => `${y}`)
           .attr('class', 'sulfide-labels--pos');
 
         const link = g.append('line');
         link
           .attr('x1', WINDOW_SPINE_START_POS)
-          .attr('y1', bondHeight([x,y]))
+          .attr('y1', bondHeight([x, y]))
           .attr('x2', bondPos)
-          .attr('y2', bondHeight([x,y]))
+          .attr('y2', bondHeight([x, y]))
           .style('stroke', 'black');
-
       });
 
-      const rightBonds = disulfideBonds.filter(b => {
+      const rightBonds = disulfideBonds.filter((b) => {
         const [x, y] = b.split(' ');
         const b1 = parseInt(x, 10);
         const b2 = parseInt(y, 10);
@@ -333,10 +341,13 @@ function Visualization(props) {
       rightBonds.forEach((pair, idx) => {
         const [x, y] = pair.split(' ');
         // attach sulfide
-        let bondProportion = x/proteinLength
-        let windowProportion = (x - windowPos.start)/(windowPos.end - windowPos.start)
-        let bondPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (bondProportion*SPINE_WIDTH))
-        let scaledWindowEnd = WINDOW_SPINE_WIDTH + 15
+        let bondProportion = x / proteinLength;
+        let windowProportion =
+          (x - windowPos.start) / (windowPos.end - windowPos.start);
+        let bondPos = isWindowView
+          ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+          : SPINE_START_POS + bondProportion * SPINE_WIDTH;
+        let scaledWindowEnd = WINDOW_SPINE_WIDTH + 15;
 
         const atom = g.append('circle');
         atom
@@ -352,45 +363,50 @@ function Visualization(props) {
           .attr('x1', bondPos)
           .attr('y1', SULFIDE_POS + 20)
           .attr('x2', bondPos)
-          .attr('y2', bondHeight([x,y]))
+          .attr('y2', bondHeight([x, y]))
           .style('stroke', 'black');
 
         const sulfide = g.append('text');
         sulfide
           .attr('dx', bondPos - 5)
-          .attr('dy', bondHeight([x,y]) + SULFIDE_ATOM_OFFSET)
+          .attr('dy', bondHeight([x, y]) + SULFIDE_ATOM_OFFSET)
           .text(() => 'S')
           .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
         pos
           .attr('dx', bondPos + 7)
-          .attr('dy', bondHeight([x,y]) + SULFIDE_ATOM_OFFSET + 5)
+          .attr('dy', bondHeight([x, y]) + SULFIDE_ATOM_OFFSET + 5)
           .text(() => `${x}`)
           .attr('class', 'sulfide-labels--pos');
 
         const link = g.append('line');
         link
           .attr('x1', bondPos)
-          .attr('y1', bondHeight([x,y]))
+          .attr('y1', bondHeight([x, y]))
           .attr('x2', scaledWindowEnd)
-          .attr('y2', bondHeight([x,y]))
+          .attr('y2', bondHeight([x, y]))
           .style('stroke', 'black');
-
       });
     }
 
     bonds.forEach((pair, idx) => {
       const [x, y] = pair;
-      let xProportion = x/proteinLength
-      let xWindowProp = (x - windowPos.start)/(windowPos.end - windowPos.start)
-      let xPos = isWindowView ? (WINDOW_SPINE_START_POS + (xWindowProp*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (xProportion*SPINE_WIDTH))
-      
-      let yProportion = y/proteinLength
-      let yWindowProp = (y - windowPos.start)/(windowPos.end - windowPos.start)
-      let yPos = isWindowView ? (WINDOW_SPINE_START_POS + (yWindowProp*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (yProportion*SPINE_WIDTH))
+      let xProportion = x / proteinLength;
+      let xWindowProp =
+        (x - windowPos.start) / (windowPos.end - windowPos.start);
+      let xPos = isWindowView
+        ? WINDOW_SPINE_START_POS + xWindowProp * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + xProportion * SPINE_WIDTH;
 
-      pair.forEach(el => {
+      let yProportion = y / proteinLength;
+      let yWindowProp =
+        (y - windowPos.start) / (windowPos.end - windowPos.start);
+      let yPos = isWindowView
+        ? WINDOW_SPINE_START_POS + yWindowProp * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + yProportion * SPINE_WIDTH;
+
+      pair.forEach((el) => {
         const atom = g.append('circle');
         atom
           .attr('cx', xPos)
@@ -398,7 +414,7 @@ function Visualization(props) {
           .attr('r', CIRCLE_RADIUS)
           .style('stroke', 'white')
           .style('fill', COLOR_PALLETE[idx % COLOR_PALLETE.length]);
-        
+
         const atom2 = g.append('circle');
         atom2
           .attr('cx', yPos)
@@ -414,7 +430,7 @@ function Visualization(props) {
           .attr('x2', xPos)
           .attr('y2', bondHeight(pair))
           .style('stroke', 'black');
-        
+
         const bond2 = g.append('line');
         bond2
           .attr('x1', yPos)
@@ -422,14 +438,14 @@ function Visualization(props) {
           .attr('x2', yPos)
           .attr('y2', bondHeight(pair))
           .style('stroke', 'black');
-        
+
         const sulfide = g.append('text');
         sulfide
           .attr('dx', xPos - 5)
           .attr('dy', bondHeight(pair) + SULFIDE_ATOM_OFFSET)
           .text(() => 'S')
           .attr('class', 'sulfide-labels');
-        
+
         const sulfide2 = g.append('text');
         sulfide2
           .attr('dx', yPos - 5)
@@ -443,7 +459,7 @@ function Visualization(props) {
           .attr('dy', bondHeight(pair) + SULFIDE_ATOM_OFFSET + 5)
           .text(() => `${x}`)
           .attr('class', 'sulfide-labels--pos');
-      
+
         const pos2 = g.append('text');
         pos2
           .attr('dx', yPos + 4)
@@ -458,160 +474,175 @@ function Visualization(props) {
         .attr('x2', yPos)
         .attr('y2', bondHeight(pair))
         .style('stroke', 'black');
-
     });
   };
 
   const attachOutsideDomain = (g, isWindowView) => {
-    let start_position = outsideDomain.map(obj => obj.start_pos);
-    let end_position = outsideDomain.map(obj => obj.end_pos);
+    let start_position = outsideDomain.map((obj) => obj.start_pos);
+    let end_position = outsideDomain.map((obj) => obj.end_pos);
 
-    console.log("Visualization -> attach Outside Domain")
+    console.log('Visualization -> attach Outside Domain');
 
-    for(let i = 0; i < start_position.length; i++){
+    for (let i = 0; i < start_position.length; i++) {
       const rectBase = g.append('rect');
 
-      let startProportion = start_position[i]/proteinLength
-      let startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
-      
-      if(!isWindowView){
-        let widthProportion = (end_position[i] - start_position[i]) / proteinLength
-        let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH;
+      let startProportion = start_position[i] / proteinLength;
+      let startPos = isWindowView
+        ? WINDOW_SPINE_START_POS + startProportion * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + startProportion * SPINE_WIDTH;
+
+      if (!isWindowView) {
+        let widthProportion =
+          (end_position[i] - start_position[i]) / proteinLength;
+        let rectWidth = fullScale
+          ? end_position[i] - start_position[i]
+          : widthProportion * SPINE_WIDTH;
         // console.log("non-window outside domain rect:", rectWidth)
         // console.log('non window widthProportion:', widthProportion)
         rectBase
-        .attr('width', rectWidth)
-        .attr('height', SPINE_HEIGHT)
-        .attr('x', startPos)
-        .attr('y', innerHeight / 2)
-        .style('fill', '#7B82EE')
-        
-      }else{
-        if(startPos >= windowStart || startPos <= windowEnd){
-          let newLength = windowEnd - windowStart
-          let startProportion = ((start_position[i]-windowStart)/newLength)
-          let widthProportion = 0
+          .attr('width', rectWidth)
+          .attr('height', SPINE_HEIGHT)
+          .attr('x', startPos)
+          .attr('y', innerHeight / 2)
+          .style('fill', '#7B82EE');
+      } else {
+        if (startPos >= windowStart || startPos <= windowEnd) {
+          let newLength = windowEnd - windowStart;
+          let startProportion = (start_position[i] - windowStart) / newLength;
+          let widthProportion = 0;
 
           //scaling calculations to adjust coloring outside the spine
-          if(parseInt(end_position[i]) > parseInt(windowEnd)){
-            if(startProportion < 0){
+          if (parseInt(end_position[i]) > parseInt(windowEnd)) {
+            if (startProportion < 0) {
               startProportion = 0;
-              widthProportion = (windowEnd - windowStart) / newLength
-            }else{
-              widthProportion = (windowEnd - start_position[i]) / newLength
+              widthProportion = (windowEnd - windowStart) / newLength;
+            } else {
+              widthProportion = (windowEnd - start_position[i]) / newLength;
               // console.log(startProportion, end_position[i], windowEnd)
             }
-          }else{
-            if(startProportion < 0){
+          } else {
+            if (startProportion < 0) {
               startProportion = 0;
-              widthProportion = (end_position[i] - windowStart) / newLength
-            }else{
-              widthProportion = (end_position[i] - start_position[i]) / newLength
-            }    
+              widthProportion = (end_position[i] - windowStart) / newLength;
+            } else {
+              widthProportion =
+                (end_position[i] - start_position[i]) / newLength;
+            }
           }
-          
-          let rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
-          startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
+
+          let rectWidth = widthProportion * WINDOW_SPINE_WIDTH;
+          startPos =
+            WINDOW_SPINE_START_POS + startProportion * WINDOW_SPINE_WIDTH;
           // console.log("protein window outside domain rect:", rectWidth)
           // console.log('protein window widthProportion:', widthProportion)
           rectBase
-          .attr('width', rectWidth)
-          .attr('height', SPINE_HEIGHT)
-          .attr('x', startPos)
-          .attr('y', innerHeight / 2)
-          .style('fill', '#7B82EE');//#3f51b5
+            .attr('width', rectWidth)
+            .attr('height', SPINE_HEIGHT)
+            .attr('x', startPos)
+            .attr('y', innerHeight / 2)
+            .style('fill', '#7B82EE'); //#3f51b5
         }
       }
     }
-      
   };
 
   const attachInsideDomain = (g, isWindowView) => {
-    let start_position = insideDomain.map(obj => obj.start_pos);
-    let end_position = insideDomain.map(obj => obj.end_pos);
+    let start_position = insideDomain.map((obj) => obj.start_pos);
+    let end_position = insideDomain.map((obj) => obj.end_pos);
 
-    console.log("Visualization -> attach Inside Domain")
+    console.log('Visualization -> attach Inside Domain');
 
-    for(let i = 0; i < start_position.length; i++){
+    for (let i = 0; i < start_position.length; i++) {
       const rectBase = g.append('rect');
-      
-      let startProportion = start_position[i]/proteinLength
-      let startPos = isWindowView ? (WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (startProportion*SPINE_WIDTH))
 
-      if(!isWindowView){//regular view with adjustments for the scaling factor
-        let widthProportion = (end_position[i] - start_position[i]) / proteinLength
-        let rectWidth = fullScale ? (end_position[i] - start_position[i]) : widthProportion*SPINE_WIDTH; 
-         
+      let startProportion = start_position[i] / proteinLength;
+      let startPos = isWindowView
+        ? WINDOW_SPINE_START_POS + startProportion * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + startProportion * SPINE_WIDTH;
+
+      if (!isWindowView) {
+        //regular view with adjustments for the scaling factor
+        let widthProportion =
+          (end_position[i] - start_position[i]) / proteinLength;
+        let rectWidth = fullScale
+          ? end_position[i] - start_position[i]
+          : widthProportion * SPINE_WIDTH;
+
         rectBase
-        .attr('width', rectWidth)
-        .attr('height', SPINE_HEIGHT)
-        .attr('x', startPos)
-        .attr('y', innerHeight / 2)
-        .style('fill', '#FF6088')    
-      }else{//windowView with adjustments based on protein position
-        if(startPos >= windowStart || startPos <= windowEnd){
-          let newLength = windowEnd - windowStart
-          let startProportion = ((start_position[i]-windowStart)/newLength)
-          let widthProportion = 0
-
-          //scaling calculations to adjust coloring outside the spine
-          if(parseInt(end_position[i]) > parseInt(windowEnd)){
-            if(startProportion < 0){
-              startProportion = 0;
-              widthProportion = (windowEnd - windowStart) / newLength
-            }else{
-              widthProportion = (windowEnd - start_position[i]) / newLength
-            }
-          }else{
-            if(startProportion < 0){
-              startProportion = 0;
-              widthProportion = (end_position[i] - windowStart) / newLength
-            }else{
-              widthProportion = (end_position[i] - start_position[i]) / newLength
-            }    
-          }
-          
-          let rectWidth = widthProportion*WINDOW_SPINE_WIDTH;
-          startPos = WINDOW_SPINE_START_POS + (startProportion*WINDOW_SPINE_WIDTH)
-          // console.log("inside domain rect:", rectWidth)
-          rectBase
           .attr('width', rectWidth)
           .attr('height', SPINE_HEIGHT)
           .attr('x', startPos)
           .attr('y', innerHeight / 2)
-          .style('fill', '#FF6088'); //#f50057
+          .style('fill', '#FF6088');
+      } else {
+        //windowView with adjustments based on protein position
+        if (startPos >= windowStart || startPos <= windowEnd) {
+          let newLength = windowEnd - windowStart;
+          let startProportion = (start_position[i] - windowStart) / newLength;
+          let widthProportion = 0;
+
+          //scaling calculations to adjust coloring outside the spine
+          if (parseInt(end_position[i]) > parseInt(windowEnd)) {
+            if (startProportion < 0) {
+              startProportion = 0;
+              widthProportion = (windowEnd - windowStart) / newLength;
+            } else {
+              widthProportion = (windowEnd - start_position[i]) / newLength;
+            }
+          } else {
+            if (startProportion < 0) {
+              startProportion = 0;
+              widthProportion = (end_position[i] - windowStart) / newLength;
+            } else {
+              widthProportion =
+                (end_position[i] - start_position[i]) / newLength;
+            }
+          }
+
+          let rectWidth = widthProportion * WINDOW_SPINE_WIDTH;
+          startPos =
+            WINDOW_SPINE_START_POS + startProportion * WINDOW_SPINE_WIDTH;
+          // console.log("inside domain rect:", rectWidth)
+          rectBase
+            .attr('width', rectWidth)
+            .attr('height', SPINE_HEIGHT)
+            .attr('x', startPos)
+            .attr('y', innerHeight / 2)
+            .style('fill', '#FF6088'); //#f50057
         }
       }
     }
-      
   };
 
   const attachSequons = (g, isWindowView) => {
-    console.log("Visualization -> attach Free Sequons")
-    let seq = sequons.map(el => parseInt(el, 10));
+    console.log('Visualization -> attach Free Sequons');
+    let seq = sequons.map((el) => parseInt(el, 10));
     if (isWindowView) {
-      seq = seq.filter(pos => pos >= windowStart && pos <= windowEnd);
+      seq = seq.filter((pos) => pos >= windowStart && pos <= windowEnd);
     }
     // const scale = isWindowView ? windowScale : xScale;
-    seq.forEach(el => {
-      let seqProportion = el/proteinLength
-      let windowProportion = (el - windowPos.start)/(windowPos.end - windowPos.start)
-      let seqPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (seqProportion*SPINE_WIDTH))
+    seq.forEach((el) => {
+      let seqProportion = el / proteinLength;
+      let windowProportion =
+        (el - windowPos.start) / (windowPos.end - windowPos.start);
+      let seqPos = isWindowView
+        ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + seqProportion * SPINE_WIDTH;
 
       const bond = g.append('line');
-        bond
-          .attr('x1', seqPos)
-          .attr('y1', SULFIDE_POS - 20)
-          .attr('x2', seqPos)
-          .attr('y2', SULFIDE_POS - 50)
-          .style('stroke', 'black');
+      bond
+        .attr('x1', seqPos)
+        .attr('y1', SULFIDE_POS - 20)
+        .attr('x2', seqPos)
+        .attr('y2', SULFIDE_POS - 50)
+        .style('stroke', 'black');
 
       const label = g.append('text');
-        label
-          .attr('dx', seqPos - 4)
-          .attr('dy', SULFIDE_POS - 60)
-          .text(() => 'N')
-          .attr('class', 'sulfide-labels');
+      label
+        .attr('dx', seqPos - 4)
+        .attr('dy', SULFIDE_POS - 60)
+        .text(() => 'N')
+        .attr('class', 'sulfide-labels');
 
       const pos = g.append('text');
       pos
@@ -619,7 +650,7 @@ function Visualization(props) {
         .attr('dy', SULFIDE_POS - 55)
         .text(() => `${el}`)
         .attr('class', 'sulfide-labels--pos');
-        
+
       const atom = g.append('circle');
       atom
         .attr('cx', seqPos)
@@ -627,37 +658,40 @@ function Visualization(props) {
         .attr('r', CIRCLE_RADIUS - 2)
         .style('stroke', 'white')
         .style('fill', 'black');
-        //COLOR_PALLETE[idx % COLOR_PALLETE.length]
+      //COLOR_PALLETE[idx % COLOR_PALLETE.length]
     });
-  }
+  };
 
   const attachCysteines = (g, isWindowView) => {
-    console.log("Visualization -> attach Free Sequons")
-    let cys = cysteines.map(el => parseInt(el, 10));
+    console.log('Visualization -> attach Free Sequons');
+    let cys = cysteines.map((el) => parseInt(el, 10));
     if (isWindowView) {
-      cys = cys.filter(pos => pos >= windowStart && pos <= windowEnd);
+      cys = cys.filter((pos) => pos >= windowStart && pos <= windowEnd);
     }
-    
+
     // const scale = isWindowView ? windowScale : xScale;
-    cys.forEach(el => {
-      let cysProportion = el/proteinLength
-      let windowProportion = (el - windowPos.start)/(windowPos.end - windowPos.start)
-      let cysPos = isWindowView ? (WINDOW_SPINE_START_POS + (windowProportion*WINDOW_SPINE_WIDTH)) : (SPINE_START_POS + (cysProportion*SPINE_WIDTH))
+    cys.forEach((el) => {
+      let cysProportion = el / proteinLength;
+      let windowProportion =
+        (el - windowPos.start) / (windowPos.end - windowPos.start);
+      let cysPos = isWindowView
+        ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + cysProportion * SPINE_WIDTH;
 
       const bond = g.append('line');
-        bond
-          .attr('x1', cysPos)
-          .attr('y1', SULFIDE_POS + 20)
-          .attr('x2', cysPos)
-          .attr('y2', SULFIDE_POS + 50)
-          .style('stroke', 'black');
+      bond
+        .attr('x1', cysPos)
+        .attr('y1', SULFIDE_POS + 20)
+        .attr('x2', cysPos)
+        .attr('y2', SULFIDE_POS + 50)
+        .style('stroke', 'black');
 
       const label = g.append('text');
-        label
-          .attr('dx', cysPos - 4)
-          .attr('dy', SULFIDE_POS + 60)
-          .text(() => 'C')
-          .attr('class', 'sulfide-labels');
+      label
+        .attr('dx', cysPos - 4)
+        .attr('dy', SULFIDE_POS + 60)
+        .text(() => 'C')
+        .attr('class', 'sulfide-labels');
 
       const pos = g.append('text');
       pos
@@ -665,7 +699,7 @@ function Visualization(props) {
         .attr('dy', SULFIDE_POS + 65)
         .text(() => `${el}`)
         .attr('class', 'sulfide-labels--pos');
-        
+
       const atom = g.append('circle');
       atom
         .attr('cx', cysPos)
@@ -673,9 +707,9 @@ function Visualization(props) {
         .attr('r', CIRCLE_RADIUS - 2)
         .style('stroke', 'black')
         .style('fill', 'white');
-        //COLOR_PALLETE[idx % COLOR_PALLETE.length]
+      //COLOR_PALLETE[idx % COLOR_PALLETE.length]
     });
-  }
+  };
 
   const attachSpine = (g, isWindowView) => {
     const spineBase = g.append('rect');
@@ -692,10 +726,9 @@ function Visualization(props) {
       .attr('y', innerHeight / 2)
       .style('fill', 'white')
       .style('stroke', 'black');
-      
   };
 
-  const attachNTerminus = g => {
+  const attachNTerminus = (g) => {
     const NTerm = g.append('text');
     NTerm.attr('dx', SPINE_START_POS - 55)
       .attr('dy', innerHeight / 2 + 20)
@@ -703,7 +736,7 @@ function Visualization(props) {
       .style('font-weight', 'bold');
   };
 
-  const attachCTerminus = g => {
+  const attachCTerminus = (g) => {
     const CTerm = g.append('text');
     CTerm.attr('dx', SPINE_START_POS + SPINE_WIDTH + 5)
       .attr('dy', innerHeight / 2 + 20)
@@ -721,16 +754,16 @@ function Visualization(props) {
     const g = svg.append('g');
     g.attr('transform', `translate(${translateX}, ${translateY})`);
     attachSpine(g, isWindowView);
-    if(showOutsideDomain){
+    if (showOutsideDomain) {
       attachOutsideDomain(g, isWindowView);
     }
-    if(showInsideDomain){
+    if (showInsideDomain) {
       attachInsideDomain(g, isWindowView);
     }
-    if (showSequons){
+    if (showSequons) {
       attachSequons(g, isWindowView);
     }
-    if (showCysteines){
+    if (showCysteines) {
       attachCysteines(g, isWindowView);
     }
     if (showDisulfide) {
@@ -739,7 +772,7 @@ function Visualization(props) {
     if (showGlyco) {
       attachGlycoBonds(g, isWindowView);
     }
-    
+
     if (!isWindowView) {
       attachNTerminus(g);
       attachCTerminus(g);
@@ -748,7 +781,7 @@ function Visualization(props) {
 
   const removeElements = () => {
     const svgEls = ['text', 'line', 'circle', 'rect'];
-    svgEls.forEach(el => {
+    svgEls.forEach((el) => {
       const allNodes = selectAll(el);
       allNodes.remove();
     });
@@ -784,7 +817,7 @@ function Visualization(props) {
   ]);
 
   const svg = Number.isInteger(currSelection) ? (
-    <div className='svg-wrapper'>
+    <div className="svg-wrapper">
       <svg
         height={`${height}`}
         width={`${
@@ -830,6 +863,7 @@ function Visualization(props) {
           toggleSequons={setShowSequons}
           toggleCysteines={setShowCysteines}
           length={proteinLength}
+          species={species}
         />
       ) : null}
       {svg}

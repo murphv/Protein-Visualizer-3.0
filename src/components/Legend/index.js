@@ -55,7 +55,8 @@ const useStyles = makeStyles({
  * @property {func} toggleInsideDomain Function that toggles Inside Domain visibility
  * @property {func} toggleSequons Function that toggles Sequons visibility
  * @property {func} toggleCysteines Function that toggles Cysteines visibility
- * @property {integar} length total length of protein structure
+ * @property {number} length total length of protein structure
+ * @property {string} species the species that the protein belong to
  */
 function Legend(props) {
   const {
@@ -69,7 +70,8 @@ function Legend(props) {
     toggleInside,
     toggleSequons,
     toggleCysteines,
-    length
+    length,
+    species
   } = props;
   const [showGlyco, setShowGlyco] = useState(true);
   const [showSulfide, setShowSulfide] = useState(true);
@@ -114,6 +116,7 @@ function Legend(props) {
             Legend
           </Typography>
         </div>
+
         <div className="legend--menuItem">
           <Typography>
             N-Glycan:
@@ -197,12 +200,24 @@ function Legend(props) {
             </Typography>
           </Typography>
         </div>
-        <div className="legend--menuItem" style={{alignItems: 'center', marginTop: '10px', marginBottom:'-17px'}}>  
-          <Typography display="inline" placement="left-end" style={{marginRight: '1rem',marginTop: '0.75rem'}}>
-            Topology:
+        <div className="legend--menuItem">
+          <Typography>
+            <br />
+            Species:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {species}
+            </Typography>
           </Typography>
-          <Button placement="right-end" variant='outlined' color='primary' style={{ marginRight: '1rem', marginTop: '1rem'}} onClick= {() => handleToggle('outside')}>Outside</Button>
-          <Button placement="right-end" variant='outlined' color='secondary' style={{marginTop: '1rem'}} onClick= {() => handleToggle('inside')}>Inside</Button>
+        </div>
+        <div className="legend--menuItem" style={{ alignItems: 'center', marginTop: '10px', marginBottom: '-17px' }}>
+          <Typography display="inline" placement="left-end" style={{ marginRight: '1rem', marginTop: '0.75rem' }}>
+          Topology:
+          </Typography>
+          <Button placement="right-end" variant="outlined" color="primary"
+                  style={{ marginRight: '1rem', marginTop: '1rem' }}
+                  onClick={() => handleToggle('outside')}>Outside</Button>
+          <Button placement="right-end" variant="outlined" color="secondary" style={{ marginTop: '1rem' }}
+                  onClick={() => handleToggle('inside')}>Inside</Button>
         </div>
       </CardContent>
     </Card>
@@ -220,7 +235,8 @@ Legend.propTypes = {
   toggleInside: PropTypes.func,
   toggleSequons: PropTypes.func,
   toggleCysteines: PropTypes.func,
-  length: PropTypes.number.isRequired
+  length: PropTypes.number.isRequired,
+  species: PropTypes.string.isRequired
 };
 
 Legend.defaultProps = {

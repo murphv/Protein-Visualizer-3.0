@@ -16,12 +16,13 @@ const arrayStrConversion = str => {
 const getProteins = async () => {
   const proteinsData = [];
   const proteins = await getData();
-  proteins.forEach(el => {
+  proteins.forEach((el) => {
     const protein = {};
     protein.value = el['Entry'];
     protein.label = el['Entry name'];
     protein.description = el['Protein names'];
-    protein.rawDSBdata = el['Disulfide bond']
+    protein.species = el['Species'];
+    protein.rawDSBdata = el['Disulfide bond'];
     protein.disulfideBonds = arrayStrConversion(el['Disulfide bond'])
     protein.rawGLYdata = el.Glycosylation
     protein.glycoslation = arrayStrConversion(el.Glycosylation);

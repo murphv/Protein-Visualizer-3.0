@@ -195,6 +195,7 @@ function App() {
       return {
         value: entry['Name'],
         description: '',
+        species: entry['Species'],
         topology: entry['Orientation'],
         length: entry['Length'],
         outsideDomain: domain[0],
