@@ -1,8 +1,8 @@
 {
   "name": "protein-visualizer",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
-  "homepage": "http://MDesai31.github.io/Protein-Visualizer-2.0",
+  "homepage": "http://murphv.github.io/Protein-Visualizer-3.0",
   "dependencies": {
     "@material-ui/core": "^4.8.3",
     "@material-ui/icons": "^4.5.1",
