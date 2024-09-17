@@ -819,6 +819,7 @@ function Visualization(props) {
   const svg = Number.isInteger(currSelection) ? (
     <div className="svg-wrapper">
       <svg
+        style={fullScale ? ({}) : ({marginLeft: (scaleFactor - 1) * window.innerWidth})}
         height={`${height}`}
         width={`${
           fullScale

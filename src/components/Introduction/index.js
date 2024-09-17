@@ -36,11 +36,14 @@ function Introduction(props) {
             Protein Visualizer 3.0
           </Typography>
           <Typography variant="body1">
-            This web application visualizes protein glycosylation sites, disulfide bonds, sequon sites, 
-            and cysteine sites to illustrate patterns in their arrangement in relation to the protein topology.
+            This web application visualizes protein topology (obtained from <a
+            href="https://www.uniprot.org/">DeepTMHMM</a>),
+            glycosylation sites, disulfide bonds, sequon sites, and cysteine
+            sites (obtained from <a href="https://www.uniprot.org/">UniProt</a>) to illustrate patterns
+            in their arrangement in relation to the protein topology.
           </Typography>
           <ul className="introduction--ul">
-            <li className="introduction--bullet">
+          <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
                 Search for a protein from ten different species (Human, mouse, yeast, worm, rat, Pyrobaculum, plant,
                 fly, fish and Aeropyrum) to visualize from the Uniprot database or select one of several example
