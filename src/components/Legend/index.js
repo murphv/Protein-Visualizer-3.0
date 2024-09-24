@@ -48,6 +48,7 @@ const useStyles = makeStyles({
  *
  * @param {Object} props
  * @property {Object} glycoslation object containing glyco bond info
+ * @property {Object} oglycoslation object containing O-glyco bond info
  * @property {Object} disulfideBonds object containing sulfide bond info
  * @property {func} toggleGlyco Function that toggles glyco bond visibility
  * @property {func} toggleSulfide Function that toggles sulfide bond visibility
@@ -61,10 +62,12 @@ const useStyles = makeStyles({
 function Legend(props) {
   const {
     glycoslation,
+    oglycoslation,
     disulfideBonds,
     sequons,
     cysteines,
     toggleGlyco,
+    toggleOGlyco,
     toggleSulfide,
     toggleOutside,
     toggleInside,
@@ -74,6 +77,7 @@ function Legend(props) {
     species
   } = props;
   const [showGlyco, setShowGlyco] = useState(true);
+  const [showOGlyco, setShowOGlyco] = useState(true);
   const [showSulfide, setShowSulfide] = useState(true);
   const [showOutsideDomain, setShowOutside] = useState(true);
   const [showInsideDomain, setShowInside] = useState(true);
@@ -88,7 +92,10 @@ function Legend(props) {
     } else if(element === 'glyco'){
       toggleGlyco(!showGlyco);
       setShowGlyco(!showGlyco);
-    }else if(element === 'outside'){
+    } else if (element === 'oglyco') {
+      toggleOGlyco(!showOGlyco);
+      setShowOGlyco(!showOGlyco);
+    } else if(element === 'outside'){
       toggleOutside(!showOutsideDomain);
       setShowOutside(!showOutsideDomain);
     }else if(element === 'sequons'){
@@ -130,6 +137,25 @@ function Legend(props) {
                 aria-label="delete"
                 className={{ root: 'on' }}
                 onClick={() => handleToggle('glyco')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            O-Glycan:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {oglycoslation.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showOGlyco ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('oglyco')}
               >
                 <VisibilityIcon />
               </IconButton>
@@ -211,7 +237,7 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem" style={{ alignItems: 'center', marginTop: '10px', marginBottom: '-17px' }}>
           <Typography display="inline" placement="left-end" style={{ marginRight: '1rem', marginTop: '0.75rem' }}>
-          Topology:
+            Topology:
           </Typography>
           <Button placement="right-end" variant="outlined" color="primary"
                   style={{ marginRight: '1rem', marginTop: '1rem' }}
@@ -226,9 +252,11 @@ function Legend(props) {
 
 Legend.propTypes = {
   glycoslation: PropTypes.arrayOf(PropTypes.string).isRequired,
+  oglycoslation: PropTypes.arrayOf(PropTypes.string).isRequired,
   disulfideBonds: PropTypes.arrayOf(PropTypes.string).isRequired,
   sequons: PropTypes.arrayOf(PropTypes.string).isRequired,
   cysteines: PropTypes.arrayOf(PropTypes.string).isRequired,
+  toggleOGlyco: PropTypes.func,
   toggleGlyco: PropTypes.func,
   toggleSulfide: PropTypes.func,
   toggleOutside: PropTypes.func,
@@ -241,6 +269,7 @@ Legend.propTypes = {
 
 Legend.defaultProps = {
   toggleGlyco: () => {},
+  toggleOGlyco: () => {},
   toggleSulfide: () => {},
   toggleOutside: () => {},
   toggleInside: () => {},

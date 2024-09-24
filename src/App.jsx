@@ -72,6 +72,22 @@ function App() {
       return [];
     }
 
+    function extractOGlycoBonds() {
+      const filtered = data.features.filter((x) => x.type === 'Glycosylation');
+      const positions = filtered
+        .filter(
+          (x) =>
+            x.description.includes('O-linked') &&
+            !x.description.includes('glycation')
+        )
+        .map((x) => x.location.start);
+      if (positions.length != 0) {
+        const strPos = positions.map((x) => x.value).join(',');
+        return strPos.match(/\d+/g);
+      }
+      return [];
+    }
+
     function extractDsBonds() {
       const filtered = data.features.filter((x) => x.type === 'Disulfide bond');
       const startPositions = filtered.map((x) => x.location.start);
@@ -201,6 +217,7 @@ function App() {
         outsideDomain: domain[0],
         insideDomain: domain[1],
         glycoslation: extractGlycoBonds(),
+        oglycoslation: extractOGlycoBonds(),
         disulfideBonds: extractDsBonds(),
         totalSequons: sequons[0],
         sequons: sequons[1],
