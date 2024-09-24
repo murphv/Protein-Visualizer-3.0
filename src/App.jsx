@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StylesProvider } from '@material-ui/core';
 import html2canvas from 'html2canvas';
-import {Canvg} from "canvg";
+import { Canvg } from 'canvg';
 import { csv } from 'd3';
 import { jsPDF } from 'jspdf';
 import Dropdown from './components/Dropdown';
@@ -258,7 +258,7 @@ function App() {
         }
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       //catches internal servor errors (most likely from invalid input or if the excel file doesnt contain the number)
       setErrorMessage('Please enter a valid protein accession number');
       updateSel(-1);
@@ -299,9 +299,29 @@ function App() {
     });
   };
 
+  const createStyleElementFromCSS = () => {
+    // assume index.html loads only one CSS file in <header></header>
+    const sheet = document.styleSheets[0];
+
+    const styleRules = [];
+    for (let i = 0; i < sheet.cssRules.length; i++)
+      styleRules.push(sheet.cssRules.item(i).cssText);
+
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.appendChild(document.createTextNode(styleRules.join(' ')));
+
+    return style;
+  };
+
   const captureFullSVG = () => {
-    const htmlStr = document.getElementById('svg').outerHTML;
-    const blob = new Blob([htmlStr], { type: 'image/svg+xml' });
+    const htmlStr = document.getElementById('svg');
+    const style = createStyleElementFromCSS();
+    htmlStr.insertBefore(style, htmlStr.firstChild);
+
+    const data = new XMLSerializer().serializeToString(htmlStr);
+    const blob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+    style.remove();
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -315,8 +335,13 @@ function App() {
   };
 
   const captureWindowSVG = () => {
-    const htmlStr = document.getElementById('windowSvg').outerHTML;
-    const blob = new Blob([htmlStr], { type: 'image/svg+xml' });
+    const htmlStr = document.getElementById('svg');
+    const style = createStyleElementFromCSS();
+    htmlStr.insertBefore(style, htmlStr.firstChild);
+
+    const data = new XMLSerializer().serializeToString(htmlStr);
+    const blob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+    style.remove();
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -330,18 +355,23 @@ function App() {
   };
 
   const captureFullImage = async () => {
-    const htmlStr = document.getElementById("svg").outerHTML;
-    const svg = document.getElementById("svg");
+    const svg = document.getElementById('svg');
     const bbox = svg.getBBox();
+
+    const style = createStyleElementFromCSS();
+    svg.insertBefore(style, svg.firstChild);
+
+    const data = new XMLSerializer().serializeToString(svg);
+    style.remove();
 
     const canvas = document.createElement('canvas');
     canvas.width = bbox.width;
     canvas.height = bbox.height;
 
     const ctx = canvas.getContext('2d');
-    const v = await Canvg.fromString(ctx, htmlStr);
+    const v = await Canvg.fromString(ctx, data);
     await v.render();
-    const base64 = canvas.toDataURL("image/png");
+    const base64 = canvas.toDataURL('image/png');
 
     const a = document.createElement('a');
     a.setAttribute('download', 'output.png');
@@ -352,18 +382,23 @@ function App() {
   };
 
   const captureWindowsImage = async () => {
-    const htmlStr = document.getElementById("windowSvg").outerHTML;
-    const svg = document.getElementById("svg");
+    const svg = document.getElementById('svg');
     const bbox = svg.getBBox();
+
+    const style = createStyleElementFromCSS();
+    svg.insertBefore(style, svg.firstChild);
+
+    const data = new XMLSerializer().serializeToString(svg);
+    style.remove();
 
     const canvas = document.createElement('canvas');
     canvas.width = bbox.width;
     canvas.height = bbox.height;
 
     const ctx = canvas.getContext('2d');
-    const v = await Canvg.fromString(ctx, htmlStr);
+    const v = await Canvg.fromString(ctx, data);
     await v.render();
-    const base64 = canvas.toDataURL("image/png");
+    const base64 = canvas.toDataURL('image/png');
 
     const a = document.createElement('a');
     a.setAttribute('download', 'output.png');
