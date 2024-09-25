@@ -51,7 +51,9 @@ function Visualization(props) {
   const {
     disulfideBonds,
     glycoslation,
-    oglycoslation,
+    o_glcnac,
+    o_glc,
+    glycation,
     length: proteinLength,
     outsideDomain,
     insideDomain,
@@ -68,12 +70,17 @@ function Visualization(props) {
   const { start: windowStart, end: windowEnd } = windowPos;
   const [windowView, setWindowView] = useState(false);
   const [showGlyco, setShowGlyco] = useState(true);
-  const [showOGlyco, setShowOGlyco] = useState(true);
+  const [showOGalNAc, setShowOGalNAc] = useState(true);
+  const [showOGlc, setShowOGlc] = useState(true);
+  const [showGlycation, setShowGlycation] = useState(true);
   const [showDisulfide, setShowDisulfide] = useState(true);
   const [showOutsideDomain, setShowOutisde] = useState(true);
   const [showInsideDomain, setShowInside] = useState(true);
   const [showSequons, setShowSequons] = useState(true);
   const [showCysteines, setShowCysteines] = useState(true);
+  const [showFreeS, setShowFreeS] = useState(true);
+  const [showFreeT, setShowFreeT] = useState(true);
+  const [showFreeK, setShowFreeK] = useState(true);
 
   const scaleVisualization = scaleFactor !== 1;
   const scaledWidth = initialWidth * scaleFactor;
@@ -253,8 +260,8 @@ function Visualization(props) {
     });
   };
 
-  const attachOGlycoBonds = (g, isWindowView) => {
-    let oBonds = oglycoslation.map((el) => parseInt(el, 10));
+  const attachOGalNAcBonds = (g, isWindowView) => {
+    let oBonds = o_glcnac.map((el) => parseInt(el, 10));
     if (isWindowView) {
       oBonds = oBonds.filter(
         (bond) => bond >= windowStart && bond <= windowEnd
@@ -272,14 +279,63 @@ function Visualization(props) {
 
       atom
         .attr('dx', bondPos - 8)
-        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 2.0)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.25)
         .text(() => `O`)
         .attr('class', 'glyco-labels');
 
       const pos = g.append('text');
       pos
         .attr('dx', bondPos + 4)
-        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH - GLYCO_LINK_LENGTH * 1.5)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.1)
+        .text(() => `${el}`)
+        .attr('class', 'glyco-labels--pos');
+
+      const stem = g.append('line');
+      stem
+        .attr('x1', bondPos)
+        .attr('y1', SULFIDE_POS - 10)
+        .attr('x2', bondPos)
+        .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH)
+        .style('stroke', 'black');
+
+      const mol = g.append('rect');
+      mol
+        .attr('width', 14)
+        .attr('height', 14)
+        .attr('x', bondPos - 7)
+        .attr('y', SULFIDE_POS - GLYCO_STEM_LENGTH)
+        .style('stroke', 'black')
+        .style('fill', 'yellow');
+    });
+  };
+
+  const attachOGlcBonds = (g, isWindowView) => {
+    let oBonds = o_glc.map((el) => parseInt(el, 10));
+    if (isWindowView) {
+      oBonds = oBonds.filter(
+        (bond) => bond >= windowStart && bond <= windowEnd
+      );
+    }
+    oBonds.forEach((el) => {
+      let bondProportion = el / proteinLength;
+      let windowProportion =
+        (el - windowPos.start) / (windowPos.end - windowPos.start);
+      let bondPos = isWindowView
+        ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + bondProportion * SPINE_WIDTH;
+
+      const atom = g.append('text');
+
+      atom
+        .attr('dx', bondPos - 8)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.25)
+        .text(() => `O`)
+        .attr('class', 'glyco-labels');
+
+      const pos = g.append('text');
+      pos
+        .attr('dx', bondPos + 4)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.1)
         .text(() => `${el}`)
         .attr('class', 'glyco-labels--pos');
 
@@ -294,10 +350,58 @@ function Visualization(props) {
       const mol = g.append('circle');
       mol
         .attr('cx', bondPos)
-        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH)
+        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH + CIRCLE_RADIUS)
         .attr('r', CIRCLE_RADIUS + 3)
         .style('stroke', 'black')
-        .style('fill', 'yellow');
+        .style('fill', 'blue');
+    });
+  };
+
+  const attachGlycationBonds = (g, isWindowView) => {
+    let nBonds = glycation.map((el) => parseInt(el, 10));
+    if (isWindowView) {
+      nBonds = nBonds.filter(
+        (bond) => bond >= windowStart && bond <= windowEnd
+      );
+    }
+    nBonds.forEach((el) => {
+      let bondProportion = el / proteinLength;
+      let windowProportion =
+        (el - windowPos.start) / (windowPos.end - windowPos.start);
+      let bondPos = isWindowView
+        ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + bondProportion * SPINE_WIDTH;
+
+      const atom = g.append('text');
+
+      atom
+        .attr('dx', bondPos - 8)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.25)
+        .text(() => `N`)
+        .attr('class', 'glyco-labels');
+
+      const pos = g.append('text');
+      pos
+        .attr('dx', bondPos + 4)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.1)
+        .text(() => `${el}`)
+        .attr('class', 'glyco-labels--pos');
+
+      const stem = g.append('line');
+      stem
+        .attr('x1', bondPos)
+        .attr('y1', SULFIDE_POS - 10)
+        .attr('x2', bondPos)
+        .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH)
+        .style('stroke', 'black');
+
+      const mol = g.append('circle');
+      mol
+        .attr('cx', bondPos)
+        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH + CIRCLE_RADIUS)
+        .attr('r', CIRCLE_RADIUS + 3)
+        .style('stroke', 'black')
+        .style('fill', 'blue');
     });
   };
 
@@ -822,8 +926,14 @@ function Visualization(props) {
     if (showGlyco) {
       attachGlycoBonds(g, isWindowView);
     }
-    if (showOGlyco) {
-      attachOGlycoBonds(g, isWindowView);
+    if (showOGalNAc) {
+      attachOGalNAcBonds(g, isWindowView);
+    }
+    if (showOGlc) {
+      attachOGlcBonds(g, isWindowView);
+    }
+    if (showGlycation) {
+      attachGlycationBonds(g, isWindowView);
     }
 
     if (!isWindowView) {
@@ -858,7 +968,9 @@ function Visualization(props) {
     svgRef.current,
     showDisulfide,
     showGlyco,
-    showOGlyco,
+    showOGalNAc,
+    showOGlc,
+    showGlycation,
     showSequons,
     showCysteines,
     showOutsideDomain,
@@ -908,12 +1020,16 @@ function Visualization(props) {
       {isLegendOpen ? (
         <Legend
           glycoslation={glycoslation}
-          oglycoslation={oglycoslation}
+          o_glcnac={o_glcnac}
+          o_glc={o_glc}
+          glycation={glycation}
           disulfideBonds={disulfideBonds}
           sequons={sequons}
           cysteines={cysteines}
           toggleGlyco={setShowGlyco}
-          toggleOGlyco={setShowOGlyco}
+          toggleOGalNAc={setShowOGalNAc}
+          toggleOGlc={setShowOGlc}
+          toggleGlycation={setShowGlycation}
           toggleSulfide={setShowDisulfide}
           toggleOutside={setShowOutisde}
           toggleInside={setShowInside}

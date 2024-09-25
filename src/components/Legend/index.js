@@ -48,9 +48,14 @@ const useStyles = makeStyles({
  *
  * @param {Object} props
  * @property {Object} glycoslation object containing glyco bond info
- * @property {Object} oglycoslation object containing O-glyco bond info
+ * @property {Object} o_glcnac object containing O-GalNAc bond info
+ * @property {Object} o_glc object containing O-Glc bond info
+ * @property {Object} glycation object containing N-linked Glycation bond info
  * @property {Object} disulfideBonds object containing sulfide bond info
  * @property {func} toggleGlyco Function that toggles glyco bond visibility
+ * @property {func} toggleOGalNAc Function that toggles O-GalNAc bond visibility
+ * @property {func} toggleOGlc Function that toggles O-Glc bond visibility
+ * @property {func} toggleGlycation Function that toggles N-linked Glycation bond visibility
  * @property {func} toggleSulfide Function that toggles sulfide bond visibility
  * @property {func} toggleOutsideDomain Function that toggles Outside Domain visibility
  * @property {func} toggleInsideDomain Function that toggles Inside Domain visibility
@@ -62,12 +67,16 @@ const useStyles = makeStyles({
 function Legend(props) {
   const {
     glycoslation,
-    oglycoslation,
+    o_glcnac,
+    o_glc,
+    glycation,
     disulfideBonds,
     sequons,
     cysteines,
     toggleGlyco,
-    toggleOGlyco,
+    toggleOGalNAc,
+    toggleOGlc,
+    toggleGlycation,
     toggleSulfide,
     toggleOutside,
     toggleInside,
@@ -77,7 +86,9 @@ function Legend(props) {
     species
   } = props;
   const [showGlyco, setShowGlyco] = useState(true);
-  const [showOGlyco, setShowOGlyco] = useState(true);
+  const [showOGalNAc, setShowOGalNAc] = useState(true);
+  const [showOGlc, setShowOGlc] = useState(true);
+  const [showGlycation, setShowGlycation] = useState(true);
   const [showSulfide, setShowSulfide] = useState(true);
   const [showOutsideDomain, setShowOutside] = useState(true);
   const [showInsideDomain, setShowInside] = useState(true);
@@ -92,9 +103,15 @@ function Legend(props) {
     } else if(element === 'glyco'){
       toggleGlyco(!showGlyco);
       setShowGlyco(!showGlyco);
-    } else if (element === 'oglyco') {
-      toggleOGlyco(!showOGlyco);
-      setShowOGlyco(!showOGlyco);
+    } else if (element === 'o_glcnac') {
+      toggleOGalNAc(!showOGalNAc);
+      setShowOGalNAc(!showOGalNAc);
+    } else if (element === 'o_glc') {
+      toggleOGlc(!showOGlc);
+      setShowOGlc(!showOGlc);
+    } else if (glycation === 'glycation') {
+      toggleGlycation(!showGlycation);
+      setShowGlycation(!showGlycation);
     } else if(element === 'outside'){
       toggleOutside(!showOutsideDomain);
       setShowOutside(!showOutsideDomain);
@@ -145,17 +162,55 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            O-Glycan:
+            O-GalNAc:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {oglycoslation.length}
+              {o_glcnac.length}
             </Typography>
           </Typography>
-          <div className={`button-visibility${showOGlyco ? '--on' : '--off'}`}>
+          <div className={`button-visibility${showOGalNAc ? '--on' : '--off'}`}>
             <Tooltip title="toggle visibility" placement="right-end">
               <IconButton
                 aria-label="delete"
                 className={{ root: 'on' }}
-                onClick={() => handleToggle('oglyco')}
+                onClick={() => handleToggle('o_glcnac')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            O-Glc:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {o_glc.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showOGlc ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('o_glc')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Glycation:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {glycation.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showGlycation ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('glycation')}
               >
                 <VisibilityIcon />
               </IconButton>
@@ -252,12 +307,16 @@ function Legend(props) {
 
 Legend.propTypes = {
   glycoslation: PropTypes.arrayOf(PropTypes.string).isRequired,
-  oglycoslation: PropTypes.arrayOf(PropTypes.string).isRequired,
+  o_glcnac: PropTypes.arrayOf(PropTypes.string).isRequired,
+  o_glc: PropTypes.arrayOf(PropTypes.string).isRequired,
+  glycation: PropTypes.arrayOf(PropTypes.string).isRequired,
   disulfideBonds: PropTypes.arrayOf(PropTypes.string).isRequired,
   sequons: PropTypes.arrayOf(PropTypes.string).isRequired,
   cysteines: PropTypes.arrayOf(PropTypes.string).isRequired,
-  toggleOGlyco: PropTypes.func,
+  toggleOGalNAc: PropTypes.func,
   toggleGlyco: PropTypes.func,
+  toggleOGlc: PropTypes.func,
+  toggleGlycation: PropTypes.func,
   toggleSulfide: PropTypes.func,
   toggleOutside: PropTypes.func,
   toggleInside: PropTypes.func,
@@ -269,7 +328,9 @@ Legend.propTypes = {
 
 Legend.defaultProps = {
   toggleGlyco: () => {},
-  toggleOGlyco: () => {},
+  toggleOGalNAc: () => {},
+  toggleOGlc: () => {},
+  toggleGlycation: () => {},
   toggleSulfide: () => {},
   toggleOutside: () => {},
   toggleInside: () => {},

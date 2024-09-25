@@ -72,13 +72,48 @@ function App() {
       return [];
     }
 
-    function extractOGlycoBonds() {
+    function extractOGalNAc() {
       const filtered = data.features.filter((x) => x.type === 'Glycosylation');
       const positions = filtered
         .filter(
           (x) =>
             x.description.includes('O-linked') &&
-            !x.description.includes('glycation')
+            x.description.includes('GalNAc') &&
+            !x.description.includes('Glc')
+        )
+        .map((x) => x.location.start);
+      if (positions.length != 0) {
+        const strPos = positions.map((x) => x.value).join(',');
+        return strPos.match(/\d+/g);
+      }
+      return [];
+    }
+
+    function extractOGlc() {
+      const filtered = data.features.filter((x) => x.type === 'Glycosylation');
+      const positions = filtered
+        .filter(
+          (x) =>
+            x.description.includes('O-linked') &&
+            x.description.includes('Glc') &&
+            !x.description.includes('GalNAc')
+        )
+        .map((x) => x.location.start);
+      if (positions.length != 0) {
+        const strPos = positions.map((x) => x.value).join(',');
+        return strPos.match(/\d+/g);
+      }
+      return [];
+    }
+
+    function extractGlycation() {
+      const filtered = data.features.filter((x) => x.type === 'Glycosylation');
+      const positions = filtered
+        .filter(
+          (x) =>
+            x.description.includes('N-linked') &&
+            x.description.includes('Glc') &&
+            x.description.includes('glycation')
         )
         .map((x) => x.location.start);
       if (positions.length != 0) {
@@ -217,15 +252,16 @@ function App() {
         outsideDomain: domain[0],
         insideDomain: domain[1],
         glycoslation: extractGlycoBonds(),
-        oglycoslation: extractOGlycoBonds(),
+        o_glcnac: extractOGalNAc(),
+        o_glc: extractOGlc(),
+        glycation: extractGlycation(),
         disulfideBonds: extractDsBonds(),
         totalSequons: sequons[0],
         sequons: sequons[1],
         totalCysteines: cysteines[0],
-        cysteines: cysteines[1]
+        cysteines: cysteines[1],
       };
     }
-    console.log(getProteinInfo());
     return getProteinInfo();
   }
 
