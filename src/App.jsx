@@ -154,6 +154,18 @@ function App() {
       return [totalCys, freeCys];
     }
 
+    function extractFreeAnimo(aminoAcid, coveredGlycan) {
+      const sequence = data.sequence.value;
+      let re = new RegExp(String.raw`${aminoAcid}`, 'g');
+      const seqPos = [...sequence.matchAll(re)].map((match) => match.index + 1);
+      const totalAmAcid = seqPos.map((x) => x.toString());
+
+      const freeAmAcid = totalAmAcid.filter(
+        (pos) => !coveredGlycan.includes(pos)
+      );
+      return [totalAmAcid, freeAmAcid];
+    }
+
     function extractSequons(glycoBonds) {
       const sequence = data.sequence.value;
       const nxtPos = [...sequence.matchAll(/N[A-Z]T/g)].map(
@@ -243,6 +255,9 @@ function App() {
       const domain = parseSequence(entry['Orientation'], entry['Length']);
       const sequons = extractSequons(extractGlycoBonds());
       const cysteines = extractCysteines(extractDsBonds());
+      const serines = extractFreeAnimo('C', extractOGalNAc());
+      const threonines = extractFreeAnimo('T', extractOGlc());
+      const lysines = extractFreeAnimo('K', extractGlycation());
       return {
         value: entry['Name'],
         description: '',
@@ -260,6 +275,12 @@ function App() {
         sequons: sequons[1],
         totalCysteines: cysteines[0],
         cysteines: cysteines[1],
+        totalS: serines[0],
+        freeS: serines[1],
+        totalT: threonines[0],
+        freeT: threonines[1],
+        totalK: lysines[0],
+        freeK: lysines[1]
       };
     }
     return getProteinInfo();

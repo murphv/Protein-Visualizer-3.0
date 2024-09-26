@@ -59,6 +59,9 @@ function Visualization(props) {
     insideDomain,
     sequons,
     cysteines,
+    freeS,
+    freeT,
+    freeK,
     species
   } = initialOptions[currSelection];
 
@@ -816,6 +819,95 @@ function Visualization(props) {
     });
   };
 
+  const attachFreeAmAcids = (g, isWindowView, freeAmAcids, symAmAcids, visualize) => {
+    console.log(`Visualization -> attach Free ${symAmAcids}`);
+    let seq = freeAmAcids.map((el) => parseInt(el, 10));
+    if (isWindowView) {
+      seq = seq.filter((pos) => pos >= windowStart && pos <= windowEnd);
+    }
+    // const scale = isWindowView ? windowScale : xScale;
+
+    if (visualize === 'solid') {
+      seq.forEach((el) => {
+        let seqProportion = el / proteinLength;
+        let windowProportion =
+          (el - windowPos.start) / (windowPos.end - windowPos.start);
+        let seqPos = isWindowView
+          ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+          : SPINE_START_POS + seqProportion * SPINE_WIDTH;
+
+        const bond = g.append('line');
+        bond
+          .attr('x1', seqPos)
+          .attr('y1', SULFIDE_POS - 20)
+          .attr('x2', seqPos)
+          .attr('y2', SULFIDE_POS - 50)
+          .style('stroke', 'black');
+
+        const label = g.append('text');
+        label
+          .attr('dx', seqPos - 4)
+          .attr('dy', SULFIDE_POS - 60)
+          .text(() => `${symAmAcids}`)
+          .attr('class', 'sulfide-labels');
+
+        const pos = g.append('text');
+        pos
+          .attr('dx', seqPos + 8)
+          .attr('dy', SULFIDE_POS - 55)
+          .text(() => `${el}`)
+          .attr('class', 'sulfide-labels--pos');
+
+        const atom = g.append('circle');
+        atom
+          .attr('cx', seqPos)
+          .attr('cy', SULFIDE_POS)
+          .attr('r', CIRCLE_RADIUS - 2)
+          .style('stroke', 'white')
+          .style('fill', 'black');
+      });
+    } else {
+      seq.forEach((el) => {
+        let seqProportion = el / proteinLength;
+        let windowProportion =
+          (el - windowPos.start) / (windowPos.end - windowPos.start);
+        let seqPos = isWindowView
+          ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+          : SPINE_START_POS + seqProportion * SPINE_WIDTH;
+
+        const bond = g.append('line');
+        bond
+          .attr('x1', seqPos)
+          .attr('y1', SULFIDE_POS + 20)
+          .attr('x2', seqPos)
+          .attr('y2', SULFIDE_POS + 50)
+          .style('stroke', 'black');
+
+        const label = g.append('text');
+        label
+          .attr('dx', seqPos - 4)
+          .attr('dy', SULFIDE_POS + 60)
+          .text(() => `${symAmAcids}`)
+          .attr('class', 'sulfide-labels');
+
+        const pos = g.append('text');
+        pos
+          .attr('dx', seqPos + 8)
+          .attr('dy', SULFIDE_POS + 65)
+          .text(() => `${el}`)
+          .attr('class', 'sulfide-labels--pos');
+
+        const atom = g.append('circle');
+        atom
+          .attr('cx', seqPos)
+          .attr('cy', SULFIDE_POS)
+          .attr('r', CIRCLE_RADIUS - 2)
+          .style('stroke', 'black')
+          .style('fill', 'white');
+      });
+    }
+  };
+
   const attachCysteines = (g, isWindowView) => {
     console.log('Visualization -> attach Free Sequons');
     let cys = cysteines.map((el) => parseInt(el, 10));
@@ -935,7 +1027,15 @@ function Visualization(props) {
     if (showGlycation) {
       attachGlycationBonds(g, isWindowView);
     }
-
+    if (showFreeS) {
+      attachFreeAmAcids(g, isWindowView, freeS, 'S', 'solid');
+    }
+    if (showFreeT) {
+      attachFreeAmAcids(g, isWindowView, freeT, 'T', 'solid');
+    }
+    if (showFreeK) {
+      attachFreeAmAcids(g, isWindowView, freeK, 'K', 'white');
+    }
     if (!isWindowView) {
       attachNTerminus(g);
       attachCTerminus(g);
@@ -975,6 +1075,9 @@ function Visualization(props) {
     showCysteines,
     showOutsideDomain,
     showInsideDomain,
+    showFreeS,
+    showFreeT,
+    showFreeK,
     scaleVisualization,
     scaleFactor,
     fullScale,
@@ -1026,6 +1129,9 @@ function Visualization(props) {
           disulfideBonds={disulfideBonds}
           sequons={sequons}
           cysteines={cysteines}
+          free_s={freeS}
+          free_t={freeT}
+          free_k={freeK}
           toggleGlyco={setShowGlyco}
           toggleOGalNAc={setShowOGalNAc}
           toggleOGlc={setShowOGlc}
@@ -1035,6 +1141,9 @@ function Visualization(props) {
           toggleInside={setShowInside}
           toggleSequons={setShowSequons}
           toggleCysteines={setShowCysteines}
+          toggleFreeS={setShowFreeS}
+          toggleFreeT={setShowFreeT}
+          toggleFreeK={setShowFreeK}
           length={proteinLength}
           species={species}
         />
