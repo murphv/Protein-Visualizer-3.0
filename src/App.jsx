@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StylesProvider } from '@material-ui/core';
 import html2canvas from 'html2canvas';
-import {Canvg} from "canvg";
+import { Canvg } from 'canvg';
 import { csv } from 'd3';
 import { jsPDF } from 'jspdf';
 import Dropdown from './components/Dropdown';
@@ -28,10 +28,6 @@ function App() {
   const [fullScale, setFullScale] = useState(false);
   const [fullScaleDisabled, setFullScaleDisabled] = useState(true);
   const [errorMessage, setErrorMessage] = React.useState('');
-
-  useEffect(() => {
-    getProteins().then((proteins) => setProteinOpts(proteins));
-  }, []);
 
   const updateScaleFactor = (val) => {
     setScaleFactor(val);
@@ -72,6 +68,57 @@ function App() {
       return [];
     }
 
+    function extractOGalNAc() {
+      const filtered = data.features.filter((x) => x.type === 'Glycosylation');
+      const positions = filtered
+        .filter(
+          (x) =>
+            x.description.includes('O-linked') &&
+            x.description.includes('GalNAc') &&
+            !x.description.includes('Glc')
+        )
+        .map((x) => x.location.start);
+      if (positions.length != 0) {
+        const strPos = positions.map((x) => x.value).join(',');
+        return strPos.match(/\d+/g);
+      }
+      return [];
+    }
+
+    function extractOGlc() {
+      const filtered = data.features.filter((x) => x.type === 'Glycosylation');
+      const positions = filtered
+        .filter(
+          (x) =>
+            x.description.includes('O-linked') &&
+            x.description.includes('Glc') &&
+            !x.description.includes('GalNAc')
+        )
+        .map((x) => x.location.start);
+      if (positions.length != 0) {
+        const strPos = positions.map((x) => x.value).join(',');
+        return strPos.match(/\d+/g);
+      }
+      return [];
+    }
+
+    function extractGlycation() {
+      const filtered = data.features.filter((x) => x.type === 'Glycosylation');
+      const positions = filtered
+        .filter(
+          (x) =>
+            x.description.includes('N-linked') &&
+            x.description.includes('Glc') &&
+            x.description.includes('glycation')
+        )
+        .map((x) => x.location.start);
+      if (positions.length != 0) {
+        const strPos = positions.map((x) => x.value).join(',');
+        return strPos.match(/\d+/g);
+      }
+      return [];
+    }
+
     function extractDsBonds() {
       const filtered = data.features.filter((x) => x.type === 'Disulfide bond');
       const startPositions = filtered.map((x) => x.location.start);
@@ -101,6 +148,18 @@ function App() {
         }
       }
       return [totalCys, freeCys];
+    }
+
+    function extractFreeAnimo(aminoAcid, coveredGlycan) {
+      const sequence = data.sequence.value;
+      let re = new RegExp(String.raw`${aminoAcid}`, 'g');
+      const seqPos = [...sequence.matchAll(re)].map((match) => match.index + 1);
+      const totalAmAcid = seqPos.map((x) => x.toString());
+
+      const freeAmAcid = totalAmAcid.filter(
+        (pos) => !coveredGlycan.includes(pos)
+      );
+      return [totalAmAcid, freeAmAcid];
     }
 
     function extractSequons(glycoBonds) {
@@ -192,6 +251,9 @@ function App() {
       const domain = parseSequence(entry['Orientation'], entry['Length']);
       const sequons = extractSequons(extractGlycoBonds());
       const cysteines = extractCysteines(extractDsBonds());
+      const serines = extractFreeAnimo('C', extractOGalNAc());
+      const threonines = extractFreeAnimo('T', extractOGlc());
+      const lysines = extractFreeAnimo('K', extractGlycation());
       return {
         value: entry['Name'],
         description: '',
@@ -201,14 +263,22 @@ function App() {
         outsideDomain: domain[0],
         insideDomain: domain[1],
         glycoslation: extractGlycoBonds(),
+        o_glcnac: extractOGalNAc(),
+        o_glc: extractOGlc(),
+        glycation: extractGlycation(),
         disulfideBonds: extractDsBonds(),
         totalSequons: sequons[0],
         sequons: sequons[1],
         totalCysteines: cysteines[0],
-        cysteines: cysteines[1]
+        cysteines: cysteines[1],
+        totalS: serines[0],
+        freeS: serines[1],
+        totalT: threonines[0],
+        freeT: threonines[1],
+        totalK: lysines[0],
+        freeK: lysines[1]
       };
     }
-    console.log(getProteinInfo());
     return getProteinInfo();
   }
 
@@ -241,7 +311,7 @@ function App() {
         }
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       //catches internal servor errors (most likely from invalid input or if the excel file doesnt contain the number)
       setErrorMessage('Please enter a valid protein accession number');
       updateSel(-1);
@@ -282,9 +352,29 @@ function App() {
     });
   };
 
+  const createStyleElementFromCSS = () => {
+    // assume index.html loads only one CSS file in <header></header>
+    const sheet = document.styleSheets[0];
+
+    const styleRules = [];
+    for (let i = 0; i < sheet.cssRules.length; i++)
+      styleRules.push(sheet.cssRules.item(i).cssText);
+
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.appendChild(document.createTextNode(styleRules.join(' ')));
+
+    return style;
+  };
+
   const captureFullSVG = () => {
-    const htmlStr = document.getElementById('svg').outerHTML;
-    const blob = new Blob([htmlStr], { type: 'image/svg+xml' });
+    const htmlStr = document.getElementById('svg');
+    const style = createStyleElementFromCSS();
+    htmlStr.insertBefore(style, htmlStr.firstChild);
+
+    const data = new XMLSerializer().serializeToString(htmlStr);
+    const blob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+    style.remove();
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -298,8 +388,13 @@ function App() {
   };
 
   const captureWindowSVG = () => {
-    const htmlStr = document.getElementById('windowSvg').outerHTML;
-    const blob = new Blob([htmlStr], { type: 'image/svg+xml' });
+    const htmlStr = document.getElementById('svg');
+    const style = createStyleElementFromCSS();
+    htmlStr.insertBefore(style, htmlStr.firstChild);
+
+    const data = new XMLSerializer().serializeToString(htmlStr);
+    const blob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+    style.remove();
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -313,18 +408,23 @@ function App() {
   };
 
   const captureFullImage = async () => {
-    const htmlStr = document.getElementById("svg").outerHTML;
-    const svg = document.getElementById("svg");
+    const svg = document.getElementById('svg');
     const bbox = svg.getBBox();
+
+    const style = createStyleElementFromCSS();
+    svg.insertBefore(style, svg.firstChild);
+
+    const data = new XMLSerializer().serializeToString(svg);
+    style.remove();
 
     const canvas = document.createElement('canvas');
     canvas.width = bbox.width;
     canvas.height = bbox.height;
 
     const ctx = canvas.getContext('2d');
-    const v = await Canvg.fromString(ctx, htmlStr);
+    const v = await Canvg.fromString(ctx, data);
     await v.render();
-    const base64 = canvas.toDataURL("image/png");
+    const base64 = canvas.toDataURL('image/png');
 
     const a = document.createElement('a');
     a.setAttribute('download', 'output.png');
@@ -335,18 +435,23 @@ function App() {
   };
 
   const captureWindowsImage = async () => {
-    const htmlStr = document.getElementById("windowSvg").outerHTML;
-    const svg = document.getElementById("svg");
+    const svg = document.getElementById('svg');
     const bbox = svg.getBBox();
+
+    const style = createStyleElementFromCSS();
+    svg.insertBefore(style, svg.firstChild);
+
+    const data = new XMLSerializer().serializeToString(svg);
+    style.remove();
 
     const canvas = document.createElement('canvas');
     canvas.width = bbox.width;
     canvas.height = bbox.height;
 
     const ctx = canvas.getContext('2d');
-    const v = await Canvg.fromString(ctx, htmlStr);
+    const v = await Canvg.fromString(ctx, data);
     await v.render();
-    const base64 = canvas.toDataURL("image/png");
+    const base64 = canvas.toDataURL('image/png');
 
     const a = document.createElement('a');
     a.setAttribute('download', 'output.png');

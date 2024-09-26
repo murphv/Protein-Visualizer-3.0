@@ -9,12 +9,12 @@ import './index.scss';
 /*
  * Drop down menu to select protein to visualize.
  */
-const Dropdown = props => {
+function Dropdown(props) {
   const { options, updateSel } = props;
   const inputLabel = useRef(null);
   const [val, setValue] = useState('');
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     const {
       target: { value: newVal }
     } = event;
@@ -22,7 +22,7 @@ const Dropdown = props => {
     updateSel(newVal);
   };
 
-  const generateMenuItems = opts => {
+  const generateMenuItems = (opts) => {
     const menuItems = [];
     menuItems.push(
       <MenuItem value=" " key="default">
@@ -47,7 +47,7 @@ const Dropdown = props => {
   return (
     <FormControl variant="outlined" className="drop-down">
       <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
-        Conflict Protein List 
+        Queried Protein List
       </InputLabel>
       <Select
         labelId="demo-simple-select-outlined-label"
@@ -55,13 +55,13 @@ const Dropdown = props => {
         value={val}
         onChange={handleChange}
         autoWidth
-        style={{marginTop: '1rem'}}
+        style={{ marginTop: '1rem' }}
       >
         {menuList}
       </Select>
     </FormControl>
   );
-};
+}
 
 Dropdown.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object).isRequired,
