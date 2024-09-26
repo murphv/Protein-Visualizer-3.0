@@ -47,7 +47,7 @@ function Dropdown(props) {
   return (
     <FormControl variant="outlined" className="drop-down">
       <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
-        Conflict Protein List
+        Queried Protein List
       </InputLabel>
       <Select
         labelId="demo-simple-select-outlined-label"

@@ -29,10 +29,6 @@ function App() {
   const [fullScaleDisabled, setFullScaleDisabled] = useState(true);
   const [errorMessage, setErrorMessage] = React.useState('');
 
-  useEffect(() => {
-    getProteins().then((proteins) => setProteinOpts(proteins));
-  }, []);
-
   const updateScaleFactor = (val) => {
     setScaleFactor(val);
   };
