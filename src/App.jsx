@@ -352,13 +352,24 @@ function App() {
     });
   };
 
+
   const createStyleElementFromCSS = () => {
-    // assume index.html loads only one CSS file in <header></header>
-    const sheet = document.styleSheets[0];
+    // query the last style sheet as it contain all scss file
+    const sheetStartID = () => {
+      for (let index = 0; index < document.styleSheets.length; index++) {
+        if (document.styleSheets.item(index).title === 'end') {
+          return index + 1;
+        }
+      }
+      return 0;
+    };
 
     const styleRules = [];
-    for (let i = 0; i < sheet.cssRules.length; i++)
-      styleRules.push(sheet.cssRules.item(i).cssText);
+    for (let index = sheetStartID(); index < document.styleSheets.length; index++) {
+      const sheet = document.styleSheets.item(index);
+      for (let i = 0; i < sheet.cssRules.length; i++)
+        styleRules.push(sheet.cssRules.item(i).cssText);
+    }
 
     const style = document.createElement('style');
     style.type = 'text/css';
