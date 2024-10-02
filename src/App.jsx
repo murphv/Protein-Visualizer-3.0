@@ -125,7 +125,11 @@ function App() {
       const endPositions = filtered.map((x) => x.location.end);
       const startPos = startPositions.map((x) => x.value);
       const endPos = endPositions.map((x) => x.value);
-      return startPos.map((start, index) => `${start} ${endPos[index]}`);
+      const dsBonds = startPos.map(
+        (start, index) => `${start} ${endPos[index]}`
+      );
+
+      return dsBonds.filter((element) => element.indexOf('null') === -1);
     }
 
     function extractCysteines(dsBonds) {
@@ -283,7 +287,7 @@ function App() {
       );
       const lysines = extractFreeAnimo(
         'K',
-        extractGlycation(),
+        [extractGlycation()],
         extractDsBonds()
       );
       return {
@@ -327,7 +331,6 @@ function App() {
     const data = await response.json();
 
     try {
-      console.log(data);
       const protein = processAPIData(data, topDf, accessionNum);
 
       //check if protein is already in the list
