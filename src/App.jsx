@@ -150,15 +150,19 @@ function App() {
       return [totalCys, freeCys];
     }
 
-    function extractFreeAnimo(aminoAcid, coveredGlycan, dsBonds) {
+    function extractFreeAnimo(aminoAcid, coveredGlycans, dsBonds) {
       const sequence = data.sequence.value;
       let re = new RegExp(String.raw`${aminoAcid}`, 'g');
       const seqPos = [...sequence.matchAll(re)].map((match) => match.index + 1);
       const totalAmAcid = seqPos.map((x) => x.toString());
 
-      const nonCoveredAmAcid = totalAmAcid.filter(
-        (pos) => !coveredGlycan.includes(pos)
-      );
+      let nonCoveredAmAcid = totalAmAcid;
+
+      for (const coveredGlycan of coveredGlycans) {
+        nonCoveredAmAcid = nonCoveredAmAcid.filter(
+          (pos) => !coveredGlycan.includes(pos)
+        );
+      }
 
       const freeAmAcid = [];
       const dsList = dsBonds.map((x) => x.split(' '));
@@ -267,9 +271,21 @@ function App() {
       const domain = parseSequence(entry['Orientation'], entry['Length']);
       const sequons = extractSequons(extractGlycoBonds());
       const cysteines = extractCysteines(extractDsBonds());
-      const serines = extractFreeAnimo('C', extractOGalNAc(), extractDsBonds());
-      const threonines = extractFreeAnimo('T', extractOGlc(), extractDsBonds());
-      const lysines = extractFreeAnimo('K', extractGlycation(), extractDsBonds());
+      const serines = extractFreeAnimo(
+        'C',
+        [extractOGalNAc(), extractOGlc()],
+        extractDsBonds()
+      );
+      const threonines = extractFreeAnimo(
+        'T',
+        [extractOGalNAc(), extractOGlc()],
+        extractDsBonds()
+      );
+      const lysines = extractFreeAnimo(
+        'K',
+        extractGlycation(),
+        extractDsBonds()
+      );
       return {
         value: entry['Name'],
         description: '',

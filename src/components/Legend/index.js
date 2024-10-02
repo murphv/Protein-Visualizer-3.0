@@ -124,7 +124,7 @@ function Legend(props) {
     } else if (element === 'o_glc') {
       toggleOGlc(!showOGlc);
       setShowOGlc(!showOGlc);
-    } else if (glycation === 'glycation') {
+    } else if (element === 'glycation') {
       toggleGlycation(!showGlycation);
       setShowGlycation(!showGlycation);
     } else if (element === 'outside') {
