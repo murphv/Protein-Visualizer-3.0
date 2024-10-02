@@ -151,7 +151,7 @@ function Legend(props) {
     }
   };
 
-  return (
+  const legendLeft = (
     <Card variant="outlined" raised classes={{ root: 'legend--wrapper' }}>
       <CardContent>
         <div className="legend--header">
@@ -263,6 +263,65 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
+            Protein Length:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {length}
+            </Typography>
+          </Typography>
+        </div>
+        <div
+          className="legend--menuItem"
+          style={{
+            alignItems: 'center',
+            marginTop: '10px',
+            marginBottom: '-17px'
+          }}
+        >
+          <Typography
+            display="inline"
+            placement="left-end"
+            style={{ marginRight: '1rem', marginTop: '0.75rem' }}
+          >
+            Topology:
+          </Typography>
+          <Button
+            placement="right-end"
+            variant="outlined"
+            color="primary"
+            style={{ marginRight: '1rem', marginTop: '1rem' }}
+            onClick={() => handleToggle('outside')}
+          >
+            Out
+          </Button>
+          <Button
+            placement="right-end"
+            variant="outlined"
+            color="secondary"
+            style={{ marginTop: '1rem' }}
+            onClick={() => handleToggle('inside')}
+          >
+            In
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const legendRight = (
+    <Card variant="outlined" raised classes={{ root: 'legend--wrapperRight' }}>
+      <CardContent>
+        <div className="legend--header">
+          <Typography
+            className={classes.title}
+            color="textSecondary"
+            gutterBottom
+            display="inline"
+          >
+            Legend
+          </Typography>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
             Free Sequon:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {sequons.length}
@@ -308,9 +367,7 @@ function Legend(props) {
               {free_s.length}
             </Typography>
           </Typography>
-          <div
-            className={`button-visibility${showFreeS ? '--on' : '--off'}`}
-          >
+          <div className={`button-visibility${showFreeS ? '--on' : '--off'}`}>
             <Tooltip title="toggle visibility" placement="right-end">
               <IconButton
                 aria-label="delete"
@@ -329,9 +386,7 @@ function Legend(props) {
               {free_t.length}
             </Typography>
           </Typography>
-          <div
-            className={`button-visibility${showFreeT ? '--on' : '--off'}`}
-          >
+          <div className={`button-visibility${showFreeT ? '--on' : '--off'}`}>
             <Tooltip title="toggle visibility" placement="right-end">
               <IconButton
                 aria-label="delete"
@@ -350,9 +405,7 @@ function Legend(props) {
               {free_k.length}
             </Typography>
           </Typography>
-          <div
-            className={`button-visibility${showFreeK ? '--on' : '--off'}`}
-          >
+          <div className={`button-visibility${showFreeK ? '--on' : '--off'}`}>
             <Tooltip title="toggle visibility" placement="right-end">
               <IconButton
                 aria-label="delete"
@@ -366,57 +419,21 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Protein Length:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {length}
-            </Typography>
-          </Typography>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            <br />
             Species:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {species}
             </Typography>
           </Typography>
         </div>
-        <div
-          className="legend--menuItem"
-          style={{
-            alignItems: 'center',
-            marginTop: '10px',
-            marginBottom: '-17px'
-          }}
-        >
-          <Typography
-            display="inline"
-            placement="left-end"
-            style={{ marginRight: '1rem', marginTop: '0.75rem' }}
-          >
-            Topology:
-          </Typography>
-          <Button
-            placement="right-end"
-            variant="outlined"
-            color="primary"
-            style={{ marginRight: '1rem', marginTop: '1rem' }}
-            onClick={() => handleToggle('outside')}
-          >
-            Out
-          </Button>
-          <Button
-            placement="right-end"
-            variant="outlined"
-            color="secondary"
-            style={{ marginTop: '1rem' }}
-            onClick={() => handleToggle('inside')}
-          >
-            In
-          </Button>
-        </div>
       </CardContent>
     </Card>
+  );
+
+  return (
+    <div>
+      {legendLeft}
+      {legendRight}
+    </div>
   );
 }
 
