@@ -276,7 +276,7 @@ function App() {
       const sequons = extractSequons(extractGlycoBonds());
       const cysteines = extractCysteines(extractDsBonds());
       const serines = extractFreeAnimo(
-        'C',
+        'S',
         [extractOGalNAc(), extractOGlc()],
         extractDsBonds()
       );

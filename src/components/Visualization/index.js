@@ -892,7 +892,7 @@ function Visualization(props) {
 
         const pos = g.append('text');
         pos
-          .attr('dx', seqPos + 8)
+          .attr('dx', seqPos + 6)
           .attr('dy', SULFIDE_POS + 65)
           .text(() => `${el}`)
           .attr('class', 'sulfide-labels--pos');
