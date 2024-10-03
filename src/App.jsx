@@ -533,11 +533,6 @@ function App() {
           <div className="App-searchbar">
             <SearchBar onSubmit={updateAccession} />
           </div>
-          <div className="App-dropdown">
-            {proteinOpts.length ? (
-              <Dropdown options={proteinOpts} updateSel={updateSel} />
-            ) : null}
-          </div>
         </div>
         {currSelection == -1 ? (
           <div style={{ marginTop: '1rem', color: 'red' }}>{errorMessage}</div>
