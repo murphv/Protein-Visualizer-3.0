@@ -151,6 +151,268 @@ function Legend(props) {
     }
   };
 
+  const legendWhole = (
+    <Card variant="outlined" raised classes={{ root: 'legend--wrapper' }}>
+      <CardContent>
+        <div className="legend--header">
+          <Typography
+            className={classes.title}
+            color="textSecondary"
+            gutterBottom
+            display="inline"
+          >
+            Legend
+          </Typography>
+        </div>
+
+        <div className="legend--menuItem">
+          <Typography>
+            N-Glycan:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {glycoslation.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showGlyco ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('glyco')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            O-GalNAc:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {o_glcnac.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showOGalNAc ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('o_glcnac')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            O-Glc:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {o_glc.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showOGlc ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('o_glc')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Glycation:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {glycation.length}
+            </Typography>
+          </Typography>
+          <div
+            className={`button-visibility${showGlycation ? '--on' : '--off'}`}
+          >
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('glycation')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Disulfides:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {disulfideBonds.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showSulfide ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                onClick={() => handleToggle('sulfide')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Free Sequon:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {sequons.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showSequons ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                // className={{ root: 'on' }}
+                onClick={() => handleToggle('sequons')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Free Cysteine:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {cysteines.length}
+            </Typography>
+          </Typography>
+          <div
+            className={`button-visibility${showCysteines ? '--on' : '--off'}`}
+          >
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                // className={{ root: 'on' }}
+                onClick={() => handleToggle('cysteines')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Free S:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {free_s.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showFreeS ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                // className={{ root: 'on' }}
+                onClick={() => handleToggle('free_s')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Free T:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {free_t.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showFreeT ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                // className={{ root: 'on' }}
+                onClick={() => handleToggle('free_t')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Free K:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {free_k.length}
+            </Typography>
+          </Typography>
+          <div className={`button-visibility${showFreeK ? '--on' : '--off'}`}>
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                // className={{ root: 'on' }}
+                onClick={() => handleToggle('free_k')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Protein Length:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {length}
+            </Typography>
+          </Typography>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            <br />
+            Species:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {species}
+            </Typography>
+          </Typography>
+        </div>
+        <div
+          className="legend--menuItem"
+          style={{
+            alignItems: 'center',
+            marginTop: '10px',
+            marginBottom: '-17px'
+          }}
+        >
+          <Typography
+            display="inline"
+            placement="left-end"
+            style={{ marginRight: '1rem', marginTop: '0.75rem' }}
+          >
+            Topology:
+          </Typography>
+          <Button
+            placement="right-end"
+            variant="outlined"
+            color="primary"
+            style={{ marginRight: '1rem', marginTop: '1rem' }}
+            onClick={() => handleToggle('outside')}
+          >
+            Out
+          </Button>
+          <Button
+            placement="right-end"
+            variant="outlined"
+            color="secondary"
+            style={{ marginTop: '1rem' }}
+            onClick={() => handleToggle('inside')}
+          >
+            In
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   const legendLeft = (
     <Card variant="outlined" raised classes={{ root: 'legend--wrapper' }}>
       <CardContent>
