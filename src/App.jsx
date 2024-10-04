@@ -437,7 +437,7 @@ function App() {
   };
 
   const captureWindowSVG = () => {
-    const htmlStr = document.getElementById('svg');
+    const htmlStr = document.getElementById('windowSvg');
     const style = createStyleElementFromCSS();
     htmlStr.insertBefore(style, htmlStr.firstChild);
 
@@ -484,7 +484,7 @@ function App() {
   };
 
   const captureWindowsImage = async () => {
-    const svg = document.getElementById('svg');
+    const svg = document.getElementById('windowSvg');
     const bbox = svg.getBBox();
 
     const style = createStyleElementFromCSS();
