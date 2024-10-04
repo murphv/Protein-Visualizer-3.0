@@ -125,7 +125,11 @@ function App() {
       const endPositions = filtered.map((x) => x.location.end);
       const startPos = startPositions.map((x) => x.value);
       const endPos = endPositions.map((x) => x.value);
-      return startPos.map((start, index) => `${start} ${endPos[index]}`);
+      const dsBonds = startPos.map(
+        (start, index) => `${start} ${endPos[index]}`
+      );
+
+      return dsBonds.filter((element) => element.indexOf('null') === -1);
     }
 
     function extractCysteines(dsBonds) {
@@ -150,15 +154,35 @@ function App() {
       return [totalCys, freeCys];
     }
 
-    function extractFreeAnimo(aminoAcid, coveredGlycan) {
+    function extractFreeAnimo(aminoAcid, coveredGlycans, dsBonds) {
       const sequence = data.sequence.value;
       let re = new RegExp(String.raw`${aminoAcid}`, 'g');
       const seqPos = [...sequence.matchAll(re)].map((match) => match.index + 1);
       const totalAmAcid = seqPos.map((x) => x.toString());
 
-      const freeAmAcid = totalAmAcid.filter(
-        (pos) => !coveredGlycan.includes(pos)
-      );
+      let nonCoveredAmAcid = totalAmAcid;
+
+      for (const coveredGlycan of coveredGlycans) {
+        nonCoveredAmAcid = nonCoveredAmAcid.filter(
+          (pos) => !coveredGlycan.includes(pos)
+        );
+      }
+
+      const freeAmAcid = [];
+      const dsList = dsBonds.map((x) => x.split(' '));
+      for (const aa of nonCoveredAmAcid) {
+        let isSame = false;
+        for (const ds of dsList) {
+          if (ds.includes(aa)) {
+            isSame = true;
+            break;
+          }
+        }
+        if (!isSame) {
+          freeAmAcid.push(aa);
+        }
+      }
+
       return [totalAmAcid, freeAmAcid];
     }
 
@@ -251,9 +275,21 @@ function App() {
       const domain = parseSequence(entry['Orientation'], entry['Length']);
       const sequons = extractSequons(extractGlycoBonds());
       const cysteines = extractCysteines(extractDsBonds());
-      const serines = extractFreeAnimo('C', extractOGalNAc());
-      const threonines = extractFreeAnimo('T', extractOGlc());
-      const lysines = extractFreeAnimo('K', extractGlycation());
+      const serines = extractFreeAnimo(
+        'S',
+        [extractOGalNAc(), extractOGlc()],
+        extractDsBonds()
+      );
+      const threonines = extractFreeAnimo(
+        'T',
+        [extractOGalNAc(), extractOGlc()],
+        extractDsBonds()
+      );
+      const lysines = extractFreeAnimo(
+        'K',
+        [extractGlycation()],
+        extractDsBonds()
+      );
       return {
         value: entry['Name'],
         description: '',
@@ -295,7 +331,6 @@ function App() {
     const data = await response.json();
 
     try {
-      console.log(data);
       const protein = processAPIData(data, topDf, accessionNum);
 
       //check if protein is already in the list
@@ -353,12 +388,26 @@ function App() {
   };
 
   const createStyleElementFromCSS = () => {
-    // assume index.html loads only one CSS file in <header></header>
-    const sheet = document.styleSheets[0];
+    // query the last style sheet as it contain all scss file
+    const sheetStartID = () => {
+      for (let index = 0; index < document.styleSheets.length; index++) {
+        if (document.styleSheets.item(index).title === 'end') {
+          return index + 1;
+        }
+      }
+      return 0;
+    };
 
     const styleRules = [];
-    for (let i = 0; i < sheet.cssRules.length; i++)
-      styleRules.push(sheet.cssRules.item(i).cssText);
+    for (
+      let index = sheetStartID();
+      index < document.styleSheets.length;
+      index++
+    ) {
+      const sheet = document.styleSheets.item(index);
+      for (let i = 0; i < sheet.cssRules.length; i++)
+        styleRules.push(sheet.cssRules.item(i).cssText);
+    }
 
     const style = document.createElement('style');
     style.type = 'text/css';
@@ -388,7 +437,7 @@ function App() {
   };
 
   const captureWindowSVG = () => {
-    const htmlStr = document.getElementById('svg');
+    const htmlStr = document.getElementById('windowSvg');
     const style = createStyleElementFromCSS();
     htmlStr.insertBefore(style, htmlStr.firstChild);
 
@@ -435,7 +484,7 @@ function App() {
   };
 
   const captureWindowsImage = async () => {
-    const svg = document.getElementById('svg');
+    const svg = document.getElementById('windowSvg');
     const bbox = svg.getBBox();
 
     const style = createStyleElementFromCSS();
@@ -483,11 +532,6 @@ function App() {
         <div className="page-wrap">
           <div className="App-searchbar">
             <SearchBar onSubmit={updateAccession} />
-          </div>
-          <div className="App-dropdown">
-            {proteinOpts.length ? (
-              <Dropdown options={proteinOpts} updateSel={updateSel} />
-            ) : null}
           </div>
         </div>
         {currSelection == -1 ? (

@@ -7,6 +7,14 @@
     background-color: #f8f8ff;
   }
 
+  &--wrapperRight {
+    position: fixed;
+    top: 150px;
+    right: 10px;
+    width: 280px;
+    background-color: #f8f8ff;
+  }
+
   &--menuItem {
     display: flex;
     margin-top: -23px;

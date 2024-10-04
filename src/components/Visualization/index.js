@@ -282,7 +282,7 @@ function Visualization(props) {
 
       atom
         .attr('dx', bondPos - 8)
-        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.25)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.15)
         .text(() => `O`)
         .attr('class', 'glyco-labels');
 
@@ -331,7 +331,7 @@ function Visualization(props) {
 
       atom
         .attr('dx', bondPos - 8)
-        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.25)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.15)
         .text(() => `O`)
         .attr('class', 'glyco-labels');
 
@@ -379,7 +379,7 @@ function Visualization(props) {
 
       atom
         .attr('dx', bondPos - 8)
-        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.25)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.15)
         .text(() => `N`)
         .attr('class', 'glyco-labels');
 
@@ -853,7 +853,7 @@ function Visualization(props) {
 
         const pos = g.append('text');
         pos
-          .attr('dx', seqPos + 8)
+          .attr('dx', seqPos + 4)
           .attr('dy', SULFIDE_POS - 55)
           .text(() => `${el}`)
           .attr('class', 'sulfide-labels--pos');
@@ -892,7 +892,7 @@ function Visualization(props) {
 
         const pos = g.append('text');
         pos
-          .attr('dx', seqPos + 8)
+          .attr('dx', seqPos + 6)
           .attr('dy', SULFIDE_POS + 65)
           .text(() => `${el}`)
           .attr('class', 'sulfide-labels--pos');
