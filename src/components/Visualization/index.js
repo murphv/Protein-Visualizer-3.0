@@ -600,14 +600,14 @@ function Visualization(props) {
         sulfide
           .attr('dx', xPos - 5)
           .attr('dy', bondHeight(pair) + SULFIDE_ATOM_OFFSET)
-          .text(() => 'S')
+          .text(() => 'C')
           .attr('class', 'sulfide-labels');
 
         const sulfide2 = g.append('text');
         sulfide2
           .attr('dx', yPos - 5)
           .attr('dy', bondHeight(pair) + SULFIDE_ATOM_OFFSET)
-          .text(() => 'S')
+          .text(() => 'C')
           .attr('class', 'sulfide-labels');
 
         const pos = g.append('text');
