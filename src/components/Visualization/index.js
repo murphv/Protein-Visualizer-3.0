@@ -54,6 +54,9 @@ function Visualization(props) {
     o_glcnac,
     o_glc,
     glycation,
+    phosphoserine,
+    phosphothreonine,
+    phosphotyrosine,
     length: proteinLength,
     outsideDomain,
     insideDomain,
@@ -76,6 +79,9 @@ function Visualization(props) {
   const [showOGalNAc, setShowOGalNAc] = useState(true);
   const [showOGlc, setShowOGlc] = useState(true);
   const [showGlycation, setShowGlycation] = useState(true);
+  const [showPhosphoserine, setShowPhosphoserine] = useState(true);
+  const [showPhosphothreonine, setShowPhosphothreonine] = useState(true);
+  const [showPhosphotyrosine, setShowPhosphotyrosine] = useState(true);
   const [showDisulfide, setShowDisulfide] = useState(true);
   const [showOutsideDomain, setShowOutisde] = useState(true);
   const [showInsideDomain, setShowInside] = useState(true);
@@ -357,6 +363,52 @@ function Visualization(props) {
         .attr('r', CIRCLE_RADIUS + 3)
         .style('stroke', 'black')
         .style('fill', 'blue');
+    });
+  };
+
+  const attachPhosphorylation = (g, isWindowView, phosphorylation) => {
+    let phosphos = phosphorylation.map((el) => parseInt(el, 10));
+    if (isWindowView) {
+      phosphos = phosphos.filter(
+        (phospho) => phospho >= windowStart && phospho <= windowEnd
+      );
+    }
+
+    phosphos.forEach((el) => {
+      let phosphoProportion = el / proteinLength;
+      let windowProportion =
+        (el - windowPos.start) / (windowPos.end - windowPos.start);
+      let phosphoPos = isWindowView
+        ? WINDOW_SPINE_START_POS + windowProportion * WINDOW_SPINE_WIDTH
+        : SPINE_START_POS + phosphoProportion * SPINE_WIDTH;
+      const pos = g.append('text');
+      pos
+        .attr('dx', phosphoPos + 4)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.1)
+        .text(() => `${el}`)
+        .attr('class', 'glyco-labels--pos');
+
+      const stem = g.append('line');
+      stem
+        .attr('x1', phosphoPos)
+        .attr('y1', SULFIDE_POS - 10)
+        .attr('x2', phosphoPos)
+        .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH)
+        .style('stroke', 'black');
+
+      const mol = g.append('circle');
+      mol
+        .attr('cx', phosphoPos)
+        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH + CIRCLE_RADIUS)
+        .attr('r', CIRCLE_RADIUS + 5)
+        .style('fill', '#FDCC04');
+
+      const atom = g.append('text');
+      atom
+        .attr('dx', phosphoPos - 5)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH + CIRCLE_RADIUS + 6)
+        .text(() => `P`)
+        .attr('class', 'glyco-labels');
     });
   };
 
@@ -1036,6 +1088,15 @@ function Visualization(props) {
     if (showFreeK) {
       attachFreeAmAcids(g, isWindowView, freeK, 'K', 'white');
     }
+    if (showPhosphoserine) {
+      attachPhosphorylation(g, isWindowView, phosphoserine);
+    }
+    if (showPhosphotyrosine) {
+      attachPhosphorylation(g, isWindowView, phosphotyrosine);
+    }
+    if (showPhosphothreonine) {
+      attachPhosphorylation(g, isWindowView, phosphothreonine);
+    }
     if (!isWindowView) {
       attachNTerminus(g);
       attachCTerminus(g);
@@ -1071,6 +1132,9 @@ function Visualization(props) {
     showOGalNAc,
     showOGlc,
     showGlycation,
+    showPhosphoserine,
+    showPhosphothreonine,
+    showPhosphotyrosine,
     showSequons,
     showCysteines,
     showOutsideDomain,
@@ -1132,6 +1196,9 @@ function Visualization(props) {
           free_s={freeS}
           free_t={freeT}
           free_k={freeK}
+          phosphoserine={phosphoserine}
+          phosphothreonine={phosphothreonine}
+          phosphotyrosine={phosphotyrosine}
           toggleGlyco={setShowGlyco}
           toggleOGalNAc={setShowOGalNAc}
           toggleOGlc={setShowOGlc}
@@ -1144,6 +1211,9 @@ function Visualization(props) {
           toggleFreeS={setShowFreeS}
           toggleFreeT={setShowFreeT}
           toggleFreeK={setShowFreeK}
+          togglePhosphoserine={setShowPhosphoserine}
+          togglePhosphothreonine={setShowPhosphothreonine}
+          togglePhosphotyrosine={setShowPhosphotyrosine}
           length={proteinLength}
           species={species}
         />

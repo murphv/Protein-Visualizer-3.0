@@ -76,6 +76,9 @@ function Legend(props) {
     o_glcnac,
     o_glc,
     glycation,
+    phosphoserine,
+    phosphothreonine,
+    phosphotyrosine,
     disulfideBonds,
     sequons,
     cysteines,
@@ -86,6 +89,9 @@ function Legend(props) {
     toggleOGalNAc,
     toggleOGlc,
     toggleGlycation,
+    togglePhosphoserine,
+    togglePhosphothreonine,
+    togglePhosphotyrosine,
     toggleSulfide,
     toggleOutside,
     toggleInside,
@@ -109,6 +115,9 @@ function Legend(props) {
   const [showFreeS, setShowFreeS] = useState(true);
   const [showFreeT, setShowFreeT] = useState(true);
   const [showFreeK, setShowFreeK] = useState(true);
+  const [showPhosphoserine, setShowPhosphoserine] = useState(true);
+  const [showPhosphothreonine, setShowPhosphothreonine] = useState(true);
+  const [showPhosphotyrosine, setShowPhosphotyrosine] = useState(true);
   const classes = useStyles();
 
   const handleToggle = (element) => {
@@ -127,6 +136,15 @@ function Legend(props) {
     } else if (element === 'glycation') {
       toggleGlycation(!showGlycation);
       setShowGlycation(!showGlycation);
+    } else if (element === 'phosphoserine') {
+      togglePhosphoserine(!showPhosphoserine);
+      setShowPhosphoserine(!showPhosphoserine);
+    } else if (element === 'phosphothreonine') {
+      togglePhosphothreonine(!showPhosphothreonine);
+      setShowPhosphothreonine(!showPhosphothreonine);
+    } else if (element === 'phosphotyrosine') {
+      togglePhosphotyrosine(!showPhosphotyrosine);
+      setShowPhosphotyrosine(!showPhosphotyrosine);
     } else if (element === 'outside') {
       toggleOutside(!showOutsideDomain);
       setShowOutside(!showOutsideDomain);
@@ -507,6 +525,69 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
+            Phosphoserine:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {phosphoserine.length}
+            </Typography>
+          </Typography>
+          <div
+            className={`button-visibility${showPhosphoserine ? '--on' : '--off'}`}
+          >
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('phosphoserine')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Phosphothreonine:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {phosphothreonine.length}
+            </Typography>
+          </Typography>
+          <div
+            className={`button-visibility${showPhosphothreonine ? '--on' : '--off'}`}
+          >
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('phosphothreonine')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
+            Phosphotyrosine:
+            <Typography display="inline" classes={{ root: 'bold-text' }}>
+              {phosphotyrosine.length}
+            </Typography>
+          </Typography>
+          <div
+            className={`button-visibility${showPhosphotyrosine ? '--on' : '--off'}`}
+          >
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                className={{ root: 'on' }}
+                onClick={() => handleToggle('phosphotyrosine')}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        <div className="legend--menuItem">
+          <Typography>
             Disulfides:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {disulfideBonds.length}
@@ -590,7 +671,7 @@ function Legend(props) {
             </Typography>
           </Typography>
           <div className={`button-visibility${showSequons ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
+          <Tooltip title="toggle visibility" placement="right-end">
               <IconButton
                 aria-label="delete"
                 // className={{ root: 'on' }}

@@ -186,6 +186,17 @@ function App() {
       return [totalAmAcid, freeAmAcid];
     }
 
+    function extractPhosphorylation(phosphoType) {
+      const positions = data.features.filter((x) =>
+        x.description.includes(phosphoType)
+      ).map((x) => x.location.start);
+      if (positions.length != 0) {
+        const strPos = positions.map((x) => x.value).join(',');
+        return strPos.match(/\d+/g);
+      }
+      return [];
+    }
+
     function extractSequons(glycoBonds) {
       const sequence = data.sequence.value;
       const nxtPos = [...sequence.matchAll(/N[A-Z]T/g)].map(
@@ -302,6 +313,9 @@ function App() {
         o_glcnac: extractOGalNAc(),
         o_glc: extractOGlc(),
         glycation: extractGlycation(),
+        phosphoserine: extractPhosphorylation('Phosphoserine'),
+        phosphothreonine: extractPhosphorylation('Phosphothreonine'),
+        phosphotyrosine: extractPhosphorylation('Phosphotyrosine'),
         disulfideBonds: extractDsBonds(),
         totalSequons: sequons[0],
         sequons: sequons[1],
