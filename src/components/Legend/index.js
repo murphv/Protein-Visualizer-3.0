@@ -55,6 +55,9 @@ const useStyles = makeStyles({
  * @property {Object} free_s object containing Free S info
  * @property {Object} free_t object containing Free T info
  * @property {Object} free_k object containing Free K info
+ * @property {Object} phosphoserine object containing Phosphoserine info
+ * @property {Object} phosphothreonine object containing Phosphothreonine info
+ * @property {Object} phosphotyrosine object containing Phosphotyrosine info
  * @property {func} toggleGlyco Function that toggles glyco bond visibility
  * @property {func} toggleOGalNAc Function that toggles O-GalNAc bond visibility
  * @property {func} toggleOGlc Function that toggles O-Glc bond visibility
@@ -67,6 +70,9 @@ const useStyles = makeStyles({
  * @property {func} toggleFreeS Function that toggles Free S visibility
  * @property {func} toggleFreeT Function that toggles Free T visibility
  * @property {func} toggleFreeK Function that toggles Free K visibility
+ * @property {func} togglePhosphoserine Function that toggles Phosphoserine visibility
+ * @property {func} togglePhosphothreonine Function that toggles Phosphothreonine visibility
+ * @property {func} togglePhosphotyrosine Function that toggles Phosphotyrosine visibility
  * @property {number} length total length of protein structure
  * @property {string} species the species that the protein belong to
  */
@@ -787,6 +793,9 @@ Legend.propTypes = {
   o_glcnac: PropTypes.arrayOf(PropTypes.string).isRequired,
   o_glc: PropTypes.arrayOf(PropTypes.string).isRequired,
   glycation: PropTypes.arrayOf(PropTypes.string).isRequired,
+  phosphoserine: PropTypes.arrayOf(PropTypes.string).isRequired,
+  phosphothreonine: PropTypes.arrayOf(PropTypes.string).isRequired,
+  phosphotyrosine: PropTypes.arrayOf(PropTypes.string).isRequired,
   disulfideBonds: PropTypes.arrayOf(PropTypes.string).isRequired,
   sequons: PropTypes.arrayOf(PropTypes.string).isRequired,
   cysteines: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -797,6 +806,9 @@ Legend.propTypes = {
   toggleGlyco: PropTypes.func,
   toggleOGlc: PropTypes.func,
   toggleGlycation: PropTypes.func,
+  togglePhosphoserine: PropTypes.func,
+  togglePhosphothreonine: PropTypes.func,
+  togglePhosphotyrosine: PropTypes.func,
   toggleSulfide: PropTypes.func,
   toggleOutside: PropTypes.func,
   toggleInside: PropTypes.func,
@@ -814,6 +826,9 @@ Legend.defaultProps = {
   toggleOGalNAc: () => {},
   toggleOGlc: () => {},
   toggleGlycation: () => {},
+  togglePhosphoserine: () => {},
+  togglePhosphothreonine: () => {},
+  togglePhosphotyrosine: () => {},
   toggleSulfide: () => {},
   toggleOutside: () => {},
   toggleInside: () => {},
