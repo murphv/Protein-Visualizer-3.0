@@ -631,6 +631,7 @@ function Legend(props) {
             placement="right-end"
             variant="outlined"
             color="primary"
+            size="small"
             style={{ marginRight: '1rem', marginTop: '1rem' }}
             onClick={() => handleToggle('outside')}
           >
@@ -640,6 +641,7 @@ function Legend(props) {
             placement="right-end"
             variant="outlined"
             color="secondary"
+            size="small"
             style={{ marginTop: '1rem' }}
             onClick={() => handleToggle('inside')}
           >
