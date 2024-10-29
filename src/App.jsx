@@ -187,9 +187,9 @@ function App() {
     }
 
     function extractPhosphorylation(phosphoType) {
-      const positions = data.features.filter((x) =>
-        x.description.includes(phosphoType)
-      ).map((x) => x.location.start);
+      const positions = data.features
+        .filter((x) => x.description.includes(phosphoType))
+        .map((x) => x.location.start);
       if (positions.length != 0) {
         const strPos = positions.map((x) => x.value).join(',');
         return strPos.match(/\d+/g);
@@ -288,12 +288,20 @@ function App() {
       const cysteines = extractCysteines(extractDsBonds());
       const serines = extractFreeAnimo(
         'S',
-        [extractOGalNAc(), extractOGlc()],
+        [
+          extractOGalNAc(),
+          extractOGlc(),
+          extractPhosphorylation('Phosphoserine')
+        ],
         extractDsBonds()
       );
       const threonines = extractFreeAnimo(
         'T',
-        [extractOGalNAc(), extractOGlc()],
+        [
+          extractOGalNAc(),
+          extractOGlc(),
+          extractPhosphorylation('Phosphothreonine')
+        ],
         extractDsBonds()
       );
       const lysines = extractFreeAnimo(

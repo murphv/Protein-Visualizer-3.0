@@ -384,7 +384,7 @@ function Visualization(props) {
       const pos = g.append('text');
       pos
         .attr('dx', phosphoPos + 4)
-        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 1.1)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 0.8 * 0.5)
         .text(() => `${el}`)
         .attr('class', 'glyco-labels--pos');
 
@@ -393,20 +393,20 @@ function Visualization(props) {
         .attr('x1', phosphoPos)
         .attr('y1', SULFIDE_POS - 10)
         .attr('x2', phosphoPos)
-        .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH)
+        .attr('y2', SULFIDE_POS - GLYCO_STEM_LENGTH * 0.8)
         .style('stroke', 'black');
 
       const mol = g.append('circle');
       mol
         .attr('cx', phosphoPos)
-        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH + CIRCLE_RADIUS)
+        .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH * 0.8 + CIRCLE_RADIUS)
         .attr('r', CIRCLE_RADIUS + 5)
         .style('fill', '#FDCC04');
 
       const atom = g.append('text');
       atom
         .attr('dx', phosphoPos - 5)
-        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH + CIRCLE_RADIUS + 6)
+        .attr('dy', SULFIDE_POS - GLYCO_STEM_LENGTH * 0.8 + CIRCLE_RADIUS + 6)
         .text(() => `P`)
         .attr('class', 'glyco-labels');
     });
