@@ -5,10 +5,13 @@ import {
   Typography,
   IconButton,
   Button,
-  Tooltip
+  Tooltip,
+  Tab,
+  Tabs,
+  Box, AppBar
 } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import PropTypes from 'prop-types';
+import PropTypes, { element } from 'prop-types';
 // import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,6 +26,39 @@ import './index.scss';
 
 // apple: createColor('#FF6088'),
 //     skyBlue: createColor('#7B82EE'),
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
 const useStyles = makeStyles({
   root: {
@@ -109,6 +145,7 @@ function Legend(props) {
     length,
     species
   } = props;
+  const [tabValue, setTabValue] = useState(0);
   const [showGlyco, setShowGlyco] = useState(true);
   const [showOGalNAc, setShowOGalNAc] = useState(true);
   const [showOGlc, setShowOGlc] = useState(true);
@@ -125,6 +162,10 @@ function Legend(props) {
   const [showPhosphothreonine, setShowPhosphothreonine] = useState(true);
   const [showPhosphotyrosine, setShowPhosphotyrosine] = useState(true);
   const classes = useStyles();
+
+  const handleTabChange = (event, newTabValue) => {
+    setTabValue(newTabValue);
+  }
 
   const handleToggle = (element) => {
     if (element === 'sulfide') {
@@ -175,266 +216,218 @@ function Legend(props) {
     }
   };
 
-  const legendWhole = (
-    <Card variant="outlined" raised classes={{ root: 'legend--wrapper' }}>
-      <CardContent>
-        <div className="legend--header">
-          <Typography
-            className={classes.title}
-            color="textSecondary"
-            gutterBottom
-            display="inline"
-          >
-            Legend
+  const infoLeft = (
+    <TabPanel index={0} value={tabValue}>
+      <div className="legend--menuItem">
+        <Typography>
+          N-Glycan:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {glycoslation.length}
           </Typography>
+        </Typography>
+        <div className={`button-visibility${showGlyco ? '--on' : '--off'}`}>
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              className={{ root: 'on' }}
+              onClick={() => handleToggle('glyco')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
         </div>
-
-        <div className="legend--menuItem">
-          <Typography>
-            N-Glycan:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {glycoslation.length}
-            </Typography>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
+          O-GalNAc:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {o_glcnac.length}
           </Typography>
-          <div className={`button-visibility${showGlyco ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('glyco')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
+        </Typography>
+        <div className={`button-visibility${showOGalNAc ? '--on' : '--off'}`}>
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              className={{ root: 'on' }}
+              onClick={() => handleToggle('o_glcnac')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
         </div>
-        <div className="legend--menuItem">
-          <Typography>
-            O-GalNAc:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {o_glcnac.length}
-            </Typography>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
+          O-Glc:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {o_glc.length}
           </Typography>
-          <div className={`button-visibility${showOGalNAc ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('o_glcnac')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
+        </Typography>
+        <div className={`button-visibility${showOGlc ? '--on' : '--off'}`}>
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              className={{ root: 'on' }}
+              onClick={() => handleToggle('o_glc')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
         </div>
-        <div className="legend--menuItem">
-          <Typography>
-            O-Glc:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {o_glc.length}
-            </Typography>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
+          Glycation:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {glycation.length}
           </Typography>
-          <div className={`button-visibility${showOGlc ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('o_glc')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Glycation:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {glycation.length}
-            </Typography>
-          </Typography>
-          <div
-            className={`button-visibility${showGlycation ? '--on' : '--off'}`}
-          >
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('glycation')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Disulfides:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {disulfideBonds.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showSulfide ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                onClick={() => handleToggle('sulfide')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Free Sequon:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {sequons.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showSequons ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                // className={{ root: 'on' }}
-                onClick={() => handleToggle('sequons')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Free Cysteine:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {cysteines.length}
-            </Typography>
-          </Typography>
-          <div
-            className={`button-visibility${showCysteines ? '--on' : '--off'}`}
-          >
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                // className={{ root: 'on' }}
-                onClick={() => handleToggle('cysteines')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Free S:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {free_s.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showFreeS ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                // className={{ root: 'on' }}
-                onClick={() => handleToggle('free_s')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Free T:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {free_t.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showFreeT ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                // className={{ root: 'on' }}
-                onClick={() => handleToggle('free_t')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Free K:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {free_k.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showFreeK ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                // className={{ root: 'on' }}
-                onClick={() => handleToggle('free_k')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Protein Length:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {length}
-            </Typography>
-          </Typography>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            <br />
-            Species:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {species}
-            </Typography>
-          </Typography>
-        </div>
+        </Typography>
         <div
-          className="legend--menuItem"
-          style={{
-            alignItems: 'center',
-            marginTop: '10px',
-            marginBottom: '-17px'
-          }}
+          className={`button-visibility${showGlycation ? '--on' : '--off'}`}
         >
-          <Typography
-            display="inline"
-            placement="left-end"
-            style={{ marginRight: '1rem', marginTop: '0.75rem' }}
-          >
-            Topology:
-          </Typography>
-          <Button
-            placement="right-end"
-            variant="outlined"
-            color="primary"
-            style={{ marginRight: '1rem', marginTop: '1rem' }}
-            onClick={() => handleToggle('outside')}
-          >
-            Out
-          </Button>
-          <Button
-            placement="right-end"
-            variant="outlined"
-            color="secondary"
-            style={{ marginTop: '1rem' }}
-            onClick={() => handleToggle('inside')}
-          >
-            In
-          </Button>
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              className={{ root: 'on' }}
+              onClick={() => handleToggle('glycation')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
+          PhosphoS:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {phosphoserine.length}
+          </Typography>
+        </Typography>
+        <div
+          className={`button-visibility${showPhosphoserine ? '--on' : '--off'}`}
+        >
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              className={{ root: 'on' }}
+              onClick={() => handleToggle('phosphoserine')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
+          PhosphoT:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {phosphothreonine.length}
+          </Typography>
+        </Typography>
+        <div
+          className={`button-visibility${showPhosphothreonine ? '--on' : '--off'}`}
+        >
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              className={{ root: 'on' }}
+              onClick={() => handleToggle('phosphothreonine')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
+          PhosphoY:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {phosphotyrosine.length}
+          </Typography>
+        </Typography>
+        <div
+          className={`button-visibility${showPhosphotyrosine ? '--on' : '--off'}`}
+        >
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              className={{ root: 'on' }}
+              onClick={() => handleToggle('phosphotyrosine')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
+          Disulfides:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {disulfideBonds.length}
+          </Typography>
+        </Typography>
+        <div className={`button-visibility${showSulfide ? '--on' : '--off'}`}>
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              onClick={() => handleToggle('sulfide')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
+          Protein Length:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {length}
+          </Typography>
+        </Typography>
+      </div>
+      <div
+        className="legend--menuItem"
+        style={{
+          alignItems: 'center',
+          marginTop: '10px',
+          marginBottom: '-17px'
+        }}
+      >
+        <Typography
+          display="inline"
+          placement="left-end"
+          style={{ marginRight: '0.5rem', marginTop: '0.75rem' }}
+        >
+          Topology:
+        </Typography>
+        <Button
+          placement="right-end"
+          variant="outlined"
+          color="primary"
+          size="small"
+          style={{ marginRight: '0.5rem', marginTop: '1rem', minWidth: '5px' }}
+          onClick={() => handleToggle('outside')}
+        >
+          Out
+        </Button>
+        <Button
+          placement="right-end"
+          variant="outlined"
+          color="secondary"
+          size="small"
+          style={{ marginTop: '1rem', minWidth: '5px' }}
+          onClick={() => handleToggle('inside')}
+        >
+          In
+        </Button>
+      </div>
+    </TabPanel>
+  )
+
+  const symbolLeft = (
+    <TabPanel value={tabValue} index={1}>
+      In Progress....
+    </TabPanel>
   );
 
   const legendLeft = (
@@ -450,213 +443,19 @@ function Legend(props) {
             Legend
           </Typography>
         </div>
-
-        <div className="legend--menuItem">
-          <Typography>
-            N-Glycan:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {glycoslation.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showGlyco ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('glyco')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            O-GalNAc:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {o_glcnac.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showOGalNAc ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('o_glcnac')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            O-Glc:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {o_glc.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showOGlc ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('o_glc')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Glycation:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {glycation.length}
-            </Typography>
-          </Typography>
-          <div
-            className={`button-visibility${showGlycation ? '--on' : '--off'}`}
-          >
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('glycation')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            PhosphoS:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {phosphoserine.length}
-            </Typography>
-          </Typography>
-          <div
-            className={`button-visibility${showPhosphoserine ? '--on' : '--off'}`}
-          >
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('phosphoserine')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            PhosphoT:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {phosphothreonine.length}
-            </Typography>
-          </Typography>
-          <div
-            className={`button-visibility${showPhosphothreonine ? '--on' : '--off'}`}
-          >
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('phosphothreonine')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            PhosphoY:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {phosphotyrosine.length}
-            </Typography>
-          </Typography>
-          <div
-            className={`button-visibility${showPhosphotyrosine ? '--on' : '--off'}`}
-          >
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                className={{ root: 'on' }}
-                onClick={() => handleToggle('phosphotyrosine')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Disulfides:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {disulfideBonds.length}
-            </Typography>
-          </Typography>
-          <div className={`button-visibility${showSulfide ? '--on' : '--off'}`}>
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                onClick={() => handleToggle('sulfide')}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </div>
-        <div className="legend--menuItem">
-          <Typography>
-            Protein Length:
-            <Typography display="inline" classes={{ root: 'bold-text' }}>
-              {length}
-            </Typography>
-          </Typography>
-        </div>
-        <div
-          className="legend--menuItem"
-          style={{
-            alignItems: 'center',
-            marginTop: '10px',
-            marginBottom: '-17px'
-          }}
-        >
-          <Typography
-            display="inline"
-            placement="left-end"
-            style={{ marginRight: '0.5rem', marginTop: '0.75rem' }}
-          >
-            Topology:
-          </Typography>
-          <Button
-            placement="right-end"
-            variant="outlined"
-            color="primary"
-            size="small"
-            style={{ marginRight: '0.5rem', marginTop: '1rem', minWidth: '5px'}}
-            onClick={() => handleToggle('outside')}
-          >
-            Out
-          </Button>
-          <Button
-            placement="right-end"
-            variant="outlined"
-            color="secondary"
-            size="small"
-            style={{ marginTop: '1rem', minWidth: '5px'}}
-            onClick={() => handleToggle('inside')}
-          >
-            In
-          </Button>
-        </div>
+        <AppBar position="static">
+          <Tabs value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
+            <Tab label="Item One" {...a11yProps(0)} />
+            <Tab label="Item Two" {...a11yProps(1)} />
+          </Tabs>
+        </AppBar>
+        {infoLeft}
+        {symbolLeft}
       </CardContent>
     </Card>
   );
+
+
 
   const legendRight = (
     <Card variant="outlined" raised classes={{ root: 'legend--wrapperRight' }}>
@@ -679,7 +478,7 @@ function Legend(props) {
             </Typography>
           </Typography>
           <div className={`button-visibility${showSequons ? '--on' : '--off'}`}>
-          <Tooltip title="toggle visibility" placement="right-end">
+            <Tooltip title="toggle visibility" placement="right-end">
               <IconButton
                 aria-label="delete"
                 // className={{ root: 'on' }}
@@ -822,21 +621,36 @@ Legend.propTypes = {
 };
 
 Legend.defaultProps = {
-  toggleGlyco: () => {},
-  toggleOGalNAc: () => {},
-  toggleOGlc: () => {},
-  toggleGlycation: () => {},
-  togglePhosphoserine: () => {},
-  togglePhosphothreonine: () => {},
-  togglePhosphotyrosine: () => {},
-  toggleSulfide: () => {},
-  toggleOutside: () => {},
-  toggleInside: () => {},
-  toggleSequons: () => {},
-  toggleCysteines: () => {},
-  toggleFreeS: () => {},
-  toggleFreeT: () => {},
-  toggleFreeK: () => {}
+  toggleGlyco: () => {
+  },
+  toggleOGalNAc: () => {
+  },
+  toggleOGlc: () => {
+  },
+  toggleGlycation: () => {
+  },
+  togglePhosphoserine: () => {
+  },
+  togglePhosphothreonine: () => {
+  },
+  togglePhosphotyrosine: () => {
+  },
+  toggleSulfide: () => {
+  },
+  toggleOutside: () => {
+  },
+  toggleInside: () => {
+  },
+  toggleSequons: () => {
+  },
+  toggleCysteines: () => {
+  },
+  toggleFreeS: () => {
+  },
+  toggleFreeT: () => {
+  },
+  toggleFreeK: () => {
+  }
 };
 
 export default Legend;
