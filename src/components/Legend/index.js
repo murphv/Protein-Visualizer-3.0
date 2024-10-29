@@ -8,7 +8,8 @@ import {
   Tooltip,
   Tab,
   Tabs,
-  Box, AppBar
+  AppBar,
+  Paper
 } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import PropTypes, { element } from 'prop-types';
@@ -39,9 +40,9 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
+        <CardContent>
+          {children}
+        </CardContent>
       )}
     </div>
   );
@@ -62,7 +63,7 @@ function a11yProps(index) {
 
 const useStyles = makeStyles({
   root: {
-    Width: 275
+    Width: 245
   },
   bullet: {
     display: 'inline-block',
@@ -78,6 +79,18 @@ const useStyles = makeStyles({
   },
   pos: {
     marginBottom: 12
+  },
+  tabs: {
+    flexGrow: 1,
+    backgroundColor: '#f8f8ff',
+    width: '100%',
+    marginBottom: '15px'
+  },
+  tab: {
+    minWidth: 100,
+    width: 100,
+    fontSize: 10,
+    fontWeight: 'bold'
   }
 });
 /**
@@ -426,7 +439,110 @@ function Legend(props) {
 
   const symbolLeft = (
     <TabPanel value={tabValue} index={1}>
-      In Progress....
+      <div className="legend--menuSymbol">
+        <Typography>
+          N-Glycan:
+        </Typography>
+        <div className="symbol">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+            <rect x="10" y="3" width="14" height="14" fill="blue" style={{ stroke: 'black' }} />
+            <line x1="0" y1="10" x2="10" y2="10" style={{ stroke: 'black' }} />
+            <rect x="40" y="3" width="14" height="14" fill="blue" style={{ stroke: 'black' }} />
+            <line x1="24" y1="10" x2="40" y2="10" style={{ stroke: 'black' }} />
+            <circle r="8" cx="76" cy="10" fill="green" style={{ stroke: 'black' }} />
+            <line x1="54" y1="10" x2="68" y2="10" style={{ stroke: 'black' }} />
+            <text x="86" y="16" fill="black" fontWeight="bold">N</text>
+          </svg>
+        </div>
+      </div>
+      <div className="legend--menuSymbol">
+        <Typography>
+          O-GalNAc:
+        </Typography>
+        <div className="symbol">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+            <rect x="20" y="3" width="14" height="14" fill="yellow" style={{ stroke: 'black' }} />
+            <line x1="0" y1="10" x2="20" y2="10" style={{ stroke: 'black' }} />
+            <text x="40" y="16" fill="black" fontWeight="bold">O</text>
+          </svg>
+        </div>
+      </div>
+      <div className="legend--menuSymbol">
+        <Typography>
+          O-Glc:
+        </Typography>
+        <div className="symbol">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+            <circle r="8" cx="27" cy="10" fill="blue" style={{ stroke: 'black' }} />
+            <line x1="0" y1="10" x2="19" y2="10" style={{ stroke: 'black' }} />
+            <text x="40" y="16" fill="black" fontWeight="bold">O</text>
+          </svg>
+        </div>
+      </div>
+      <div className="legend--menuSymbol">
+        <Typography>
+          Glycation:
+        </Typography>
+        <div className="symbol">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+            <circle r="8" cx="27" cy="10" fill="blue" style={{ stroke: 'black' }} />
+            <line x1="0" y1="10" x2="19" y2="10" style={{ stroke: 'black' }} />
+            <text x="40" y="16" fill="black" fontWeight="bold">N</text>
+          </svg>
+        </div>
+      </div>
+      <div className="legend--menuSymbol">
+        <Typography>
+          PhosphoS:
+        </Typography>
+        <div className="symbol">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+            <circle r="10" cx="27" cy="10" fill="#FDCC04" />
+            <line x1="0" y1="10" x2="17" y2="10" style={{ stroke: 'black' }} />
+            <text x="23" y="16" fill="black" fontWeight="bold">P</text>
+          </svg>
+        </div>
+      </div>
+      <div className="legend--menuSymbol">
+        <Typography>
+          PhosphoT:
+        </Typography>
+        <div className="symbol">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+            <circle r="10" cx="27" cy="10" fill="#627DCC" />
+            <line x1="0" y1="10" x2="17" y2="10" style={{ stroke: 'black' }} />
+            <text x="23" y="16" fill="black" fontWeight="bold">P</text>
+          </svg>
+        </div>
+      </div>
+      <div className="legend--menuSymbol">
+        <Typography>
+          PhosphoY:
+        </Typography>
+        <div className="symbol">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+            <circle r="10" cx="27" cy="10" fill="#93E37F" />
+            <line x1="0" y1="10" x2="17" y2="10" style={{ stroke: 'black' }} />
+            <text x="23" y="16" fill="black" fontWeight="bold">P</text>
+          </svg>
+        </div>
+      </div>
+      <div className="legend--menuSymbol">
+        <Typography>
+          Disulfides:
+        </Typography>
+        <div className="symbol">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+            <circle r="5" cx="20" cy="6" fill="#C76861" style={{ stroke: 'white' }} />
+            <circle r="5" cx="60" cy="6" fill="#C76861" style={{ stroke: 'white' }} />
+            <line x1="20" y1="18" x2="60" y2="18" style={{ stroke: 'black' }} />
+            <line x1="20" y1="18" x2="20" y2="11" style={{ stroke: 'black' }} />
+            <text x="5" y="18" fill="black" fontWeight="bold" fontSize="small">C</text>
+            <line x1="60" y1="18" x2="60" y2="11" style={{ stroke: 'black' }} />
+            <text x="65" y="18" fill="black" fontWeight="bold" fontSize="small">C</text>
+          </svg>
+        </div>
+      </div>
     </TabPanel>
   );
 
@@ -443,15 +559,21 @@ function Legend(props) {
             Legend
           </Typography>
         </div>
-        <AppBar position="static">
-          <Tabs value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
-            <Tab label="Item One" {...a11yProps(0)} />
-            <Tab label="Item Two" {...a11yProps(1)} />
+        <Paper className={classes.tabs}>
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="simple tabs example">
+            <Tab classes={{ root: classes.tab }} label="Protein Features" {...a11yProps(0)} />
+            <Tab classes={{ root: classes.tab }} label="Scientific Symbol" {...a11yProps(1)} />
           </Tabs>
-        </AppBar>
-        {infoLeft}
-        {symbolLeft}
-      </CardContent>
+        </Paper>
+      {infoLeft}
+      {symbolLeft}
+    </CardContent>
+
     </Card>
   );
 

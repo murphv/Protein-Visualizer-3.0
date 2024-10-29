@@ -21,6 +21,10 @@
     margin-bottom: -23px;
   }
 
+  &--menuSymbol {
+    display: flex;
+  }
+
   &--header {
     width: max-content;
     margin-bottom: 15px;
@@ -49,4 +53,10 @@
 .bold-text {
   font-weight: bold;
   margin-left: 7px;
+}
+
+.symbol {
+  display: inline;
+  position: relative;
+  left: 10px;
 }
