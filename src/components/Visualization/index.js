@@ -366,7 +366,7 @@ function Visualization(props) {
     });
   };
 
-  const attachPhosphorylation = (g, isWindowView, phosphorylation) => {
+  const attachPhosphorylation = (g, isWindowView, phosphorylation, color) => {
     let phosphos = phosphorylation.map((el) => parseInt(el, 10));
     if (isWindowView) {
       phosphos = phosphos.filter(
@@ -401,7 +401,7 @@ function Visualization(props) {
         .attr('cx', phosphoPos)
         .attr('cy', SULFIDE_POS - GLYCO_STEM_LENGTH * 0.8 + CIRCLE_RADIUS)
         .attr('r', CIRCLE_RADIUS + 5)
-        .style('fill', '#FDCC04');
+        .style('fill', `${color}`);
 
       const atom = g.append('text');
       atom
@@ -1089,13 +1089,13 @@ function Visualization(props) {
       attachFreeAmAcids(g, isWindowView, freeK, 'K', 'white');
     }
     if (showPhosphoserine) {
-      attachPhosphorylation(g, isWindowView, phosphoserine);
+      attachPhosphorylation(g, isWindowView, phosphoserine, '#FDCC04');
     }
     if (showPhosphotyrosine) {
-      attachPhosphorylation(g, isWindowView, phosphotyrosine);
+      attachPhosphorylation(g, isWindowView, phosphotyrosine, '#627DCC');
     }
     if (showPhosphothreonine) {
-      attachPhosphorylation(g, isWindowView, phosphothreonine);
+      attachPhosphorylation(g, isWindowView, phosphothreonine, '#93E37F');
     }
     if (!isWindowView) {
       attachNTerminus(g);
