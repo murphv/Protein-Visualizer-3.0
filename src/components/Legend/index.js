@@ -531,7 +531,7 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Phosphoserine:
+            PhosphoS:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {phosphoserine.length}
             </Typography>
@@ -552,7 +552,7 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Phosphothreonine:
+            PhosphoT:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {phosphothreonine.length}
             </Typography>
@@ -573,7 +573,7 @@ function Legend(props) {
         </div>
         <div className="legend--menuItem">
           <Typography>
-            Phosphotyrosine:
+            PhosphoY:
             <Typography display="inline" classes={{ root: 'bold-text' }}>
               {phosphotyrosine.length}
             </Typography>
@@ -629,7 +629,7 @@ function Legend(props) {
           <Typography
             display="inline"
             placement="left-end"
-            style={{ marginRight: '1rem', marginTop: '0.75rem' }}
+            style={{ marginRight: '0.5rem', marginTop: '0.75rem' }}
           >
             Topology:
           </Typography>
@@ -638,7 +638,7 @@ function Legend(props) {
             variant="outlined"
             color="primary"
             size="small"
-            style={{ marginRight: '1rem', marginTop: '1rem' }}
+            style={{ marginRight: '0.5rem', marginTop: '1rem', minWidth: '5px'}}
             onClick={() => handleToggle('outside')}
           >
             Out
@@ -648,7 +648,7 @@ function Legend(props) {
             variant="outlined"
             color="secondary"
             size="small"
-            style={{ marginTop: '1rem' }}
+            style={{ marginTop: '1rem', minWidth: '5px'}}
             onClick={() => handleToggle('inside')}
           >
             In
