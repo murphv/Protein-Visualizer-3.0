@@ -39,11 +39,7 @@ function TabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <CardContent>
-          {children}
-        </CardContent>
-      )}
+      {value === index && <CardContent>{children}</CardContent>}
     </div>
   );
 }
@@ -51,13 +47,13 @@ function TabPanel(props) {
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired
 };
 
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`
   };
 }
 
@@ -178,7 +174,7 @@ function Legend(props) {
 
   const handleTabChange = (event, newTabValue) => {
     setTabValue(newTabValue);
-  }
+  };
 
   const handleToggle = (element) => {
     if (element === 'sulfide') {
@@ -295,9 +291,7 @@ function Legend(props) {
             {glycation.length}
           </Typography>
         </Typography>
-        <div
-          className={`button-visibility${showGlycation ? '--on' : '--off'}`}
-        >
+        <div className={`button-visibility${showGlycation ? '--on' : '--off'}`}>
           <Tooltip title="toggle visibility" placement="right-end">
             <IconButton
               aria-label="delete"
@@ -435,111 +429,204 @@ function Legend(props) {
         </Button>
       </div>
     </TabPanel>
-  )
+  );
 
   const symbolLeft = (
     <TabPanel value={tabValue} index={1}>
       <div className="legend--menuSymbol">
-        <Typography>
-          N-Glycan:
-        </Typography>
+        <Typography>N-Glycan:</Typography>
         <div className="symbol">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
-            <rect x="10" y="3" width="14" height="14" fill="blue" style={{ stroke: 'black' }} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="20"
+            fill="none"
+          >
+            <rect
+              x="10"
+              y="3"
+              width="14"
+              height="14"
+              fill="blue"
+              style={{ stroke: 'black' }}
+            />
             <line x1="0" y1="10" x2="10" y2="10" style={{ stroke: 'black' }} />
-            <rect x="40" y="3" width="14" height="14" fill="blue" style={{ stroke: 'black' }} />
+            <rect
+              x="40"
+              y="3"
+              width="14"
+              height="14"
+              fill="blue"
+              style={{ stroke: 'black' }}
+            />
             <line x1="24" y1="10" x2="40" y2="10" style={{ stroke: 'black' }} />
-            <circle r="8" cx="76" cy="10" fill="green" style={{ stroke: 'black' }} />
+            <circle
+              r="8"
+              cx="76"
+              cy="10"
+              fill="green"
+              style={{ stroke: 'black' }}
+            />
             <line x1="54" y1="10" x2="68" y2="10" style={{ stroke: 'black' }} />
-            <text x="86" y="16" fill="black" fontWeight="bold">N</text>
+            <text x="86" y="16" fill="black" fontWeight="bold">
+              N
+            </text>
           </svg>
         </div>
       </div>
       <div className="legend--menuSymbol">
-        <Typography>
-          O-GalNAc:
-        </Typography>
+        <Typography>O-GalNAc:</Typography>
         <div className="symbol">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
-            <rect x="20" y="3" width="14" height="14" fill="yellow" style={{ stroke: 'black' }} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="20"
+            fill="none"
+          >
+            <rect
+              x="20"
+              y="3"
+              width="14"
+              height="14"
+              fill="yellow"
+              style={{ stroke: 'black' }}
+            />
             <line x1="0" y1="10" x2="20" y2="10" style={{ stroke: 'black' }} />
-            <text x="40" y="16" fill="black" fontWeight="bold">O</text>
+            <text x="40" y="16" fill="black" fontWeight="bold">
+              O
+            </text>
           </svg>
         </div>
       </div>
       <div className="legend--menuSymbol">
-        <Typography>
-          O-Glc:
-        </Typography>
+        <Typography>O-Glc:</Typography>
         <div className="symbol">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
-            <circle r="8" cx="27" cy="10" fill="blue" style={{ stroke: 'black' }} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="20"
+            fill="none"
+          >
+            <circle
+              r="8"
+              cx="27"
+              cy="10"
+              fill="blue"
+              style={{ stroke: 'black' }}
+            />
             <line x1="0" y1="10" x2="19" y2="10" style={{ stroke: 'black' }} />
-            <text x="40" y="16" fill="black" fontWeight="bold">O</text>
+            <text x="40" y="16" fill="black" fontWeight="bold">
+              O
+            </text>
           </svg>
         </div>
       </div>
       <div className="legend--menuSymbol">
-        <Typography>
-          Glycation:
-        </Typography>
+        <Typography>Glycation:</Typography>
         <div className="symbol">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
-            <circle r="8" cx="27" cy="10" fill="blue" style={{ stroke: 'black' }} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="20"
+            fill="none"
+          >
+            <circle
+              r="8"
+              cx="27"
+              cy="10"
+              fill="blue"
+              style={{ stroke: 'black' }}
+            />
             <line x1="0" y1="10" x2="19" y2="10" style={{ stroke: 'black' }} />
-            <text x="40" y="16" fill="black" fontWeight="bold">N</text>
+            <text x="40" y="16" fill="black" fontWeight="bold">
+              N
+            </text>
           </svg>
         </div>
       </div>
       <div className="legend--menuSymbol">
-        <Typography>
-          PhosphoS:
-        </Typography>
+        <Typography>PhosphoS:</Typography>
         <div className="symbol">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="20"
+            fill="none"
+          >
             <circle r="10" cx="27" cy="10" fill="#FDCC04" />
             <line x1="0" y1="10" x2="17" y2="10" style={{ stroke: 'black' }} />
-            <text x="23" y="16" fill="black" fontWeight="bold">P</text>
+            <text x="23" y="16" fill="black" fontWeight="bold">
+              P
+            </text>
           </svg>
         </div>
       </div>
       <div className="legend--menuSymbol">
-        <Typography>
-          PhosphoT:
-        </Typography>
+        <Typography>PhosphoT:</Typography>
         <div className="symbol">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="20"
+            fill="none"
+          >
             <circle r="10" cx="27" cy="10" fill="#627DCC" />
             <line x1="0" y1="10" x2="17" y2="10" style={{ stroke: 'black' }} />
-            <text x="23" y="16" fill="black" fontWeight="bold">P</text>
+            <text x="23" y="16" fill="black" fontWeight="bold">
+              P
+            </text>
           </svg>
         </div>
       </div>
       <div className="legend--menuSymbol">
-        <Typography>
-          PhosphoY:
-        </Typography>
+        <Typography>PhosphoY:</Typography>
         <div className="symbol">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="20"
+            fill="none"
+          >
             <circle r="10" cx="27" cy="10" fill="#93E37F" />
             <line x1="0" y1="10" x2="17" y2="10" style={{ stroke: 'black' }} />
-            <text x="23" y="16" fill="black" fontWeight="bold">P</text>
+            <text x="23" y="16" fill="black" fontWeight="bold">
+              P
+            </text>
           </svg>
         </div>
       </div>
       <div className="legend--menuSymbol">
-        <Typography>
-          Disulfides:
-        </Typography>
+        <Typography>Disulfides:</Typography>
         <div className="symbol">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" fill="none">
-            <circle r="5" cx="20" cy="6" fill="#C76861" style={{ stroke: 'white' }} />
-            <circle r="5" cx="60" cy="6" fill="#C76861" style={{ stroke: 'white' }} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="20"
+            fill="none"
+          >
+            <circle
+              r="5"
+              cx="20"
+              cy="6"
+              fill="#C76861"
+              style={{ stroke: 'white' }}
+            />
+            <circle
+              r="5"
+              cx="60"
+              cy="6"
+              fill="#C76861"
+              style={{ stroke: 'white' }}
+            />
             <line x1="20" y1="18" x2="60" y2="18" style={{ stroke: 'black' }} />
             <line x1="20" y1="18" x2="20" y2="11" style={{ stroke: 'black' }} />
-            <text x="5" y="18" fill="black" fontWeight="bold" fontSize="small">C</text>
+            <text x="5" y="18" fill="black" fontWeight="bold" fontSize="small">
+              C
+            </text>
             <line x1="60" y1="18" x2="60" y2="11" style={{ stroke: 'black' }} />
-            <text x="65" y="18" fill="black" fontWeight="bold" fontSize="small">C</text>
+            <text x="65" y="18" fill="black" fontWeight="bold" fontSize="small">
+              C
+            </text>
           </svg>
         </div>
       </div>
@@ -565,19 +652,25 @@ function Legend(props) {
             onChange={handleTabChange}
             variant="scrollable"
             scrollButtons="auto"
-            aria-label="simple tabs example">
-            <Tab classes={{ root: classes.tab }} label="Protein Features" {...a11yProps(0)} />
-            <Tab classes={{ root: classes.tab }} label="Scientific Symbol" {...a11yProps(1)} />
+            aria-label="simple tabs example"
+          >
+            <Tab
+              classes={{ root: classes.tab }}
+              label="Protein Features"
+              {...a11yProps(0)}
+            />
+            <Tab
+              classes={{ root: classes.tab }}
+              label="Scientific Symbol"
+              {...a11yProps(1)}
+            />
           </Tabs>
         </Paper>
-      {infoLeft}
-      {symbolLeft}
-    </CardContent>
-
+        {infoLeft}
+        {symbolLeft}
+      </CardContent>
     </Card>
   );
-
-
 
   const legendRight = (
     <Card variant="outlined" raised classes={{ root: 'legend--wrapperRight' }}>
@@ -743,36 +836,21 @@ Legend.propTypes = {
 };
 
 Legend.defaultProps = {
-  toggleGlyco: () => {
-  },
-  toggleOGalNAc: () => {
-  },
-  toggleOGlc: () => {
-  },
-  toggleGlycation: () => {
-  },
-  togglePhosphoserine: () => {
-  },
-  togglePhosphothreonine: () => {
-  },
-  togglePhosphotyrosine: () => {
-  },
-  toggleSulfide: () => {
-  },
-  toggleOutside: () => {
-  },
-  toggleInside: () => {
-  },
-  toggleSequons: () => {
-  },
-  toggleCysteines: () => {
-  },
-  toggleFreeS: () => {
-  },
-  toggleFreeT: () => {
-  },
-  toggleFreeK: () => {
-  }
+  toggleGlyco: () => {},
+  toggleOGalNAc: () => {},
+  toggleOGlc: () => {},
+  toggleGlycation: () => {},
+  togglePhosphoserine: () => {},
+  togglePhosphothreonine: () => {},
+  togglePhosphotyrosine: () => {},
+  toggleSulfide: () => {},
+  toggleOutside: () => {},
+  toggleInside: () => {},
+  toggleSequons: () => {},
+  toggleCysteines: () => {},
+  toggleFreeS: () => {},
+  toggleFreeT: () => {},
+  toggleFreeK: () => {}
 };
 
 export default Legend;
