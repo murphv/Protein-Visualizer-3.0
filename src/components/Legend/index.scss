@@ -7,6 +7,18 @@
     background-color: #f8f8ff;
   }
 
+  &--wrapperTransparent {
+    position: fixed;
+    top: 150px;
+    left: 10px;
+    width: 250px;
+    background-color: #f8f8ff;
+    opacity: 0.2;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
   &--wrapperRight {
     position: fixed;
     top: 150px;

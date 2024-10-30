@@ -8,7 +8,6 @@ import {
   Tooltip,
   Tab,
   Tabs,
-  AppBar,
   Paper
 } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -87,7 +86,8 @@ const useStyles = makeStyles({
     width: 100,
     fontSize: 10,
     fontWeight: 'bold'
-  }
+  },
+  card: {}
 });
 /**
  *
@@ -154,6 +154,7 @@ function Legend(props) {
     length,
     species
   } = props;
+  const [tabTransparency, setTabTransparency] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const [showGlyco, setShowGlyco] = useState(true);
   const [showOGalNAc, setShowOGalNAc] = useState(true);
@@ -174,6 +175,10 @@ function Legend(props) {
 
   const handleTabChange = (event, newTabValue) => {
     setTabValue(newTabValue);
+  };
+
+  const handleTransparency = (e) => {
+    setTabTransparency(!tabTransparency);
   };
 
   const handleToggle = (element) => {
@@ -634,7 +639,13 @@ function Legend(props) {
   );
 
   const legendLeft = (
-    <Card variant="outlined" raised classes={{ root: 'legend--wrapper' }}>
+    <Card
+      variant="outlined"
+      raised
+      classes={{
+        root: `legend--wrapper${tabTransparency ? 'Transparent' : ''}`
+      }}
+    >
       <CardContent>
         <div className="legend--header">
           <Typography
@@ -645,6 +656,18 @@ function Legend(props) {
           >
             Legend
           </Typography>
+          <div
+            className={`button-visibility${tabTransparency ? '--on' : '--off'}`}
+          >
+            <Tooltip title="toggle visibility" placement="right-end">
+              <IconButton
+                aria-label="delete"
+                onClick={handleTransparency}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
         </div>
         <Paper className={classes.tabs}>
           <Tabs
