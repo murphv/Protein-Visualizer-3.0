@@ -11,7 +11,7 @@ import {
   Paper
 } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import PropTypes, { element } from 'prop-types';
+import PropTypes from 'prop-types';
 // import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -656,14 +656,9 @@ function Legend(props) {
           >
             Legend
           </Typography>
-          <div
-            className={`button-visibility${tabTransparency ? '--on' : '--off'}`}
-          >
-            <Tooltip title="toggle visibility" placement="right-end">
-              <IconButton
-                aria-label="delete"
-                onClick={handleTransparency}
-              >
+          <div className="button-visibility--on">
+            <Tooltip title="toggle transparency for legend" placement="right-end">
+              <IconButton aria-label="delete" onClick={handleTransparency}>
                 <VisibilityIcon />
               </IconButton>
             </Tooltip>
@@ -696,7 +691,13 @@ function Legend(props) {
   );
 
   const legendRight = (
-    <Card variant="outlined" raised classes={{ root: 'legend--wrapperRight' }}>
+    <Card
+      variant="outlined"
+      raised
+      classes={{
+        root: `legend--wrapperRight${tabTransparency ? 'Transparent' : ''}`
+      }}
+    >
       <CardContent>
         <div className="legend--header">
           <Typography
