@@ -154,7 +154,7 @@ function Legend(props) {
     length,
     species
   } = props;
-  const [tabTransparency, setTabTransparency] = useState(false);
+  const [tabTransparency, setTabTransparency] = useState(true);
   const [tabValue, setTabValue] = useState(0);
   const [showGlyco, setShowGlyco] = useState(true);
   const [showOGalNAc, setShowOGalNAc] = useState(true);
@@ -389,20 +389,12 @@ function Legend(props) {
           </Tooltip>
         </div>
       </div>
-      <div className="legend--menuItem">
-        <Typography>
-          Protein Length:
-          <Typography display="inline" classes={{ root: 'bold-text' }}>
-            {length}
-          </Typography>
-        </Typography>
-      </div>
       <div
         className="legend--menuItem"
         style={{
           alignItems: 'center',
-          marginTop: '10px',
-          marginBottom: '-17px'
+          marginTop: '-33px',
+          marginBottom: '-40px'
         }}
       >
         <Typography
@@ -438,7 +430,10 @@ function Legend(props) {
 
   const symbolLeft = (
     <TabPanel value={tabValue} index={1}>
-      <div className="legend--menuSymbol">
+      <div className="legend--menuSymbol"
+           style={{
+             marginTop: '-23px'
+           }}>
         <Typography>N-Glycan:</Typography>
         <div className="symbol">
           <svg
@@ -600,7 +595,10 @@ function Legend(props) {
           </svg>
         </div>
       </div>
-      <div className="legend--menuSymbol">
+      <div className="legend--menuSymbol"
+           style={{
+             marginBottom: '-40px'
+           }}>
         <Typography>Disulfides:</Typography>
         <div className="symbol">
           <svg
@@ -656,7 +654,9 @@ function Legend(props) {
           >
             Legend
           </Typography>
-          <div className="button-visibility--on">
+          <div
+            className={`button-visibility${tabTransparency ? '--off' : '--on'}`}
+          >
             <Tooltip
               title="toggle transparency for legend"
               placement="right-end"
@@ -792,6 +792,20 @@ function Legend(props) {
       </div>
       <div className="legend--menuItem">
         <Typography>
+          Protein Length:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {length}
+          </Typography>
+        </Typography>
+      </div>
+      <div
+        className="legend--menuItem"
+        style={{
+          marginTop: '23px',
+          marginBottom: '-40px'
+        }}
+      >
+        <Typography>
           Species:
           <Typography display="inline" classes={{ root: 'bold-text' }}>
             {species}
@@ -803,7 +817,10 @@ function Legend(props) {
 
   const symbolRight = (
     <TabPanel index={1} value={tabValue}>
-      <div className="legend--menuSymbol">
+      <div className="legend--menuSymbol"
+           style={{
+             marginTop: '-23px'
+           }}>
         <Typography>Free Sequon:</Typography>
         <div className="symbol">
           <svg
@@ -871,7 +888,10 @@ function Legend(props) {
           </svg>
         </div>
       </div>
-      <div className="legend--menuSymbol">
+      <div className="legend--menuSymbol"
+           style={{
+             marginBottom: '-40px'
+           }}>
         <Typography>Free T:</Typography>
         <div className="symbol">
           <svg
