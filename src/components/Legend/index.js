@@ -100,6 +100,7 @@ const useStyles = makeStyles({
  * @property {Object} free_s object containing Free S info
  * @property {Object} free_t object containing Free T info
  * @property {Object} free_k object containing Free K info
+ * @property {Object} free_w object containing Free W info
  * @property {Object} phosphoserine object containing Phosphoserine info
  * @property {Object} phosphothreonine object containing Phosphothreonine info
  * @property {Object} phosphotyrosine object containing Phosphotyrosine info
@@ -115,6 +116,7 @@ const useStyles = makeStyles({
  * @property {func} toggleFreeS Function that toggles Free S visibility
  * @property {func} toggleFreeT Function that toggles Free T visibility
  * @property {func} toggleFreeK Function that toggles Free K visibility
+ * @property {func} toggleFreeW Function that toggles Free W visibility
  * @property {func} togglePhosphoserine Function that toggles Phosphoserine visibility
  * @property {func} togglePhosphothreonine Function that toggles Phosphothreonine visibility
  * @property {func} togglePhosphotyrosine Function that toggles Phosphotyrosine visibility
@@ -136,6 +138,7 @@ function Legend(props) {
     free_s,
     free_t,
     free_k,
+    free_w,
     toggleGlyco,
     toggleOGalNAc,
     toggleOGlc,
@@ -151,6 +154,7 @@ function Legend(props) {
     toggleFreeS,
     toggleFreeT,
     toggleFreeK,
+    toggleFreeW,
     length,
     species
   } = props;
@@ -168,6 +172,7 @@ function Legend(props) {
   const [showFreeS, setShowFreeS] = useState(true);
   const [showFreeT, setShowFreeT] = useState(true);
   const [showFreeK, setShowFreeK] = useState(true);
+  const [showFreeW, setShowFreeW] = useState(false);
   const [showPhosphoserine, setShowPhosphoserine] = useState(true);
   const [showPhosphothreonine, setShowPhosphothreonine] = useState(true);
   const [showPhosphotyrosine, setShowPhosphotyrosine] = useState(true);
@@ -224,6 +229,9 @@ function Legend(props) {
     } else if (element === 'free_t') {
       toggleFreeT(!showFreeT);
       setShowFreeT(!showFreeT);
+    } else if (element === 'free_w') {
+      toggleFreeW(!showFreeW);
+      setShowFreeW(!showFreeW);
     } else {
       toggleInside(!showInsideDomain);
       setShowInside(!showInsideDomain);
@@ -430,10 +438,12 @@ function Legend(props) {
 
   const symbolLeft = (
     <TabPanel value={tabValue} index={1}>
-      <div className="legend--menuSymbol"
-           style={{
-             marginTop: '-23px'
-           }}>
+      <div
+        className="legend--menuSymbol"
+        style={{
+          marginTop: '-23px'
+        }}
+      >
         <Typography>N-Glycan:</Typography>
         <div className="symbol">
           <svg
@@ -595,10 +605,12 @@ function Legend(props) {
           </svg>
         </div>
       </div>
-      <div className="legend--menuSymbol"
-           style={{
-             marginBottom: '-40px'
-           }}>
+      <div
+        className="legend--menuSymbol"
+        style={{
+          marginBottom: '-40px'
+        }}
+      >
         <Typography>Disulfides:</Typography>
         <div className="symbol">
           <svg
@@ -792,6 +804,25 @@ function Legend(props) {
       </div>
       <div className="legend--menuItem">
         <Typography>
+          Free W:
+          <Typography display="inline" classes={{ root: 'bold-text' }}>
+            {free_w.length}
+          </Typography>
+        </Typography>
+        <div className={`button-visibility${showFreeW ? '--on' : '--off'}`}>
+          <Tooltip title="toggle visibility" placement="right-end">
+            <IconButton
+              aria-label="delete"
+              // className={{ root: 'on' }}
+              onClick={() => handleToggle('free_w')}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </div>
+      <div className="legend--menuItem">
+        <Typography>
           Protein Length:
           <Typography display="inline" classes={{ root: 'bold-text' }}>
             {length}
@@ -817,10 +848,12 @@ function Legend(props) {
 
   const symbolRight = (
     <TabPanel index={1} value={tabValue}>
-      <div className="legend--menuSymbol"
-           style={{
-             marginTop: '-23px'
-           }}>
+      <div
+        className="legend--menuSymbol"
+        style={{
+          marginTop: '-23px'
+        }}
+      >
         <Typography>Free Sequon:</Typography>
         <div className="symbol">
           <svg
@@ -888,10 +921,9 @@ function Legend(props) {
           </svg>
         </div>
       </div>
-      <div className="legend--menuSymbol"
-           style={{
-             marginBottom: '-40px'
-           }}>
+      <div
+        className="legend--menuSymbol"
+      >
         <Typography>Free T:</Typography>
         <div className="symbol">
           <svg
@@ -904,6 +936,28 @@ function Legend(props) {
             <line x1="12" y1="10" x2="40" y2="10" stroke="black" />
             <text x="45" y="16" fill="black" fontWeight="bold">
               T
+            </text>
+          </svg>
+        </div>
+      </div>
+      <div
+        className="legend--menuSymbol"
+        style={{
+          marginBottom: '-40px'
+        }}
+      >
+        <Typography>Free W:</Typography>
+        <div className="symbol">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="80"
+            height="20"
+            fill="none"
+          >
+            <circle r="3" cx="5" cy="10" fill="black" stroke="white" />
+            <line x1="12" y1="10" x2="40" y2="10" stroke="black" />
+            <text x="45" y="16" fill="black" fontWeight="bold">
+              W
             </text>
           </svg>
         </div>
@@ -978,6 +1032,7 @@ Legend.propTypes = {
   free_s: PropTypes.arrayOf(PropTypes.string).isRequired,
   free_k: PropTypes.arrayOf(PropTypes.string).isRequired,
   free_t: PropTypes.arrayOf(PropTypes.string).isRequired,
+  free_w: PropTypes.arrayOf(PropTypes.string).isRequired,
   toggleOGalNAc: PropTypes.func,
   toggleGlyco: PropTypes.func,
   toggleOGlc: PropTypes.func,
@@ -992,6 +1047,7 @@ Legend.propTypes = {
   toggleFreeS: PropTypes.func,
   toggleFreeK: PropTypes.func,
   toggleFreeT: PropTypes.func,
+  toggleFreeW: PropTypes.func,
   toggleCysteines: PropTypes.func,
   length: PropTypes.number.isRequired,
   species: PropTypes.string.isRequired
@@ -1012,7 +1068,8 @@ Legend.defaultProps = {
   toggleCysteines: () => {},
   toggleFreeS: () => {},
   toggleFreeT: () => {},
-  toggleFreeK: () => {}
+  toggleFreeK: () => {},
+  toggleFreeW: () => {}
 };
 
 export default Legend;

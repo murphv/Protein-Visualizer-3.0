@@ -65,6 +65,7 @@ function Visualization(props) {
     freeS,
     freeT,
     freeK,
+    freeW,
     species
   } = initialOptions[currSelection];
 
@@ -90,6 +91,7 @@ function Visualization(props) {
   const [showFreeS, setShowFreeS] = useState(true);
   const [showFreeT, setShowFreeT] = useState(true);
   const [showFreeK, setShowFreeK] = useState(true);
+  const [showFreeW, setShowFreeW] = useState(false);
 
   const scaleVisualization = scaleFactor !== 1;
   const scaledWidth = initialWidth * scaleFactor;
@@ -1088,6 +1090,9 @@ function Visualization(props) {
     if (showFreeK) {
       attachFreeAmAcids(g, isWindowView, freeK, 'K', 'white');
     }
+    if (showFreeW) {
+      attachFreeAmAcids(g, isWindowView, freeW, 'W', 'white');
+    }
     if (showPhosphoserine) {
       attachPhosphorylation(g, isWindowView, phosphoserine, '#FDCC04');
     }
@@ -1142,6 +1147,7 @@ function Visualization(props) {
     showFreeS,
     showFreeT,
     showFreeK,
+    showFreeW,
     scaleVisualization,
     scaleFactor,
     fullScale,
@@ -1196,6 +1202,7 @@ function Visualization(props) {
           free_s={freeS}
           free_t={freeT}
           free_k={freeK}
+          free_w={freeW}
           phosphoserine={phosphoserine}
           phosphothreonine={phosphothreonine}
           phosphotyrosine={phosphotyrosine}
@@ -1211,6 +1218,7 @@ function Visualization(props) {
           toggleFreeS={setShowFreeS}
           toggleFreeT={setShowFreeT}
           toggleFreeK={setShowFreeK}
+          toggleFreeW={setShowFreeW}
           togglePhosphoserine={setShowPhosphoserine}
           togglePhosphothreonine={setShowPhosphothreonine}
           togglePhosphotyrosine={setShowPhosphotyrosine}

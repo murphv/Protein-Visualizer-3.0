@@ -309,6 +309,11 @@ function App() {
         [extractGlycation()],
         extractDsBonds()
       );
+      const tryptophan = extractFreeAnimo(
+        'W',
+        [],
+        extractDsBonds()
+      );
       return {
         value: entry['Name'],
         description: '',
@@ -334,7 +339,9 @@ function App() {
         totalT: threonines[0],
         freeT: threonines[1],
         totalK: lysines[0],
-        freeK: lysines[1]
+        freeK: lysines[1],
+        totalW: tryptophan[0],
+        freeW: tryptophan[1]
       };
     }
     return getProteinInfo();
