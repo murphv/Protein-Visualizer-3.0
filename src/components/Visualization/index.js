@@ -86,11 +86,11 @@ function Visualization(props) {
   const [showDisulfide, setShowDisulfide] = useState(true);
   const [showOutsideDomain, setShowOutisde] = useState(true);
   const [showInsideDomain, setShowInside] = useState(true);
-  const [showSequons, setShowSequons] = useState(true);
-  const [showCysteines, setShowCysteines] = useState(true);
-  const [showFreeS, setShowFreeS] = useState(true);
-  const [showFreeT, setShowFreeT] = useState(true);
-  const [showFreeK, setShowFreeK] = useState(true);
+  const [showSequons, setShowSequons] = useState(false);
+  const [showCysteines, setShowCysteines] = useState(false);
+  const [showFreeS, setShowFreeS] = useState(false);
+  const [showFreeT, setShowFreeT] = useState(false);
+  const [showFreeK, setShowFreeK] = useState(false);
   const [showFreeW, setShowFreeW] = useState(false);
 
   const scaleVisualization = scaleFactor !== 1;

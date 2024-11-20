@@ -167,11 +167,11 @@ function Legend(props) {
   const [showSulfide, setShowSulfide] = useState(true);
   const [showOutsideDomain, setShowOutside] = useState(true);
   const [showInsideDomain, setShowInside] = useState(true);
-  const [showSequons, setShowSequons] = useState(true);
-  const [showCysteines, setShowCysteines] = useState(true);
-  const [showFreeS, setShowFreeS] = useState(true);
-  const [showFreeT, setShowFreeT] = useState(true);
-  const [showFreeK, setShowFreeK] = useState(true);
+  const [showSequons, setShowSequons] = useState(false);
+  const [showCysteines, setShowCysteines] = useState(false);
+  const [showFreeS, setShowFreeS] = useState(false);
+  const [showFreeT, setShowFreeT] = useState(false);
+  const [showFreeK, setShowFreeK] = useState(false);
   const [showFreeW, setShowFreeW] = useState(false);
   const [showPhosphoserine, setShowPhosphoserine] = useState(true);
   const [showPhosphothreonine, setShowPhosphothreonine] = useState(true);
@@ -904,23 +904,6 @@ function Legend(props) {
           </svg>
         </div>
       </div>
-      <div className="legend--menuSymbol">
-        <Typography>Free K:</Typography>
-        <div className="symbol">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="80"
-            height="20"
-            fill="none"
-          >
-            <circle r="3" cx="5" cy="10" fill="white" stroke="black" />
-            <line x1="12" y1="10" x2="40" y2="10" stroke="black" />
-            <text x="45" y="16" fill="black" fontWeight="bold">
-              K
-            </text>
-          </svg>
-        </div>
-      </div>
       <div
         className="legend--menuSymbol"
       >
@@ -940,6 +923,23 @@ function Legend(props) {
           </svg>
         </div>
       </div>
+      <div className="legend--menuSymbol">
+        <Typography>Free K:</Typography>
+        <div className="symbol">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="80"
+            height="20"
+            fill="none"
+          >
+            <circle r="3" cx="5" cy="10" fill="white" stroke="black" />
+            <line x1="12" y1="10" x2="40" y2="10" stroke="black" />
+            <text x="45" y="16" fill="black" fontWeight="bold">
+              K
+            </text>
+          </svg>
+        </div>
+      </div>
       <div
         className="legend--menuSymbol"
         style={{
@@ -954,7 +954,7 @@ function Legend(props) {
             height="20"
             fill="none"
           >
-            <circle r="3" cx="5" cy="10" fill="black" stroke="white" />
+            <circle r="3" cx="5" cy="10" fill="white" stroke="black" />
             <line x1="12" y1="10" x2="40" y2="10" stroke="black" />
             <text x="45" y="16" fill="black" fontWeight="bold">
               W
