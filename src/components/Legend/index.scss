@@ -3,16 +3,40 @@
     position: fixed;
     top: 150px;
     left: 10px;
-    width: 280px;
+    width: 250px;
     background-color: #f8f8ff;
+  }
+
+  &--wrapperTransparent {
+    position: fixed;
+    top: 150px;
+    left: 10px;
+    width: 250px;
+    background-color: #f8f8ff;
+    opacity: 0.2;
+    &:hover {
+      opacity: 1;
+    }
   }
 
   &--wrapperRight {
     position: fixed;
     top: 150px;
     right: 10px;
-    width: 280px;
+    width: 250px;
     background-color: #f8f8ff;
+  }
+
+  &--wrapperRightTransparent {
+    position: fixed;
+    top: 150px;
+    right: 10px;
+    width: 250px;
+    background-color: #f8f8ff;
+    opacity: 0.2;
+    &:hover {
+      opacity: 1;
+    }
   }
 
   &--menuItem {
@@ -21,9 +45,14 @@
     margin-bottom: -23px;
   }
 
+  &--menuSymbol {
+    display: flex;
+  }
+
   &--header {
+    display: flex;
     width: max-content;
-    margin-bottom: 15px;
+    margin-bottom: -15px;
     margin-top: -15px;
   }
 }
@@ -49,4 +78,10 @@
 .bold-text {
   font-weight: bold;
   margin-left: 7px;
+}
+
+.symbol {
+  display: inline;
+  position: relative;
+  left: 10px;
 }
