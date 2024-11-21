@@ -37,18 +37,24 @@ function Introduction(props) {
           </Typography>
           <Typography variant="body1">
             This web application visualizes protein topology (obtained from <a
-            href="https://www.uniprot.org/">DeepTMHMM</a>),
-            glycosylation sites, disulfide bonds, sequon sites, and cysteine
-            sites (obtained from <a href="https://www.uniprot.org/">UniProt</a>) to illustrate patterns
+            href="https://www.uniprot.org/">DeepTMHMM</a>), various relevant protein features
+            (obtained from <a href="https://www.uniprot.org/">UniProt</a>) to illustrate patterns
             in their arrangement in relation to the protein topology.
           </Typography>
           <ul className="introduction--ul">
           <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
                 Search for a protein from ten different species (Human, mouse, yeast, worm, rat, Pyrobaculum, plant,
-                fly, fish and Aeropyrum) to visualize from the Uniprot database or select one of several example
-                proteins with conflicts to visualize from the drop down menu located above this card.
+                fly, fish and Aeropyrum) to visualize from the Uniprot database.
                 Search feature is case-insensitive.
+              </Typography>
+            </li>
+            <li className="introduction--bullet">
+              <Typography variant="body2" display="inline">
+                Visualization features include inside domain, outside domain, glycosylation sites, O-linked GalNAc sites, O-linked Glc sites, N-linked Glc glycation site,
+                phosphoserine sites, phosphothreonine sites, phosphotyrosine sites, disulfide bonds,
+                sequon sites, cysteine sites, unoccupied serine sites, unoccupied threonine sites, unoccupied lysine sites, and
+                unoccupied tryptophan sites
               </Typography>
             </li>
             <li className="introduction--bullet">
@@ -68,8 +74,10 @@ function Introduction(props) {
             <li className="introduction--bullet">
               <Typography variant="body2" display="inline">
                 The legend moves with the page as the user scrolls, keeping the information always within reach.
-                Additionally, the
-                legend and each protein feature can be toggled to enhance viewability.
+                The legend and each protein feature can be toggled to enhance viewability. User can also switch between
+                proteins features information and scientific symbols of features. The legend is transparent by default,
+                unless the user hoover their mouse on the legend to provide visibility,
+                and the transparent option can be turned off.
               </Typography>
             </li>
             <li className="introduction--bullet">
@@ -89,6 +97,13 @@ function Introduction(props) {
             <Link href="https://mdesai31.github.io/Protein-Visualizer-2.0/">
               Protein Visualizer 2.0
             </Link>
+
+            <Typography variant="body1">
+              Tutorial on how to use the visualizer 3.0:&nbsp;
+              <Link href="https://www.youtube.com/watch?v=q8QaIdRW02g">
+                Youtube Video
+              </Link>
+            </Typography>
           </Typography>
           <br />
           <Typography variant="body1">
