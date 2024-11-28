@@ -873,7 +873,14 @@ function Visualization(props) {
     });
   };
 
-  const attachFreeAmAcids = (g, isWindowView, freeAmAcids, symAmAcids, visualize) => {
+  const attachFreeAmAcids = (
+    g,
+    isWindowView,
+    freeAmAcids,
+    symAmAcids,
+    visualize,
+    text_distance = 0
+  ) => {
     console.log(`Visualization -> attach Free ${symAmAcids}`);
     let seq = freeAmAcids.map((el) => parseInt(el, 10));
     if (isWindowView) {
@@ -907,7 +914,7 @@ function Visualization(props) {
 
         const pos = g.append('text');
         pos
-          .attr('dx', seqPos + 4)
+          .attr('dx', seqPos + 4 + text_distance)
           .attr('dy', SULFIDE_POS - 55)
           .text(() => `${el}`)
           .attr('class', 'sulfide-labels--pos');
@@ -946,7 +953,7 @@ function Visualization(props) {
 
         const pos = g.append('text');
         pos
-          .attr('dx', seqPos + 6)
+          .attr('dx', seqPos + 6  + text_distance)
           .attr('dy', SULFIDE_POS + 65)
           .text(() => `${el}`)
           .attr('class', 'sulfide-labels--pos');
@@ -1091,7 +1098,7 @@ function Visualization(props) {
       attachFreeAmAcids(g, isWindowView, freeK, 'K', 'white');
     }
     if (showFreeW) {
-      attachFreeAmAcids(g, isWindowView, freeW, 'W', 'white');
+      attachFreeAmAcids(g, isWindowView, freeW, 'W', 'white', 5);
     }
     if (showPhosphoserine) {
       attachPhosphorylation(g, isWindowView, phosphoserine, '#FDCC04');
@@ -1158,7 +1165,9 @@ function Visualization(props) {
   const svg = Number.isInteger(currSelection) ? (
     <div className="svg-wrapper">
       <svg
-        style={fullScale ? ({}) : ({marginLeft: (scaleFactor - 1) * window.innerWidth})}
+        style={
+          fullScale ? {} : { marginLeft: (scaleFactor - 1) * window.innerWidth }
+        }
         height={`${height}`}
         width={`${
           fullScale
