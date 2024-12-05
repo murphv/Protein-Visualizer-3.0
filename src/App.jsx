@@ -11,7 +11,7 @@ import Introduction from './components/Introduction';
 import './App.scss';
 import SearchBar from './components/ProteinSearchBar';
 import parser from './parser';
-import csvData from './parser/Total_combined_wHuman_results.csv';
+import csvData from './parser/Total_combined_wHuman_results_updated.csv';
 
 const { getProteins } = parser;
 // one-time command to setup and activate the virtual environemnt script: ./venv/Scripts/activate
